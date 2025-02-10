@@ -1,0 +1,4 @@
+admin@gmail.com
+receveur@gmail.com
+technicien@gmail.com
+password : password123
