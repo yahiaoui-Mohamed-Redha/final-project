@@ -15,10 +15,46 @@ if (isset($_COOKIE['remember_username'])) {
 // Get the selected language from the cookie
 $language = $_COOKIE['language'] ?? 'fr';
 
-// Cache static resources
-if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'assets/') !== false) {
-    header('Cache-Control: max-age=31536000, public');
-    header('Expires: ' . gmdate('D, d M Y H:i:s T', time() + 31536000));
+// Set the cache headers for images and CSS
+header('Cache-Control: max-age=31536000, public');
+header('Expires: ' . gmdate('D, d M Y H:i:s T', time() + 31536000));
+
+// Define the cache directory
+$cacheDir = 'cache/';
+
+// Create the cache directory if it doesn't exist
+if (!is_dir($cacheDir)) {
+    mkdir($cacheDir, 0777, true);
+}
+
+// Cache images
+$imageFiles = array('oie_M5SLKyrEbkDJ.png',);
+foreach ($imageFiles as $imageFile) {
+    $imagePath = 'assets/image/' . $imageFile;
+    $cacheImagePath = $cacheDir . $imageFile;
+    if (!file_exists($cacheImagePath)) {
+        copy($imagePath, $cacheImagePath);
+    }
+}
+
+// Cache icon
+$imageFiles = array('algerie-poste-logo@logotyp.us.svg');
+foreach ($imageFiles as $imageFile) {
+    $imagePath = 'assets/icon/' . $imageFile;
+    $cacheImagePath = $cacheDir . $imageFile;
+    if (!file_exists($cacheImagePath)) {
+        copy($imagePath, $cacheImagePath);
+    }
+}
+
+// Cache CSS
+$cssFiles = array('output.css');
+foreach ($cssFiles as $cssFile) {
+    $cssPath = 'src/' . $cssFile;
+    $cacheCssPath = $cacheDir . $cssFile;
+    if (!file_exists($cacheCssPath)) {
+        copy($cssPath, $cacheCssPath);
+    }
 }
 
 if (isset($_POST['submit'])) {
@@ -70,12 +106,12 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/assets/icon/logo_icon.png">
+    <link rel="icon" type="image/x-icon" href="cache/algerie-poste-logo@logotyp.us.svg">
     <title>Login - Algérie Poste</title>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.26.0/tabler-icons.min.css" integrity="sha512-k9iJhTcDc/0fp2XLBweIJjHuQasnXicVPXbUG0hr5bB0/JqoTYEFeCdQj4aJTg50Gw6rBJiHfWJ8Y+AeF1Pd3A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="src/output.css">
+    <link rel="stylesheet" href="cache/output.css">
     <style>
         /* Custom styles for Algérie Poste branding */
         .bg-algerie-poste {
@@ -101,7 +137,7 @@ if (isset($_POST['submit'])) {
             <div>
                 <div class="flex items-center justify-center h-max w-max bg-white rounded-xl px-6 pt-3 pb-2 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]">
                     <a href="javascript:void(0)">
-                        <img src="assets/image/oie_M5SLKyrEbkDJ.png" alt="logo" class="w-40" />
+                        <img src="cache/oie_M5SLKyrEbkDJ.png" alt="logo" class="w-40" />
                     </a>
                 </div>
                 <div class="max-w-lg mt-16 max-lg:hidden">
