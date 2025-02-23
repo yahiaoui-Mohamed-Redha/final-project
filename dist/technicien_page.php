@@ -3,7 +3,7 @@ include '../app/config.php';
 session_start();
 
 // Check if the user is logged in and has the technicien role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'technicien') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'Technicien') {
     header('location:login.php');
     exit;
 }

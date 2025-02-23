@@ -3,7 +3,7 @@ session_start();
 include '../app/config.php';
 
 // Check if the user is logged in and has the 'receveur' role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'receveur') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Receveur') {
     header('Location: login.php');
     exit;
 }

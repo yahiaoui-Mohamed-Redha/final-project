@@ -81,13 +81,13 @@ if (isset($_POST['submit'])) {
         }
 
         // Redirect to the corresponding page based on the user's role
-        if ($row['role_nom'] == 'admin') {
+        if ($row['role_nom'] == 'Admin') {
             header('location: dist/admin_page.php');
             exit();
-        } elseif ($row['role_nom'] == 'technicien') {
+        } elseif ($row['role_nom'] == 'Technicien') {
             header('location: dist/technicien_page.php');
             exit();
-        } elseif ($row['role_nom'] == 'receveur') {
+        } elseif ($row['role_nom'] == 'Receveur') {
             header('location: dist/receveur_page.php');
             exit();
         } else {
@@ -187,6 +187,7 @@ if (isset($_POST['submit'])) {
                         <option value="en">English</option>
                         <option value="fr">Français</option>
                         <option value="ar">العربية</option>
+                        <option value="ru">Русский</option>
                     </select>
                 </div>
             </div>
@@ -241,6 +242,20 @@ if (isset($_POST['submit'])) {
                 passwordPlaceholder: "أدخل كلمة المرور",
                 incorrect_email_or_password: "البريد الإلكتروني أو كلمة المرور غير صحيحة !",
                 no_user_found: "لم يتم العثور على أي مستخدم !",
+            },
+            ru: {
+                welcomeTitle: "Вход",
+                welcomeText: "Войдите в свою учетную запись, чтобы открыть мир возможностей и перспектив.",
+                loginTitle: "Вход",
+                usernameLabel: "Имя пользователя",
+                passwordLabel: "Пароль",
+                rememberMeLabel: "Запомнить меня",
+                forgotPasswordLink: "Забыли пароль?",
+                loginButton: "Войти",
+                usernamePlaceholder: "Введите имя пользователя или email",
+                passwordPlaceholder: "Введите пароль",
+                incorrect_email_or_password: "Неверный email или пароль!",
+                no_user_found: "Пользователь не найден!",
             },
         };
 

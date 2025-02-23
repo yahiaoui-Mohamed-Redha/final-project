@@ -5,9 +5,9 @@ session_start();
 include '../app/config.php';
 
 // Check if the user is logged in and has the 'admin' role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
     // Redirect to the login page or show an error message
-    header('location: login.php');
+    header('location: index.php');
     exit(); // Stop further execution
 }
 
