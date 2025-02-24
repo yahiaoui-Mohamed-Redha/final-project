@@ -19,19 +19,15 @@ if (file_exists($cache_file) && (time() - filemtime($cache_file) < $cache_time))
     $users = json_decode(file_get_contents($cache_file), true);
 } else {
     // Fetch data from the database if cache is outdated or missing
-    $stmt = $conn->prepare("SELECT u.*, e.etablissement_name FROM Users u LEFT JOIN Epost e ON u.postal_code = e.postal_code");
+    $stmt = $conn->prepare("SELECT u.username, u.nom, u.prenom, e.etablissement_name, u.role_id, u.etat_compte 
+                            FROM Users u 
+                            LEFT JOIN Epost e ON u.postal_code = e.postal_code");
     $stmt->execute();
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Store the data in cache
     file_put_contents($cache_file, json_encode($users));
 }
-
-// Fetch admin details
-$user_id = $_SESSION['user_id'];
-$select = $conn->prepare("SELECT * FROM Users WHERE user_id = ?");
-$select->execute([$user_id]);
-$admin = $select->fetch(PDO::FETCH_ASSOC);
 
 // Fetch admin details
 $user_id = $_SESSION['user_id'];

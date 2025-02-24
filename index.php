@@ -68,30 +68,34 @@ if (isset($_POST['submit'])) {
     $row = $select->fetch(PDO::FETCH_ASSOC);
 
     if ($select->rowCount() > 0) {
-        $_SESSION['user_id'] = $row['user_id'];
-        $_SESSION['user_role'] = $row['role_nom'];
-
-        // Handle "Remember Me" functionality
-        if (isset($_POST['rememberMe'])) {
-            // Set cookie to remember the username for 30 days
-            setcookie('remember_username', $login_input, time() + (30 * 24 * 60 * 60), '/');
+        if ($row['etat_compte'] == 0) {
+            $message[] = 'account_disabled';
         } else {
-            // Delete the cookie if "Remember Me" is not checked
-            setcookie('remember_username', '', time() - 3600, '/');
-        }
+            $_SESSION['user_id'] = $row['user_id'];
+            $_SESSION['user_role'] = $row['role_nom'];
 
-        // Redirect to the corresponding page based on the user's role
-        if ($row['role_nom'] == 'Admin') {
-            header('location: dist/admin_page.php');
-            exit();
-        } elseif ($row['role_nom'] == 'Technicien') {
-            header('location: dist/technicien_page.php');
-            exit();
-        } elseif ($row['role_nom'] == 'Receveur') {
-            header('location: dist/receveur_page.php');
-            exit();
-        } else {
-            $message[] = 'no_user_found';
+            // Handle "Remember Me" functionality
+            if (isset($_POST['rememberMe'])) {
+                // Set cookie to remember the username for 30 days
+                setcookie('remember_username', $login_input, time() + (30 * 24 * 60 * 60), '/');
+            } else {
+                // Delete the cookie if "Remember Me" is not checked
+                setcookie('remember_username', '', time() - 3600, '/');
+            }
+
+            // Redirect to the corresponding page based on the user's role
+            if ($row['role_nom'] == 'Admin') {
+                header('location: dist/admin_page.php');
+                exit();
+            } elseif ($row['role_nom'] == 'Technicien') {
+                header('location: dist/technicien_page.php');
+                exit();
+            } elseif ($row['role_nom'] == 'Receveur') {
+                header('location: dist/receveur_page.php');
+                exit();
+            } else {
+                $message[] = 'no_user_found';
+            }
         }
     } else {
         $message[] = 'incorrect_email_or_password';
@@ -143,7 +147,7 @@ if (isset($_POST['submit'])) {
 
                     <!-- Username/Email Field -->
                     <div>
-                        <label id="usernameLabel" class="text-gray-800 text-sm mb-2 block">User   name</label>
+                        <label id="usernameLabel" class="text-gray-800 text-sm mb-2 block">User    name</label>
                         <div class="relative flex items-center">
                             <input name="login_input" type="text" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-md outline-blue-600" placeholder="Enter your username or email" value="<?php echo isset($_COOKIE['remember_username']) ? htmlspecialchars($_COOKIE['remember_username']) : ''; ?>" />
                             <svg id="usernameIcon" xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-4" viewBox="0 0 24 24">
@@ -205,7 +209,7 @@ if (isset($_POST['submit'])) {
                 welcomeTitle: "Sign in",
                 welcomeText: "Embark on a seamless journey as you sign in to your account. Unlock a realm of opportunities and possibilities that await you.",
                 loginTitle: "Sign in",
-                usernameLabel: "User   name",
+                usernameLabel: "User    name",
                 passwordLabel: "Password",
                 rememberMeLabel: "Remember me",
                 forgotPasswordLink: "Forgot your password?",
@@ -214,6 +218,7 @@ if (isset($_POST['submit'])) {
                 passwordPlaceholder: "Enter password",
                 incorrect_email_or_password: "Incorrect email or password!",
                 no_user_found: "No user found!",
+                account_disabled: "Your account is disabled. Please contact the administrator.",
             },
             fr: {
                 welcomeTitle: "Connexion",
@@ -228,6 +233,7 @@ if (isset($_POST['submit'])) {
                 passwordPlaceholder: "Entrez votre mot de passe",
                 incorrect_email_or_password: "Email ou mot de passe incorrect !",
                 no_user_found: "Aucun utilisateur trouvé !",
+                account_disabled: "Votre compte est désactivé. Veuillez contacter l'administrateur.",
             },
             ar: {
                 welcomeTitle: "تسجيل الدخول",
@@ -242,6 +248,7 @@ if (isset($_POST['submit'])) {
                 passwordPlaceholder: "أدخل كلمة المرور",
                 incorrect_email_or_password: "البريد الإلكتروني أو كلمة المرور غير صحيحة !",
                 no_user_found: "لم يتم العثور على أي مستخدم !",
+                account_disabled: "حسابك معطل. يرجى الاتصال بالمسؤول.",
             },
             ru: {
                 welcomeTitle: "Вход",
@@ -256,6 +263,7 @@ if (isset($_POST['submit'])) {
                 passwordPlaceholder: "Введите пароль",
                 incorrect_email_or_password: "Неверный email или пароль!",
                 no_user_found: "Пользователь не найден!",
+                account_disabled: "Ваш аккаунт отключен. Пожалуйста, обратитесь к администратору.",
             },
         };
 
