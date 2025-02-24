@@ -596,9 +596,6 @@
   .right-4 {
     right: calc(var(--spacing) * 4);
   }
-  .bottom-0 {
-    bottom: calc(var(--spacing) * 0);
-  }
   .bottom-6 {
     bottom: calc(var(--spacing) * 6);
   }
@@ -860,9 +857,6 @@
   .h-12 {
     height: calc(var(--spacing) * 12);
   }
-  .h-\[2px\] {
-    height: 2px;
-  }
   .h-\[18px\] {
     height: 18px;
   }
@@ -883,9 +877,6 @@
   }
   .min-h-screen {
     min-height: 100vh;
-  }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
   }
   .w-1\/2 {
     width: calc(1/2 * 100%);
@@ -1347,13 +1338,6 @@
   .gap-4 {
     gap: calc(var(--spacing) * 4);
   }
-  .space-y-2 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
   .space-y-2\.5 {
     :where(& > :not(:last-child)) {
       --tw-space-y-reverse: 0;
@@ -1592,9 +1576,6 @@
     --tw-border-style: solid;
     border-style: solid;
   }
-  .border-gray-100 {
-    border-color: var(--color-gray-100);
-  }
   .border-gray-200 {
     border-color: var(--color-gray-200);
   }
@@ -1619,9 +1600,6 @@
   .bg-\[\#f8f8f8\] {
     background-color: #f8f8f8;
   }
-  .bg-\[\#ffe455\] {
-    background-color: #ffe455;
-  }
   .bg-\[color\:var\(--my-color\)\] {
     background-color: var(--my-color);
   }
@@ -1645,15 +1623,6 @@
   }
   .bg-white {
     background-color: var(--color-white);
-  }
-  .bg-yellow-100 {
-    background-color: var(--color-yellow-100);
-  }
-  .bg-yellow-300 {
-    background-color: var(--color-yellow-300);
-  }
-  .bg-yellow-400 {
-    background-color: var(--color-yellow-400);
   }
   .-bg-conic {
     --tw-gradient-position: in oklab;
@@ -1840,6 +1809,9 @@
   }
   .p-1 {
     padding: calc(var(--spacing) * 1);
+  }
+  .p-1\.5 {
+    padding: calc(var(--spacing) * 1.5);
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
@@ -2054,9 +2026,6 @@
   .text-\[\#0455b7\] {
     color: #0455b7;
   }
-  .text-\[\#192941\] {
-    color: #192941;
-  }
   .text-amber-200 {
     color: var(--color-amber-200);
   }
@@ -2080,12 +2049,6 @@
   }
   .text-white {
     color: var(--color-white);
-  }
-  .text-yellow-600 {
-    color: var(--color-yellow-600);
-  }
-  .text-yellow-800 {
-    color: var(--color-yellow-800);
   }
   .capitalize {
     text-transform: capitalize;
@@ -2573,13 +2536,6 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-blue-700);
-      }
-    }
-  }
-  .hover\:bg-blue-800 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-blue-800);
       }
     }
   }
