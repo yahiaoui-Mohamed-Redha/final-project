@@ -9,6 +9,24 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
     exit();
 }
 
+// Cache settings
+$cache_file = '../../cache/users_cache.json'; // Cache file location
+$cache_time = 432000; // 5 days in seconds
+
+// Check if a valid cache file exists
+if (file_exists($cache_file) && (time() - filemtime($cache_file) < $cache_time)) {
+    // Load data from cache
+    $users = json_decode(file_get_contents($cache_file), true);
+} else {
+    // Fetch data from the database if cache is outdated or missing
+    $stmt = $conn->prepare("SELECT u.*, e.etablissement_name FROM Users u LEFT JOIN Epost e ON u.postal_code = e.postal_code");
+    $stmt->execute();
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Store the data in cache
+    file_put_contents($cache_file, json_encode($users));
+}
+
 // Fetch admin details
 $user_id = $_SESSION['user_id'];
 $select = $conn->prepare("SELECT * FROM Users WHERE user_id = ?");
@@ -174,7 +192,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <!-- User Image -->
                 <img src="../../assets/image/download.jpg" alt="User" class="h-10 w-10 rounded-lg mr-3">
                 <div>
-                    <p class="text-sm font-semibold text-gray-800"><?php echo htmlspecialchars($admin['username']); ?></p>
+                    <p class="text-sm font-semibold text-gray-800"><?php echo htmlspecialchars($admin['nom'] . ' ' . $admin['prenom']); ?></p>
                     <p id="role" class="text-xs text-gray-500"><?php echo $admin['role_name']; ?></p>
                 </div>
                 </div>
@@ -193,7 +211,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
                         <!-- Tabs -->
                         <li>
-                            <button id="homeTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            <button id="allTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
                                 Tous les comptes
                             </button>
                         </li>
@@ -265,7 +283,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const tabs = document.querySelectorAll('.tab');
-            const slider = document.getElementById('slider');
+            const tableRows = document.querySelectorAll('table tr:not(:first-child)');
 
             // Function to handle tab switching
             function switchTab(activeTab) {
@@ -278,6 +296,20 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 // Add active styles to the clicked tab
                 activeTab.classList.remove('text-gray-600', 'rounded-xl');
                 activeTab.classList.add('text-[#0455b7]', 'bg-white', 'rounded-lg');
+
+                // Filter table rows based on the selected tab
+                tableRows.forEach(row => {
+                    const role = row.cells[4].textContent;
+                    if (activeTab.id === 'allTab') {
+                        row.style.display = 'table-row';
+                    } else if (activeTab.id === 'technicianTab' && role === 'Technicien') {
+                        row.style.display = 'table-row';
+                    } else if (activeTab.id === 'receiverTab' && role === 'Receveur') {
+                        row.style.display = 'table-row';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
             }
 
             // Event listeners for each tab

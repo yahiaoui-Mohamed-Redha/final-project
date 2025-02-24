@@ -169,7 +169,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                 <!-- User Image -->
                 <img src="../assets/image/download.jpg" alt="User" class="h-10 w-10 rounded-lg mr-3">
                 <div>
-                    <p class="text-sm font-semibold text-gray-800"><?php echo htmlspecialchars($admin['username']); ?></p>
+                    <p class="text-sm font-semibold text-gray-800"><?php echo htmlspecialchars($admin['nom'] . ' ' . $admin['prenom']); ?></p>
                     <p id="role" class="text-xs text-gray-500"><?php echo $admin['role_name']; ?></p>
                 </div>
                 </div>
