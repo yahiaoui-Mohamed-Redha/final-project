@@ -183,7 +183,6 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
             </div>
         </header>
          <div class="p-4 bg-red-500">
-
          </div>
     </div>
 

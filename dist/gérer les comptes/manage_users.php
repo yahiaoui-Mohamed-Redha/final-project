@@ -148,7 +148,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <span class="mx-2 text-sm font-medium">Paramètres</span>
                     </a>
 
-                    <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#f4acbf47] hover:text-[#f60347]" href="../app/logout.php">
+                    <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#f4acbf47] hover:text-[#f60347]" href="../../app/logout.php">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                             <path d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2"></path>
                             <path d="M15 12h-12l3 -3"></path>
@@ -187,8 +187,28 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </select>
             </div>
         </header>
-         <div class="p-4">
-            <table>
+         <div class="px-6 py-8">
+            <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md">
+                <div class="p-2">
+                    <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden">
+                        <li id="homeTab"
+                            class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            Tous les comptes</li>
+                        <li id="settingTab"
+                            class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            Les Techniciennes</li>
+                        <li id="settingTab"
+                            class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            Les Receveurs</li>
+                    </ul>
+                </div>
+                <div>
+                    <button class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]">
+
+                    </button>
+                </div>
+            </div>
+            <!-- <table>
                 <tr>
                     <th>Username</th>
                     <th>Nom</th>
@@ -216,7 +236,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </td>
                 </tr>
                 <?php } ?>
-            </table>
+            </table> -->
          </div>
     </div>
 
