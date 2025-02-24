@@ -188,57 +188,107 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </header>
          <div class="px-6 py-8">
-            <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md">
+            <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
                 <div class="p-2">
-                    <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden">
-                        <li id="homeTab"
-                            class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            Tous les comptes</li>
-                        <li id="settingTab"
-                            class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            Les Techniciennes</li>
-                        <li id="settingTab"
-                            class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            Les Receveurs</li>
+                    <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
+                        <!-- Tabs -->
+                        <li>
+                            <button id="homeTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                Tous les comptes
+                            </button>
+                        </li>
+                        <li>
+                            <button id="technicianTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                Les Techniciennes
+                            </button>
+                        </li>
+                        <li>
+                            <button id="receiverTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                Les Receveurs
+                            </button>
+                        </li>
                     </ul>
                 </div>
-                <div>
-                    <button class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]">
-
+                <div class="flex items-center justify-between">
+                    <button class="flex items-center p-2 border rounded-lg text-gray-600 border-gray-200 transition-colors duration-300 transform mr-2 hover:bg-[#c8d3f659] hover:text-[#0455b7]">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
+                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                            <path d="M9 15h6"></path>
+                            <path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5"></path>
+                        </svg>
+                        <span class="mx-2 text-sm font-medium">Exporter</span>
+                    </button>
+                    <button class="flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
+                            <path d="M12 5l0 14"></path>
+                            <path d="M5 12l14 0"></path>
+                        </svg>
+                        <span class="mx-2 text-sm font-medium">Créer un compte</span>
                     </button>
                 </div>
             </div>
-            <!-- <table>
-                <tr>
-                    <th>Username</th>
-                    <th>Nom</th>
-                    <th>Prenom</th>
-                    <th>Etablissement</th>
-                    <th>Role</th>
-                    <th>Etat Compte</th>
-                    <th>Actions</th>
-                </tr>
-                <?php foreach ($users as $user) { ?>
-                <tr>
-                    <td><?php echo $user['username']; ?></td>
-                    <td><?php echo $user['nom']; ?></td>
-                    <td><?php echo $user['prenom']; ?></td>
-                    <td><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
-                    <td><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
-                    <td><?php echo $user['etat_compte'] == 1 ? 'Active' : 'Disabled'; ?></td>
-                    
-                    <td>
-                        <?php if ($user['etat_compte'] == 1) { ?>
-                        <a href="disable_user.php?id=<?php echo $user['user_id']; ?>">Disable</a>
-                        <?php } else { ?>
-                        <a href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>
-                        <?php } ?>
-                    </td>
-                </tr>
-                <?php } ?>
-            </table> -->
+            <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md">
+                <table>
+                    <tr>
+                        <th>Username</th>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                        <th>Etablissement</th>
+                        <th>Role</th>
+                        <th>Etat Compte</th>
+                        <th>Actions</th>
+                    </tr>
+                    <?php foreach ($users as $user) { ?>
+                    <tr>
+                        <td><?php echo $user['username']; ?></td>
+                        <td><?php echo $user['nom']; ?></td>
+                        <td><?php echo $user['prenom']; ?></td>
+                        <td><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
+                        <td><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
+                        <td><?php echo $user['etat_compte'] == 1 ? 'Active' : 'Disabled'; ?></td>
+                        
+                        <td>
+                            <?php if ($user['etat_compte'] == 1) { ?>
+                            <a href="disable_user.php?id=<?php echo $user['user_id']; ?>">Disable</a>
+                            <?php } else { ?>
+                            <a href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </table>
+            </div>
          </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+            const slider = document.getElementById('slider');
+
+            // Function to handle tab switching
+            function switchTab(activeTab) {
+                // Remove active styles from all tabs
+                tabs.forEach(tab => {
+                    tab.classList.remove('text-[#0455b7]', 'bg-white', 'rounded-lg');
+                    tab.classList.add('text-gray-600', 'rounded-xl');
+                });
+
+                // Add active styles to the clicked tab
+                activeTab.classList.remove('text-gray-600', 'rounded-xl');
+                activeTab.classList.add('text-[#0455b7]', 'bg-white', 'rounded-lg');
+            }
+
+            // Event listeners for each tab
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab));
+            });
+
+            // Initialize the first tab as active
+            switchTab(tabs[0]);
+        });
+    </script>
 
 </body>
 </html>
