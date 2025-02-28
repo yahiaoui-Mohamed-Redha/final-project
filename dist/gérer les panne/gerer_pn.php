@@ -2,46 +2,47 @@
 include '../../app/config.php';
 session_start();
 
-// Check if the user is logged in and has the 'admin' role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
-    // Redirect to the login page or show an error message
-    header('location: index.php');
-    exit();
+// Verify user authorization
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+    header('Location: login.php');
+    exit;
 }
 
-// Cache settings
-$cache_file = '../../cache/users_cache.json'; // Cache file location
-$cache_time = 432000; // 5 days in seconds
+// Fetch all panne
+$stmt_panne = $conn->prepare("SELECT p.panne_num, p.panne_name, p.date_signalement, e.etablissement_name, t.type_name, p.panne_etat 
+                              FROM Panne p 
+                              INNER JOIN Type_panne t ON p.type_id = t.type_id 
+                              INNER JOIN Users u ON p.receveur_id = u.user_id 
+                              INNER JOIN Epost e ON u.postal_code = e.postal_code");
+$stmt_panne->execute();
+$pannes = $stmt_panne->fetchAll(PDO::FETCH_ASSOC);
 
-// Check if a valid cache file exists
-if (file_exists($cache_file) && (time() - filemtime($cache_file) < $cache_time)) {
-    // Load data from cache
-    $users = json_decode(file_get_contents($cache_file), true);
-} else {
-    // Fetch data from the database if cache is outdated or missing
-    $stmt = $conn->prepare("SELECT u.username, u.nom, u.prenom, e.etablissement_name, u.role_id, u.etat_compte 
-                            FROM Users u 
-                            LEFT JOIN Epost e ON u.postal_code = e.postal_code");
-    $stmt->execute();
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Store the data in cache
-    file_put_contents($cache_file, json_encode($users));
+// Filter panne for receveur
+if ($_SESSION['user_role'] == 'receveur') {
+    $stmt_panne_receveur = $conn->prepare("SELECT p.panne_name, p.date_signalement, p.description, t.type_name, u.nom, u.prenom 
+                                           FROM Panne p 
+                                           INNER JOIN Type_panne t ON p.type_id = t.type_id 
+                                           INNER JOIN Users u ON p.receveur_id = u.user_id 
+                                           WHERE p.receveur_id = :receveur_id");
+    $stmt_panne_receveur->execute(['receveur_id' => $_SESSION['user_id']]);
+    $pannes = $stmt_panne_receveur->fetchAll(PDO::FETCH_ASSOC);
 }
+
+// Fetch admin details
+$user_id = $_SESSION['user_id'];
+$select = $conn->prepare("SELECT * FROM Users WHERE user_id = ?");
+$select->execute([$user_id]);
+$users = $select->fetch(PDO::FETCH_ASSOC);
 
 // Fetch admin details
 $user_id = $_SESSION['user_id'];
 $select = $conn->prepare("SELECT u.*, r.role_nom AS role_name FROM Users u INNER JOIN Roles r ON u.role_id = r.role_id WHERE u.user_id = ?");
 $select->execute([$user_id]);
-$admin = $select->fetch(PDO::FETCH_ASSOC);
+$users = $select->fetch(PDO::FETCH_ASSOC);
 
-// Fetch all users from the database
-$stmt = $conn->prepare("SELECT u.*, e.etablissement_name FROM Users u LEFT JOIN Epost e ON u.postal_code = e.postal_code");
-$stmt->execute();
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +75,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="space-y-2.5 ">
                         <label class="px-3 text-xs font-semibold text-gray-500 uppercase">Statistiques</label>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../admin_page.php">
+                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../admin_page.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
                             </svg>
@@ -82,7 +83,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span class="mx-2 text-sm font-medium">Tableau de bord</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../admin_page.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                                 <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path>
                                 <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
@@ -96,7 +97,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="space-y-2.5 ">
                         <label class="px-3 text-xs font-semibold text-gray-500 uppercase">Contrôle</label>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-[#0455b7] bg-[#c8d3f659] transition-colors duration-300 transform rounded-lg" href="#">
+                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600  transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../gérer les comptes/manage_users.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                                 <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
                                 <path d="M6 21v-2a4 4 0 0 1 4 -4h2.5"></path>
@@ -112,7 +113,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span class="mx-2 text-sm font-medium">Gérer les comptes</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../gérer les panne/gerer_pn.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-[#0455b7] bg-[#c8d3f659] transition-colors duration-300 transform rounded-lg " href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                             </svg>
@@ -180,7 +181,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="content sm:ml-[17rem] w-[calc(100%-16.3rem)] float-right">
         <header class="bg-white shadow-md p-4 flex justify-between items-center">
             <h1 class=" font-medium text-gray-700 text-xl text-left">
-                Gérer les comptes
+                Gérer les pannes
             </h1>
             <div class="flex items-center space-x-9">
                 <!-- User Information -->
@@ -188,8 +189,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <!-- User Image -->
                 <img src="../../assets/image/download.jpg" alt="User" class="h-10 w-10 rounded-lg mr-3">
                 <div>
-                    <p class="text-sm font-semibold text-gray-800"><?php echo htmlspecialchars($admin['nom'] . ' ' . $admin['prenom']); ?></p>
-                    <p id="role" class="text-xs text-gray-500"><?php echo $admin['role_name']; ?></p>
+                    <p class="text-sm font-semibold text-gray-800"><?php echo htmlspecialchars($users['nom'] . ' ' . $users['prenom']); ?></p>
+                    <p id="role" class="text-xs text-gray-500"><?php echo $users['role_name']; ?></p>
                 </div>
                 </div>
 
@@ -204,24 +205,34 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
          <div class="px-6 py-8">
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
                 <div class="p-2">
-                    <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
-                        <!-- Tabs -->
-                        <li>
-                            <button id="allTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                                Tous les comptes
-                            </button>
-                        </li>
-                        <li>
-                            <button id="technicianTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                                Les Techniciennes
-                            </button>
-                        </li>
-                        <li>
-                            <button id="receiverTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                                Les Receveurs
-                            </button>
-                        </li>
-                    </ul>
+                <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
+                    <!-- Tabs -->
+                    <li>
+                        <button id="allTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            Tous les pannes
+                        </button>
+                    </li>
+                    <li>
+                        <button id="nouveauTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            Nouveau
+                        </button>
+                    </li>
+                    <li>
+                        <button id="enCoursTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            En Cours
+                        </button>
+                    </li>
+                    <li>
+                        <button id="resoluTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            Résolu
+                        </button>
+                    </li>
+                    <li>
+                        <button id="fermeTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            Fermé
+                        </button>
+                    </li>
+                </ul>
                 </div>
                 <div class="flex items-center justify-between">
                     <button class="flex items-center p-1.5 border rounded-lg text-gray-600 border-gray-200 transition-colors duration-300 transform mr-2 hover:bg-[#c8d3f659] hover:text-[#0455b7]">
@@ -243,35 +254,38 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md">
-                <table>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th>Username</th>
-                        <th>Nom</th>
-                        <th>Prenom</th>
-                        <th>Etablissement</th>
-                        <th>Role</th>
-                        <th>Etat Compte</th>
-                        <th>Actions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Panne Num</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom de Panne</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Établissement</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">État</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
-                    <?php foreach ($users as $user) { ?>
-                    <tr>
-                        <td><?php echo $user['username']; ?></td>
-                        <td><?php echo $user['nom']; ?></td>
-                        <td><?php echo $user['prenom']; ?></td>
-                        <td><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
-                        <td><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
-                        <td><?php echo $user['etat_compte'] == 1 ? 'Active' : 'Disabled'; ?></td>
-                        
-                        <td>
-                            <?php if ($user['etat_compte'] == 1) { ?>
-                            <a href="disable_user.php?id=<?php echo $user['user_id']; ?>">Disable</a>
-                            <?php } else { ?>
-                            <a href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>
-                            <?php } ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </table>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php foreach ($pannes as $panne): ?>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_num']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_name']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $panne['date_signalement']; ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['etablissement_name']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['type_name']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 etat-cell" data-panne-num="<?php echo $panne['panne_num']; ?>">
+                                <?php echo htmlspecialchars($panne['panne_etat']); ?>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="edit_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                <a href="delete_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-red-600 hover:text-red-900 ml-2">Supprimer</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            
+            <!-- <p><a href="rapport_view.php?admin_id=<?php echo $_SESSION['user_id']; ?>">عرض التقارير</a></p> -->
             </div>
          </div>
     </div>
@@ -295,12 +309,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 // Filter table rows based on the selected tab
                 tableRows.forEach(row => {
-                    const role = row.cells[4].textContent;
+                    const etat = row.cells[5].textContent;
                     if (activeTab.id === 'allTab') {
                         row.style.display = 'table-row';
-                    } else if (activeTab.id === 'technicianTab' && role === 'Technicien') {
+                    } else if (activeTab.id === 'nouveauTab' && etat === 'nouveau') {
                         row.style.display = 'table-row';
-                    } else if (activeTab.id === 'receiverTab' && role === 'Receveur') {
+                    } else if (activeTab.id === 'enCoursTab' && etat === 'en_cours') {
+                        row.style.display = 'table-row';
+                    } else if (activeTab.id === 'resoluTab' && etat === 'résolu') {
+                        row.style.display = 'table-row';
+                    } else if (activeTab.id === 'fermeTab' && etat === 'fermé') {
                         row.style.display = 'table-row';
                     } else {
                         row.style.display = 'none';
@@ -315,6 +333,62 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Initialize the first tab as active
             switchTab(tabs[0]);
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const etatCells = document.querySelectorAll('.etat-cell');
+
+            etatCells.forEach(cell => {
+                cell.addEventListener('dblclick', () => {
+                    const currentEtat = cell.textContent.trim();
+                    const panneNum = cell.getAttribute('data-panne-num');
+
+                    // Create a dropdown list
+                    const select = document.createElement('select');
+                    select.className = 'block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500';
+                    select.innerHTML = `
+                        <option value="nouveau" ${currentEtat === 'nouveau' ? 'selected' : ''}>Nouveau</option>
+                        <option value="en_cours" ${currentEtat === 'en_cours' ? 'selected' : ''}>En Cours</option>
+                        <option value="résolu" ${currentEtat === 'résolu' ? 'selected' : ''}>Résolu</option>
+                        <option value="fermé" ${currentEtat === 'fermé' ? 'selected' : ''}>Fermé</option>
+                    `;
+
+                    // Replace cell content with the dropdown
+                    cell.textContent = '';
+                    cell.appendChild(select);
+
+                    // Focus on the dropdown
+                    select.focus();
+
+                    // Handle dropdown change
+                    select.addEventListener('change', () => {
+                        const newEtat = select.value;
+
+                        // Send an AJAX request to update the database
+                        fetch('update_panne_etat.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                panne_num: panneNum,
+                                panne_etat: newEtat
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                cell.textContent = newEtat;
+                            } else {
+                                alert('Failed to update the state.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    });
+                });
+            });
         });
     </script>
 

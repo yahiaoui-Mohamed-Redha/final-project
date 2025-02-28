@@ -36,7 +36,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
 
 <body class="bg-[#f8f8f8]">
 
-    <aside class="fixed flex flex-col justify-start top-0 left-0 z-40 min-w-[16.3rem]  h-screen pt-2 overflow-y-auto bg-white transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+    <aside class="fixed flex flex-col justify-start top-0 left-0 z-40 min-w-[16.3rem]  h-screen pt-2 overflow-hidden bg-white transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
         <div class="flex items-center justify-start pl-5 pr-5">
             <!-- Logo -->
             <img src="../assets/image/logo-head.png" alt="Logo" class="h-12 w-12 mr-3 mt-3">
@@ -93,7 +93,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                             <span class="mx-2 text-sm font-medium">Gérer les comptes</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gérer les panne/gerer_pn.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                             </svg>

@@ -3,3 +3,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.etat-list {
+    @apply absolute z-50 bg-white border border-gray-200 shadow-lg p-2;
+}
+
+.save-etat {
+    @apply mt-2 px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600;
+}
+
+.cancel-etat {
+    @apply mt-2 px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600;
+}
