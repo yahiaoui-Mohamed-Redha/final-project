@@ -2,10 +2,11 @@
 include '../../app/config.php';
 session_start();
 
-// Verify user authorization
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['receveur', 'admin', 'technicien'])) {
-    header('Location: login.php');
-    exit;
+// Check if the user is logged in and has the 'admin' role
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
+    // Redirect to the login page or show an error message
+    header('location: index.php');
+    exit(); // Stop further execution
 }
 
 // Fetch all rapport
