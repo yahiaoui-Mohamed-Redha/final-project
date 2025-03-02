@@ -32,6 +32,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
     <link rel="stylesheet" href="../src/output.css">
+
 </head>
 
 <body class="bg-[#f8f8f8]">
@@ -49,7 +50,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
             [&::-webkit-scrollbar]:w-2
             [&::-webkit-scrollbar-track]:bg-gray-100
             [&::-webkit-scrollbar-thumb]:bg-gray-300">
-            <nav class="-mx-3 fixed bottom-6 top-[90px] flex flex-col flex-1 justify-between space-y-4">
+            <nav class="nav fixed-on-h632 -mx-3 bottom-6 top-[90px] flex flex-col flex-1 justify-between space-y-4">
 
                 <div class="space-y-4">
                     <div class="space-y-2.5 ">

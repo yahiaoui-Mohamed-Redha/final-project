@@ -53,9 +53,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../src/output.css">
 </head>
 
-<body class="bg-[#f8f8f8]">
+<body class="bg-[#f4f4f4]">
 
-    <aside class="fixed flex flex-col justify-start top-0 left-0 z-40 min-w-[16.3rem]  h-screen pt-2 overflow-y-auto bg-white transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+    <aside class="fixed flex flex-col justify-start top-0 left-0 min-w-[16.3rem]  h-screen pt-2 overflow-hidden bg-white transition-transform -translate-x-full sm:translate-x-0 z-[99]" aria-label="Sidebar">
         <div class="flex items-center justify-start pl-5 pr-5">
             <!-- Logo -->
             <img src="../../assets/image/logo-head.png" alt="Logo" class="h-12 w-12 mr-3 mt-3">
@@ -68,7 +68,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             [&::-webkit-scrollbar]:w-2
             [&::-webkit-scrollbar-track]:bg-gray-100
             [&::-webkit-scrollbar-thumb]:bg-gray-300">
-            <nav class="-mx-3 fixed bottom-6 top-[90px] flex flex-col flex-1 justify-between space-y-4">
+            <nav class="nav fixed-on-h632 -mx-3 bottom-6 top-[90px] flex flex-col flex-1 justify-between space-y-4">
 
                 <div class="space-y-4">
                     <div class="space-y-2.5 ">
@@ -178,7 +178,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </aside>
 
     <div class="content sm:ml-[17rem] w-[calc(100%-16.3rem)] float-right">
-        <header class="bg-white shadow-md p-4 flex justify-between items-center">
+        <header class="bg-white fixed top-0 right-0 w-[calc(100%-16.3rem)] shadow-md p-4 flex justify-between items-center z-50">
             <h1 class=" font-medium text-gray-700 text-xl text-left">
                 Gérer les comptes
             </h1>
@@ -201,7 +201,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </select>
             </div>
         </header>
-         <div class="px-6 py-8">
+        <div class="px-6 py-8">
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
                 <div class="p-2">
                     <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
@@ -242,122 +242,77 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </button>
                 </div>
             </div>
-            <div class="">
                 
-   <div class="bg-white rounded-lg shadow-md max-w-6xl mx-auto">
-    <!--  filter and search -->
-    <div class="p-4 flex justify-between items-center ">
-      <div class="flex space-x-2">
-        <button class="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-          </svg>
-          Filter
-        </button>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <input type="text" class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm w-64" placeholder="Search user...">
-         </div>
-      </div>
-    </div>
-        <!-- /filter and search -->
-        
-        <div class=" overflow-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                    <!-- <thead class="bg-gray-100"> -->
-                    <tr class="bg-gray-100 border-b border-gray-200 ">
-                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prenom</th>
-                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Etablissement</th>
-                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Etat Compte</th>
-                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                    <!-- </thead> -->
-                    <!-- <tbody class="bg-white divide-y divide-gray-200"> -->
-                    <?php foreach ($users as $user) { ?>
-                    <tr class="bg-white divide-y divide-gray-200  border-b border-gray-200 hover:bg-gray-50 transition">
-                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['username']; ?>
-                    <div class="text-xs text-gray-400">
-                        <?php echo $user['email'] ?>
+            <div class="relative w-full bg-white flex flex-col items-center py-2 px-4 rounded-md">
+                <!--  filter and search -->
+                <div class="w-full p-4 flex justify-between items-center ">
+                    <div class="flex space-x-2">
+                        <button class="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        Filter
+                        </button>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input type="text" class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm w-64" placeholder="Search user...">
+                        </div>
                     </div>
-                    </td>
-                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['nom']; ?></td>
-                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['prenom']; ?></td>
-                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
-                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
-                        
-                        <!-- <td class="px-6 py-4"><?php echo $user['etat_compte'] == 1 ? 'Active' : 'Disabled'; ?></td> -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <?php if($user['etat_compte'] == 1){ ?>
-                                <span class="px-4  py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">active</span>
-                            <?php }else { ?>
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">désactivé</span> 
-                            <?php }; ?> 
-                        </td>
-                        
-                        <td class="px-3 py-1 text-center ">
-                            <?php if ($user['etat_compte'] == 1) { ?>
-                            <a class=" px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#0455b7]  rounded-lg" href="disable_user.php?id=<?php echo $user['user_id']; ?>" >Disable</a>
-                            <?php } else { ?>
+                </div>
+                <!-- /filter and search -->
+                
+                <div class="relative w-full">
+                    <table class="relative divide-y divide-gray-200">
+                        <tr class="tr-head">
+                            <th scope="col" class="pl-4 w-[3%]">
+                                <input type="checkbox" name="select-users" id="select-all">
+                            </th>
+                            <th scope="col" class="th-class w-[17%]" >Username</th>
+                            <th scope="col" class="th-class w-[11%] uppercase">Nom</th>
+                            <th scope="col" class="th-class w-[11%]">Prenom</th>
+                            <th scope="col" class="th-class w-[18%] break-all">Etablissement</th>
+                            <th scope="col" class="th-class w-[11%]">Role</th>
+                            <th scope="col" class="th-class whitespace-nowrap w-[12%]">Etat Compte</th>
+                            <th scope="col" class="th-class w-[13%]">Actions</th>
+                        </tr>
+                        <?php foreach ($users as $user) { ?>
+                        <tr class="tr-body">
+                            <td class="pl-4"><input type="checkbox" name="select-user" id="select-one">
+                            <td class="td-class"><?php echo $user['username']; ?>
+                            <div class="text-xs text-gray-400">
+                                <?php echo $user['email'] ?>
+                            </div>
+                            </td>
+                            <td class="td-class"><?php echo $user['nom']; ?></td>
+                            <td class="td-class"><?php echo $user['prenom']; ?></td>
+                            <td class="td-class w-[18%]"><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
+                            <td class="td-class"><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
+                            <td class="td-class">
+                                <?php if($user['etat_compte'] == 1){ ?>
+                                    <span class="px-4  py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">active</span>
+                                <?php }else { ?>
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">désactivé</span> 
+                                <?php }; ?> 
+                            </td>
                                 
-                            <a  class="bg-blue-50 hover:bg-blue-100  px-4 py-2  rounded-lg text-[#0455b7] "  href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>
-                                
-                            <?php } ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                    <!-- </tbody> -->
-                </table>
-        </div>
+                            <td class="td-class ">
+                                <?php if ($user['etat_compte'] == 1) { ?>
+                                <a class=" px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#0455b7]  rounded-lg" href="disable_user.php?id=<?php echo $user['user_id']; ?>" >Disable</a>
+                                <?php } else { ?>                        
+                                <a  class="bg-blue-50 hover:bg-blue-100  px-4 py-2  rounded-lg text-[#0455b7] "  href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>                                    
+                                <?php } ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </table>
+                </div>
 
-              <!-- Pagination -->
-    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-      <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-center">
-        <div>
-          <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-              <span class="sr-only">Previous</span>
-              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-              </svg>
-            </a>
-            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-              1
-            </a>
-            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-              2
-            </a>
-            <a href="#" aria-current="page" class="z-10 bg-indigo-100 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-              3
-            </a>
-            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-              4
-            </a>
-            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-              5
-            </a>
-            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-              ...
-            </span>
-            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-              <span class="sr-only">Next</span>
-              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-              </svg>
-            </a>
-          </nav>
-        </div>
-      </div>
-    </div>
-        <!-- / Pagination -->
             </div>
-         </div>
+        </div>
     </div>
 
     <script>
@@ -399,6 +354,17 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Initialize the first tab as active
             switchTab(tabs[0]);
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const checkboxes = document.querySelectorAll('table input[type="checkbox"]:not(#select-all)');
+
+            selectAllCheckbox.addEventListener('click', function () {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+            });
         });
     </script>
 

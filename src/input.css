@@ -15,3 +15,26 @@
 .cancel-etat {
     @apply mt-2 px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600;
 }
+
+
+@media (min-height: 632px) {
+    .fixed-on-h632 {
+        position: fixed;
+    }
+}
+
+.tr-head {
+    @apply bg-[#f8f8f8] border-b-2 border-gray-200 
+}
+
+.tr-body {
+    @apply bg-white divide-y border-b border-gray-200 divide-gray-200 hover:bg-gray-50 transition-all duration-200
+}
+
+.th-class {
+    @apply px-4 py-3 text-left text-gray-700 ml-1 text-xs font-medium uppercase tracking-wider
+}
+
+.td-class {
+    @apply px-4 py-4 whitespace-nowrap text-left text-gray-700 ml-1 text-sm font-medium
+}

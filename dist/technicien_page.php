@@ -36,7 +36,7 @@ $Technicien = $select->fetch(PDO::FETCH_ASSOC);
 
 <body class="bg-[#f8f8f8]">
 
-    <aside class="fixed flex flex-col justify-start top-0 left-0 z-40 min-w-[16.3rem]  h-screen pt-2 overflow-y-auto bg-white transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+    <aside class="fixed flex flex-col justify-start top-0 left-0 z-40 min-w-[16.3rem]  h-screen pt-2 overflow-hidden bg-white transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
         <div class="flex items-center justify-start pl-5 pr-5">
             <!-- Logo -->
             <img src="../assets/image/logo-head.png" alt="Logo" class="h-12 w-12 mr-3 mt-3">
@@ -49,7 +49,7 @@ $Technicien = $select->fetch(PDO::FETCH_ASSOC);
             [&::-webkit-scrollbar]:w-2
             [&::-webkit-scrollbar-track]:bg-gray-100
             [&::-webkit-scrollbar-thumb]:bg-gray-300">
-            <nav class="-mx-3 fixed bottom-6 top-[90px] flex flex-col flex-1 justify-between space-y-4">
+            <nav class="nav fixed-on-h632 -mx-3 bottom-6 top-[90px] flex flex-col flex-1 justify-between space-y-4">
 
                 <div class="space-y-4">
                     <div class="space-y-2.5 ">
