@@ -120,7 +120,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span class="mx-2 text-sm font-medium">Gérer les pannes</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../gérer les rapport/gerer_rp2.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
@@ -128,7 +128,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span class="mx-2 text-sm font-medium">Gérer les Rapports</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../gérer les ordres des missions/P-GOM.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
                             <svg class="flex-shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                                 <path d="M3 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
                                 <path d="M10 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
@@ -140,7 +140,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <span class="mx-2 text-sm font-medium">Gérer les orders de mission</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../Gérer les fiche d'intervention/P-GFI.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
                             </svg>
@@ -242,36 +242,120 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </button>
                 </div>
             </div>
-            <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md">
-                <table>
-                    <tr>
-                        <th>Username</th>
-                        <th>Nom</th>
-                        <th>Prenom</th>
-                        <th>Etablissement</th>
-                        <th>Role</th>
-                        <th>Etat Compte</th>
-                        <th>Actions</th>
+            <div class="">
+                
+   <div class="bg-white rounded-lg shadow-md max-w-6xl mx-auto">
+    <!--  filter and search -->
+    <div class="p-4 flex justify-between items-center ">
+      <div class="flex space-x-2">
+        <button class="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          Filter
+        </button>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input type="text" class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm w-64" placeholder="Search user...">
+         </div>
+      </div>
+    </div>
+        <!-- /filter and search -->
+        
+        <div class=" overflow-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                    <!-- <thead class="bg-gray-100"> -->
+                    <tr class="bg-gray-100 border-b border-gray-200 ">
+                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prenom</th>
+                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Etablissement</th>
+                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Etat Compte</th>
+                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
+                    <!-- </thead> -->
+                    <!-- <tbody class="bg-white divide-y divide-gray-200"> -->
                     <?php foreach ($users as $user) { ?>
-                    <tr>
-                        <td><?php echo $user['username']; ?></td>
-                        <td><?php echo $user['nom']; ?></td>
-                        <td><?php echo $user['prenom']; ?></td>
-                        <td><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
-                        <td><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
-                        <td><?php echo $user['etat_compte'] == 1 ? 'Active' : 'Disabled'; ?></td>
+                    <tr class="bg-white divide-y divide-gray-200  border-b border-gray-200 hover:bg-gray-50 transition">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['username']; ?>
+                    <div class="text-xs text-gray-400">
+                        <?php echo $user['email'] ?>
+                    </div>
+                    </td>
+                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['nom']; ?></td>
+                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['prenom']; ?></td>
+                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
+                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
                         
-                        <td>
+                        <!-- <td class="px-6 py-4"><?php echo $user['etat_compte'] == 1 ? 'Active' : 'Disabled'; ?></td> -->
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <?php if($user['etat_compte'] == 1){ ?>
+                                <span class="px-4  py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">active</span>
+                            <?php }else { ?>
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">désactivé</span> 
+                            <?php }; ?> 
+                        </td>
+                        
+                        <td class="px-3 py-1 text-center ">
                             <?php if ($user['etat_compte'] == 1) { ?>
-                            <a href="disable_user.php?id=<?php echo $user['user_id']; ?>">Disable</a>
+                            <a class=" px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#0455b7]  rounded-lg" href="disable_user.php?id=<?php echo $user['user_id']; ?>" >Disable</a>
                             <?php } else { ?>
-                            <a href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>
+                                
+                            <a  class="bg-blue-50 hover:bg-blue-100  px-4 py-2  rounded-lg text-[#0455b7] "  href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>
+                                
                             <?php } ?>
                         </td>
                     </tr>
                     <?php } ?>
+                    <!-- </tbody> -->
                 </table>
+        </div>
+
+              <!-- Pagination -->
+    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+      <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-center">
+        <div>
+          <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">Previous</span>
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+              1
+            </a>
+            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+              2
+            </a>
+            <a href="#" aria-current="page" class="z-10 bg-indigo-100 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+              3
+            </a>
+            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+              4
+            </a>
+            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+              5
+            </a>
+            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+              ...
+            </span>
+            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">Next</span>
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+        <!-- / Pagination -->
             </div>
          </div>
     </div>
