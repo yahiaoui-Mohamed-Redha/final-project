@@ -40,7 +40,7 @@ $select = $conn->prepare("SELECT u.*, r.role_nom AS role_name FROM Users u INNER
 $select->execute([$user_id]);
 $users = $select->fetch(PDO::FETCH_ASSOC);
 
-$possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
+
 
 ?>
 
@@ -121,7 +121,7 @@ $possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
                             <span class="mx-2 text-sm font-medium">Gérer les pannes</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../gérer les rapport/gerer_rp2.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
@@ -129,7 +129,7 @@ $possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
                             <span class="mx-2 text-sm font-medium">Gérer les Rapports</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../gérer les ordres des missions/P-GOM.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
                             <svg class="flex-shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                                 <path d="M3 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
                                 <path d="M10 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
@@ -141,7 +141,7 @@ $possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
                             <span class="mx-2 text-sm font-medium">Gérer les orders de mission</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="../Gérer les fiche d'intervention/P-GFI.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
                             </svg>
@@ -179,7 +179,7 @@ $possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
     </aside>
 
     <div class="content sm:ml-[17rem] w-[calc(100%-16.3rem)] float-right">
-        <header class="bg-white shadow-md p-4 flex justify-between items-center">
+        <header class="bg-white fixed top-0 right-0 w-[calc(100%-16.3rem)] shadow-md p-4 flex justify-between items-center">
             <h1 class=" font-medium text-gray-700 text-xl text-left">
                 Gérer les pannes
             </h1>
@@ -202,7 +202,7 @@ $possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
                 </select>
             </div>
         </header>
-         <div class="px-6 py-8">
+         <div class="px-6 py-8 mt-20">
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
                 <div class="p-2">
                 <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
@@ -254,36 +254,47 @@ $possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
                 </div>
             </div>
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Panne Num</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom de Panne</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Établissement</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">État</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <?php foreach ($pannes as $panne): ?>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_num']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_name']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $panne['date_signalement']; ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['etablissement_name']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['type_name']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 etat-cell" data-panne-num="<?php echo $panne['panne_num']; ?>">
-                                <?php echo htmlspecialchars($panne['panne_etat']); ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="edit_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
-                                <a href="delete_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-red-600 hover:text-red-900 ml-2">Supprimer</a>
-                            </td>
+                <table class="min-w-full divide-y divide-gray-200">
+                        <tr class="bg-gray-50">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Panne Num</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom de Panne</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Établissement</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">État</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
+                        <?php foreach ($pannes as $panne): ?>
+                            <tr class="bg-white divide-y divide-gray-200">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_num']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_name']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $panne['date_signalement']; ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['etablissement_name']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['type_name']); ?></td>
+                                <td class="p-3 relative group">
+                                    <div class="cursor-pointer" ondblclick="showEtatList(this)">
+                                        <?php echo htmlspecialchars($panne['panne_etat']); ?>
+                                    </div>
+                                    <div class="etat-list absolute z-50 bg-white border border-gray-200 shadow-lg p-2 hidden top-0 left-0 transform translate-y-8">
+                                        <select class="w-full p-1 border rounded">
+                                            <option value="nouveau">Nouveau</option>
+                                            <option value="en_cours">En Cours</option>
+                                            <option value="résolu">Résolu</option>
+                                            <option value="fermé">Fermé</option>
+                                        </select>
+                                        <div class="flex justify-end space-x-2 mt-2">
+                                            <button class="save-etat px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Save</button>
+                                            <button class="cancel-etat px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="edit_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                    <a href="delete_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-red-600 hover:text-red-900 ml-2">Supprimer</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                </table>
             
             <!-- <p><a href="rapport_view.php?admin_id=<?php echo $_SESSION['user_id']; ?>">عرض التقارير</a></p> -->
             </div>
@@ -335,61 +346,64 @@ $possible_states = ['nouveau', 'en_cours', 'résolu', 'fermé'];
             switchTab(tabs[0]);
         });
 
+        function showEtatList(element) {
+            // Find the closest parent `td` element
+            const cell = element.closest('td');
+            if (!cell) return;
+
+            // Find the `.etat-list` dropdown within the `td`
+            const etatList = cell.querySelector('.etat-list');
+            if (!etatList) return;
+
+            // Toggle the visibility of the dropdown
+            etatList.classList.toggle('hidden');
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
-            const etatCells = document.querySelectorAll('.etat-cell');
+            const saveButtons = document.querySelectorAll('.save-etat');
+            const cancelButtons = document.querySelectorAll('.cancel-etat');
 
-            etatCells.forEach(cell => {
-                cell.addEventListener('dblclick', () => {
-                    const currentEtat = cell.textContent.trim();
-                    const panneNum = cell.getAttribute('data-panne-num');
+            saveButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const cell = this.closest('td');
+                    if (!cell) return;
 
-                    // Create a dropdown list
-                    const select = document.createElement('select');
-                    select.className = 'block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500';
-                    select.innerHTML = `
-                        <option value="nouveau" ${currentEtat === 'nouveau' ? 'selected' : ''}>Nouveau</option>
-                        <option value="en_cours" ${currentEtat === 'en_cours' ? 'selected' : ''}>En Cours</option>
-                        <option value="résolu" ${currentEtat === 'résolu' ? 'selected' : ''}>Résolu</option>
-                        <option value="fermé" ${currentEtat === 'fermé' ? 'selected' : ''}>Fermé</option>
-                    `;
+                    const select = cell.querySelector('select');
+                    const newEtat = select.value;
+                    const panneNum = cell.closest('tr').querySelector('td:first-child').textContent;
 
-                    // Replace cell content with the dropdown
-                    cell.textContent = '';
-                    cell.appendChild(select);
+                    // Send AJAX request to update the database
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'update_panne_etat.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            // Update the cell text and hide the dropdown
+                            const etatList = cell.querySelector('.etat-list');
+                            if (etatList) etatList.classList.add('hidden');
 
-                    // Focus on the dropdown
-                    select.focus();
+                            const etatDisplay = cell.querySelector('div');
+                            if (etatDisplay) etatDisplay.textContent = newEtat;
+                        } else {
+                            alert('Error updating panne_etat');
+                        }
+                    };
+                    xhr.send(`panne_num=${panneNum}&panne_etat=${newEtat}`);
+                });
+            });
 
-                    // Handle dropdown change
-                    select.addEventListener('change', () => {
-                        const newEtat = select.value;
+            cancelButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const cell = this.closest('td');
+                    if (!cell) return;
 
-                        // Send an AJAX request to update the database
-                        fetch('update_panne_etat.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                panne_num: panneNum,
-                                panne_etat: newEtat
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                cell.textContent = newEtat;
-                            } else {
-                                alert('Failed to update the state.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                    });
+                    const etatList = cell.querySelector('.etat-list');
+                    if (etatList) etatList.classList.add('hidden');
                 });
             });
         });
+
+
     </script>
 
 </body>
