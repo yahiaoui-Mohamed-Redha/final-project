@@ -201,23 +201,23 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </select>
             </div>
         </header>
-        <div class="px-6 py-8">
+        <div class="px-6 py-8 mt-20">
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
                 <div class="p-2">
                     <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
                         <!-- Tabs -->
                         <li>
-                            <button id="allTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            <button data-role="all" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer" aria-selected="true">
                                 Tous les comptes
                             </button>
                         </li>
                         <li>
-                            <button id="technicianTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            <button data-role="technicien" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer" aria-selected="false">
                                 Les Techniciennes
                             </button>
                         </li>
                         <li>
-                            <button id="receiverTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                            <button data-role="receveur" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer" aria-selected="false">
                                 Les Receveurs
                             </button>
                         </li>
@@ -243,13 +243,13 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
                 
-            <div class="relative w-full bg-white flex flex-col items-center py-2 px-4 rounded-md">
+            <div class="w-full bg-white flex flex-col items-center py-2 px-4 rounded-md">
                 <!--  filter and search -->
                 <div class="w-full p-4 flex justify-between items-center ">
                     <div class="flex space-x-2">
                         <button class="flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            <path stroke-linecap="round" stroke-lin²²²ejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
                         Filter
                         </button>
@@ -265,13 +265,13 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <!-- /filter and search -->
                 
-                <div class="relative w-full">
-                    <table class="relative divide-y divide-gray-200">
+                <div class="w-full">
+                    <table class="w-full divide-y divide-gray-200">
                         <tr class="tr-head">
                             <th scope="col" class="pl-4 w-[3%]">
                                 <input type="checkbox" name="select-users" id="select-all">
                             </th>
-                            <th scope="col" class="th-class w-[17%]" >Username</th>
+                            <th scope="col" class="th-class w-[17%]">Username</th>
                             <th scope="col" class="th-class w-[11%] uppercase">Nom</th>
                             <th scope="col" class="th-class w-[11%]">Prenom</th>
                             <th scope="col" class="th-class w-[18%] break-all">Etablissement</th>
@@ -281,29 +281,43 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </tr>
                         <?php foreach ($users as $user) { ?>
                         <tr class="tr-body">
-                            <td class="pl-4"><input type="checkbox" name="select-user" id="select-one">
-                            <td class="td-class"><?php echo $user['username']; ?>
-                            <div class="text-xs text-gray-400">
-                                <?php echo $user['email'] ?>
-                            </div>
+                            <td class="pl-4">
+                                <input type="checkbox" name="select-user" id="select-user-<?php echo $user['user_id']; ?>">
                             </td>
-                            <td class="td-class"><?php echo $user['nom']; ?></td>
-                            <td class="td-class"><?php echo $user['prenom']; ?></td>
-                            <td class="td-class w-[18%]"><?php echo $user['etablissement_name'] ?? 'UPW Boumerdes'; ?></td>
-                            <td class="td-class"><?php echo $user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur'); ?></td>
                             <td class="td-class">
-                                <?php if($user['etat_compte'] == 1){ ?>
-                                    <span class="px-4  py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">active</span>
-                                <?php }else { ?>
-                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">désactivé</span> 
-                                <?php }; ?> 
+                                <?php echo htmlspecialchars($user['username']); ?>
+                                <div class="text-xs text-gray-400">
+                                    <?php echo htmlspecialchars($user['email']); ?>
+                                </div>
                             </td>
-                                
-                            <td class="td-class ">
+                            <td class="td-class"><?php echo htmlspecialchars($user['nom']); ?></td>
+                            <td class="td-class"><?php echo htmlspecialchars($user['prenom']); ?></td>
+                            <td class="td-class w-[18%]"><?php echo htmlspecialchars($user['etablissement_name'] ?? 'UPW Boumerdes'); ?></td>
+                            <td class="td-class">
+                                <?php echo ($user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur')); ?>
+                            </td>
+                            <td class="td-class">
                                 <?php if ($user['etat_compte'] == 1) { ?>
-                                <a class=" px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#0455b7]  rounded-lg" href="disable_user.php?id=<?php echo $user['user_id']; ?>" >Disable</a>
+                                    <span class="px-4 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Active
+                                    </span>
+                                <?php } else { ?>
+                                    <span class="px-4 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                        Désactivé
+                                    </span>
+                                <?php } ?>
+                            </td>
+                            <td class="td-class">
+                                <?php if ($user['etat_compte'] == 1) { ?>
+                                    <a class="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#0455b7] rounded-lg" 
+                                    href="disable_user.php?id=<?php echo htmlspecialchars($user['user_id']); ?>">
+                                        Disable
+                                    </a>
                                 <?php } else { ?>                        
-                                <a  class="bg-blue-50 hover:bg-blue-100  px-4 py-2  rounded-lg text-[#0455b7] "  href="enable_user.php?id=<?php echo $user['user_id']; ?>">Enable</a>                                    
+                                    <a class="bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg text-[#0455b7]" 
+                                    href="enable_user.php?id=<?php echo htmlspecialchars($user['user_id']); ?>">
+                                        Enable
+                                    </a>                                    
                                 <?php } ?>
                             </td>
                         </tr>
@@ -320,7 +334,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             const tabs = document.querySelectorAll('.tab');
             const tableRows = document.querySelectorAll('table tr:not(:first-child)');
 
-            // Function to handle tab switching
             function switchTab(activeTab) {
                 // Remove active styles from all tabs
                 tabs.forEach(tab => {
@@ -332,30 +345,31 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 activeTab.classList.remove('text-gray-600', 'rounded-xl');
                 activeTab.classList.add('text-[#0455b7]', 'bg-white', 'rounded-lg');
 
-                // Filter table rows based on the selected tab
+                // Get selected role from the tab
+                const selectedRole = activeTab.dataset.role || 'all';
+
+                // Filter table rows based on selected role
                 tableRows.forEach(row => {
-                    const role = row.cells[4].textContent;
-                    if (activeTab.id === 'allTab') {
-                        row.style.display = 'table-row';
-                    } else if (activeTab.id === 'technicianTab' && role === 'Technicien') {
-                        row.style.display = 'table-row';
-                    } else if (activeTab.id === 'receiverTab' && role === 'Receveur') {
-                        row.style.display = 'table-row';
-                    } else {
-                        row.style.display = 'none';
+                    // Ensure row has enough cells before accessing
+                    if (row.cells.length > 5) {
+                        const role = row.cells[5].textContent.trim().toLowerCase();
+                        if (selectedRole === 'all' || role === selectedRole) {
+                            row.style.display = 'table-row';
+                        } else {
+                            row.style.display = 'none';
+                        }
                     }
                 });
             }
 
-            // Event listeners for each tab
+            // Attach event listeners to tabs
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => switchTab(tab));
             });
 
-            // Initialize the first tab as active
+            // Initialize first tab as active
             switchTab(tabs[0]);
         });
-
         document.addEventListener('DOMContentLoaded', function () {
             const selectAllCheckbox = document.getElementById('select-all');
             const checkboxes = document.querySelectorAll('table input[type="checkbox"]:not(#select-all)');

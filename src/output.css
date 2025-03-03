@@ -593,6 +593,9 @@
   .top-4 {
     top: calc(var(--spacing) * 4);
   }
+  .top-10 {
+    top: calc(var(--spacing) * 10);
+  }
   .top-\[90px\] {
     top: 90px;
   }
@@ -896,6 +899,9 @@
   .min-h-screen {
     min-height: 100vh;
   }
+  .w-1 {
+    width: calc(var(--spacing) * 1);
+  }
   .w-1\/2 {
     width: calc(1/2 * 100%);
   }
@@ -910,6 +916,9 @@
   }
   .w-12 {
     width: calc(var(--spacing) * 12);
+  }
+  .w-32 {
+    width: calc(var(--spacing) * 32);
   }
   .w-40 {
     width: calc(var(--spacing) * 40);
@@ -1384,6 +1393,13 @@
   .gap-4 {
     gap: calc(var(--spacing) * 4);
   }
+  .space-y-2 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
   .space-y-2\.5 {
     :where(& > :not(:last-child)) {
       --tw-space-y-reverse: 0;
@@ -1685,11 +1701,20 @@
   .bg-gray-50 {
     background-color: var(--color-gray-50);
   }
+  .bg-gray-100 {
+    background-color: var(--color-gray-100);
+  }
+  .bg-gray-200 {
+    background-color: var(--color-gray-200);
+  }
   .bg-gray-500 {
     background-color: var(--color-gray-500);
   }
   .bg-green-100 {
     background-color: var(--color-green-100);
+  }
+  .bg-green-500 {
+    background-color: var(--color-green-500);
   }
   .bg-red-100 {
     background-color: var(--color-red-100);
@@ -1705,6 +1730,9 @@
   }
   .bg-white {
     background-color: var(--color-white);
+  }
+  .bg-yellow-500 {
+    background-color: var(--color-yellow-500);
   }
   .-bg-conic {
     --tw-gradient-position: in oklab;
@@ -2697,10 +2725,38 @@
       }
     }
   }
+  .hover\:bg-gray-50 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-50);
+      }
+    }
+  }
+  .hover\:bg-gray-100 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-100);
+      }
+    }
+  }
+  .hover\:bg-gray-300 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-300);
+      }
+    }
+  }
   .hover\:bg-gray-600 {
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-gray-600);
+      }
+    }
+  }
+  .hover\:bg-red-100 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-red-100);
       }
     }
   }
@@ -2915,7 +2971,7 @@
   line-height: var(--tw-leading, var(--text-sm--line-height));
   --tw-font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
-  white-space: nowrap;
+  white-space: normal;
   color: var(--color-gray-700);
 }
 @keyframes spin {

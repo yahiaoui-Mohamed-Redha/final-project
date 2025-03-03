@@ -205,34 +205,34 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
         <div class="px-6 py-8 mt-20">
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
                 <div class="p-2">
-                <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
-                    <!-- Tabs -->
-                    <li>
-                        <button id="allTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            Tous les pannes
-                        </button>
-                    </li>
-                    <li>
-                        <button id="nouveauTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            Nouveau
-                        </button>
-                    </li>
-                    <li>
-                        <button id="enCoursTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            En Cours
-                        </button>
-                    </li>
-                    <li>
-                        <button id="resoluTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            Résolu
-                        </button>
-                    </li>
-                    <li>
-                        <button id="fermeTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                            Fermé
-                        </button>
-                    </li>
-                </ul>
+                    <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
+                        <!-- Tabs -->
+                        <li>
+                            <button id="allTab" class="tab text-[#0455b7] bg-white rounded-lg font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                Tous les pannes
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nouveauTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                Nouveau
+                            </button>
+                        </li>
+                        <li>
+                            <button id="enCoursTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                En Cours
+                            </button>
+                        </li>
+                        <li>
+                            <button id="resoluTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                Résolu
+                            </button>
+                        </li>
+                        <li>
+                            <button id="fermeTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
+                                Fermé
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="flex items-center justify-between">
                     <button class="flex items-center p-1.5 border rounded-lg text-gray-600 border-gray-200 transition-colors duration-300 transform mr-2 hover:bg-[#c8d3f659] hover:text-[#0455b7]">
@@ -255,30 +255,36 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
             </div>
             <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md">
                 <table class="min-w-full divide-y divide-gray-200">
-                        <tr class="bg-gray-50">
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Panne Num</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom de Panne</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Établissement</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">État</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <tr class="tr-head">
+                            <th scope="col" class="pl-4 w-[3%]">
+                                <input type="checkbox" name="select-panne" id="select-all">
+                            </th>
+                            <th scope="col" class="th-class">Panne Num</th>
+                            <th scope="col" class="th-class">Nom de Panne</th>
+                            <th scope="col" class="th-class">Date</th>
+                            <th scope="col" class="th-class">Établissement</th>
+                            <th scope="col" class="th-class">Type</th>
+                            <th scope="col" class="th-class">État</th>
+                            <th scope="col" class="th-class">Actions</th>
                         </tr>
                         <?php foreach ($pannes as $panne): ?>
-                            <tr class="bg-white divide-y divide-gray-200">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_num']); ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['panne_name']); ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $panne['date_signalement']; ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['etablissement_name']); ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($panne['type_name']); ?></td>
-                                <td class="p-3 relative group">
+                            <tr class="tr-body">
+                                <td class="pl-4">
+                                    <input type="checkbox" name="select-panne" id="select-panne-<?php echo $panne['panne_num']; ?>">
+                                </td>
+                                <td class="td-class"><?php echo htmlspecialchars($panne['panne_num']); ?></td>
+                                <td class="td-class"><?php echo htmlspecialchars($panne['panne_name']); ?></td>
+                                <td class="td-class"><?php echo $panne['date_signalement']; ?></td>
+                                <td class="td-class"><?php echo htmlspecialchars($panne['etablissement_name']); ?></td>
+                                <td class="td-class"><?php echo htmlspecialchars($panne['type_name']); ?></td>
+                                <td class="p-3 relative group etat-cell">
                                     <div class="cursor-pointer" ondblclick="showEtatList(this)">
-                                        <?php echo htmlspecialchars($panne['panne_etat']); ?>
+                                        <span class="etat-text"><?php echo htmlspecialchars($panne['panne_etat']); ?></span>
                                     </div>
                                     <div class="etat-list absolute z-50 bg-white border border-gray-200 shadow-lg p-2 hidden top-0 left-0 transform translate-y-8">
                                         <select class="w-full p-1 border rounded">
                                             <option value="nouveau">Nouveau</option>
-                                            <option value="en_cours">En Cours</option>
+                                            <option value="en cours">En Cours</option>
                                             <option value="résolu">Résolu</option>
                                             <option value="fermé">Fermé</option>
                                         </select>
@@ -288,6 +294,7 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
                                 </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <a href="edit_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
                                     <a href="delete_panne.php?panne_id=<?php echo $panne['panne_num']; ?>" class="text-red-600 hover:text-red-900 ml-2">Supprimer</a>
@@ -295,8 +302,6 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
                             </tr>
                         <?php endforeach; ?>
                 </table>
-            
-            <!-- <p><a href="rapport_view.php?admin_id=<?php echo $_SESSION['user_id']; ?>">عرض التقارير</a></p> -->
             </div>
         </div>
     </div>
@@ -304,47 +309,54 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const tabs = document.querySelectorAll('.tab');
-            const tableRows = document.querySelectorAll('table tr:not(:first-child)');
+            const tableRows = document.querySelectorAll('table tr.tr-body');
 
-            // Function to handle tab switching
             function switchTab(activeTab) {
-                // Remove active styles from all tabs
                 tabs.forEach(tab => {
                     tab.classList.remove('text-[#0455b7]', 'bg-white', 'rounded-lg');
                     tab.classList.add('text-gray-600', 'rounded-xl');
                 });
 
-                // Add active styles to the clicked tab
                 activeTab.classList.remove('text-gray-600', 'rounded-xl');
                 activeTab.classList.add('text-[#0455b7]', 'bg-white', 'rounded-lg');
 
-                // Filter table rows based on the selected tab
                 tableRows.forEach(row => {
-                    const etat = row.cells[5].textContent;
-                    if (activeTab.id === 'allTab') {
-                        row.style.display = 'table-row';
-                    } else if (activeTab.id === 'nouveauTab' && etat === 'nouveau') {
-                        row.style.display = 'table-row';
-                    } else if (activeTab.id === 'enCoursTab' && etat === 'en_cours') {
-                        row.style.display = 'table-row';
-                    } else if (activeTab.id === 'resoluTab' && etat === 'résolu') {
-                        row.style.display = 'table-row';
-                    } else if (activeTab.id === 'fermeTab' && etat === 'fermé') {
-                        row.style.display = 'table-row';
-                    } else {
-                        row.style.display = 'none';
+                    const etatCell = row.querySelector('.etat-text'); // Get status text inside span
+                    if (!etatCell) return;
+
+                    const etat = etatCell.textContent.trim().toLowerCase();
+                    console.log(`Filtering: ${etat}`); // Debugging
+
+                    switch (activeTab.id) {
+                        case 'allTab':
+                            row.style.display = 'table-row';
+                            break;
+                        case 'nouveauTab':
+                            row.style.display = etat.includes('nouveau') ? 'table-row' : 'none';
+                            break;
+                        case 'enCoursTab':
+                            row.style.display = etat.includes('en cours') ? 'table-row' : 'none';
+                            break;
+                        case 'resoluTab':
+                            row.style.display = etat.includes('résolu') ? 'table-row' : 'none';
+                            break;
+                        case 'fermeTab':
+                            row.style.display = etat.includes('fermé') ? 'table-row' : 'none';
+                            break;
+                        default:
+                            row.style.display = 'none';
                     }
                 });
             }
 
-            // Event listeners for each tab
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => switchTab(tab));
             });
 
-            // Initialize the first tab as active
-            switchTab(tabs[0]);
+            // Initialize first tab as active
+            switchTab(document.getElementById('allTab'));
         });
+
 
         function showEtatList(element) {
             // Find the closest parent `td` element
@@ -370,7 +382,8 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
 
                     const select = cell.querySelector('select');
                     const newEtat = select.value;
-                    const panneNum = cell.closest('tr').querySelector('td:first-child').textContent;
+                    const etatText = cell.querySelector('.etat-text'); // Get the span inside div
+                    const panneNum = cell.closest('tr').querySelector('td:nth-child(2)').textContent.trim(); // Get the panne_num from the second column
 
                     // Send AJAX request to update the database
                     const xhr = new XMLHttpRequest();
@@ -378,12 +391,10 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
                     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                     xhr.onload = function () {
                         if (xhr.status === 200) {
-                            // Update the cell text and hide the dropdown
+                            // Update only the span text and hide dropdown
+                            if (etatText) etatText.textContent = newEtat;
                             const etatList = cell.querySelector('.etat-list');
                             if (etatList) etatList.classList.add('hidden');
-
-                            const etatDisplay = cell.querySelector('div');
-                            if (etatDisplay) etatDisplay.textContent = newEtat;
                         } else {
                             alert('Error updating panne_etat');
                         }
@@ -402,6 +413,7 @@ $users = $select->fetch(PDO::FETCH_ASSOC);
                 });
             });
         });
+
 
 
     </script>

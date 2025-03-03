@@ -36,5 +36,5 @@
 }
 
 .td-class {
-    @apply px-4 py-4 whitespace-nowrap text-left text-gray-700 ml-1 text-sm font-medium
+    @apply px-4 py-4 whitespace-normal text-left text-gray-700 ml-1 text-sm font-medium
 }
