@@ -60,42 +60,45 @@ foreach ($cssFiles as $cssFile) {
 if (isset($_POST['submit'])) {
     $login_input = $_POST['login_input'];
     $login_input = filter_var($login_input, FILTER_SANITIZE_STRING);
-    $pass = md5($_POST['password']);
-    $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+    $password = $_POST['password'];
 
-    $select = $conn->prepare("SELECT u.*, r.role_nom FROM `Users` u INNER JOIN `Roles` r ON u.role_id = r.role_id WHERE (u.email = ? OR u.username = ?) AND u.password = ?");
-    $select->execute([$login_input, $login_input, $pass]);
+    $select = $conn->prepare("SELECT u.*, r.role_nom FROM `Users` u INNER JOIN `Roles` r ON u.role_id = r.role_id WHERE (u.email = ? OR u.username = ?)");
+    $select->execute([$login_input, $login_input]);
     $row = $select->fetch(PDO::FETCH_ASSOC);
 
     if ($select->rowCount() > 0) {
-        if ($row['etat_compte'] == 0) {
-            $message[] = 'account_disabled';
+        if (password_verify($password, $row['password'])) {
+            if ($row['etat_compte'] == 0) {
+                $message[] = 'account_disabled';
+            } else {
+                $_SESSION['user_id'] = $row['user_id'];
+                $_SESSION['user_role'] = $row['role_nom'];
+
+                // Handle "Remember Me" functionality
+                if (isset($_POST['rememberMe'])) {
+                    // Set cookie to remember the username for 30 days
+                    setcookie('remember_username', $login_input, time() + (30 * 24 * 60 * 60), '/');
+                } else {
+                    // Delete the cookie if "Remember Me" is not checked
+                    setcookie('remember_username', '', time() - 3600, '/');
+                }
+
+                // Redirect to the corresponding page based on the user's role
+                if ($row['role_nom'] == 'Admin') {
+                    header('location: dist/admin_page.php');
+                    exit();
+                } elseif ($row['role_nom'] == 'Technicien') {
+                    header('location: dist/technicien_page.php');
+                    exit();
+                } elseif ($row['role_nom'] == 'Receveur') {
+                    header('location: dist/receveur_page.php');
+                    exit();
+                } else {
+                    $message[] = 'no_user_found';
+                }
+            }
         } else {
-            $_SESSION['user_id'] = $row['user_id'];
-            $_SESSION['user_role'] = $row['role_nom'];
-
-            // Handle "Remember Me" functionality
-            if (isset($_POST['rememberMe'])) {
-                // Set cookie to remember the username for 30 days
-                setcookie('remember_username', $login_input, time() + (30 * 24 * 60 * 60), '/');
-            } else {
-                // Delete the cookie if "Remember Me" is not checked
-                setcookie('remember_username', '', time() - 3600, '/');
-            }
-
-            // Redirect to the corresponding page based on the user's role
-            if ($row['role_nom'] == 'Admin') {
-                header('location: dist/admin_page.php');
-                exit();
-            } elseif ($row['role_nom'] == 'Technicien') {
-                header('location: dist/technicien_page.php');
-                exit();
-            } elseif ($row['role_nom'] == 'Receveur') {
-                header('location: dist/receveur_page.php');
-                exit();
-            } else {
-                $message[] = 'no_user_found';
-            }
+            $message[] = 'incorrect_email_or_password';
         }
     } else {
         $message[] = 'incorrect_email_or_password';

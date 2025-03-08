@@ -116,18 +116,15 @@ if (isset($_POST['create_account'])) {
         }
 
         // Redirect to the admin page
-        header('Location: manage_users.php');
+        header('Location: ../page.php');
         exit;
     }
 }
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Account</title>
-    <link rel="stylesheet" href="css/style.css">
+
+// manage_users.php
+function execute_javascript() {
+    ?>
     <script>
         function toggleFields() {
             const accountType = document.querySelector('select[name="account_type"]').value;
@@ -150,6 +147,22 @@ if (isset($_POST['create_account'])) {
         window.onload = toggleFields;
         document.querySelector('select[name="account_type"]').addEventListener('change', toggleFields);
     </script>
+    <?php
+}
+
+// Call the function in your PHP file
+execute_javascript();
+
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
