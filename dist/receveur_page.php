@@ -6,22 +6,22 @@ include '../app/config.php';
 
 // Verify user authorization
 // Check if the user is logged in and has the 'Technicien' role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Technicien') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Receveur') {
     // Redirect to the login page or show an error message
     header('location: index.php');
     exit(); // Stop further execution
 }
 
 // Fetch user details
-$user_id = $_SESSION['user_id'];
+$receveur_id = $_SESSION['user_id'];
 $select = $conn->prepare("SELECT u.*, r.role_nom AS role_name FROM Users u INNER JOIN Roles r ON u.role_id = r.role_id WHERE u.user_id = ?");
-$select->execute([$user_id]);
+$select->execute([$receveur_id]);
 $user = $select->fetch(PDO::FETCH_ASSOC);
 
 // Fetch notifications for the logged-in user
-$user_id = $_SESSION['user_id'];
+$receveur_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC");
-$stmt->execute([$user_id]);
+$stmt->execute([$receveur_id]);
 $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get the contentpage parameter from the URL
@@ -35,7 +35,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Page</title>
+    <title>Receveur Page</title>
     <link rel="stylesheet" href="../src/output.css">
     <style>
         .active {
@@ -108,7 +108,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                     <div class="space-y-2.5 ">
                         <label class="px-3 text-xs font-semibold text-gray-500 uppercase">Statistiques</label>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="statistiques/statistiques.php?receveur_id=<?php echo $receveur_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
                             </svg>
@@ -127,7 +127,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                     <div class="space-y-2.5 ">
                         <label class="px-3 text-xs font-semibold text-gray-500 uppercase">Contrôle</label>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_panne/gerer_pn.php?admin_id=<?php echo $user_id; ?>">
+                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_panne/gerer_pn.php?receveur_id=<?php echo $receveur_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                             </svg>
@@ -226,7 +226,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                     setActiveLink();
 
                     // Push the new state to the browser's history
-                    history.pushState({ page: page }, "", "admin_page.php?contentpage=" + page);
+                    history.pushState({ page: page }, "", "receveur_page.php?contentpage=" + page);
                     const currentPage = window.location.href;
 
                     // Load and execute JavaScript specific to the loaded page
@@ -251,7 +251,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
 
     // Set the active link in the sidebar
     function setActiveLink() {
-        var currentPage = sessionStorage.getItem("currentPage") || 'statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>';
+        var currentPage = sessionStorage.getItem("currentPage") || 'statistiques/statistiques.php?receveur_id=<?php echo $user_id; ?>';
 
         // إزالة النشاط من جميع الروابط
         $("aside a").removeClass("active");
@@ -281,7 +281,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
         if (currentPage) {
             loadPage(currentPage);
         } else {
-            loadPage('statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>'); // Default page
+            loadPage('statistiques/statistiques.php?receveur_id=<?php echo $user_id; ?>'); // Default page
         }
 
         // التعامل مع النقر على الروابط التي تحتوي على class="load-page-link"

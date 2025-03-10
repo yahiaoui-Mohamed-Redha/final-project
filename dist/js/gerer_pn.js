@@ -58,6 +58,21 @@ function executeGererPnJavaScript() {
             });
         });
     }
+
+    // Get all dropdown buttons
+    const dropdownButtons = document.querySelectorAll('[data-dropdown-toggle]');
+
+    // Add event listener to each dropdown button
+        dropdownButtons.forEach(button => {
+            button.addEventListener('click', () => {
+            // Get the dropdown menu
+            const dropdownMenu = document.getElementById(button.getAttribute('data-dropdown-toggle'));
+
+            // Toggle the dropdown menu
+            dropdownMenu.classList.toggle('hidden');
+        });
+    });
+
 }
 
 // Execute the function when the script is loaded

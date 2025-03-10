@@ -291,6 +291,15 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
             // إذا لم تكن، فعِّل الرابط المناسب
             $("aside a[href='" + currentPage + "']").addClass("active");
         }
+
+        // تحديد الرابط النشط بناءً على الصفحة الحالية
+        if (currentPage.includes("gerer_les_comptes")) {
+            // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
+            $("aside a[href*='gerer_les_comptes']").addClass("active");
+        } else {
+            // إذا لم تكن، فعِّل الرابط المناسب
+            $("aside a[href='" + currentPage + "']").addClass("active");
+        }
     }
 
     // Logout
@@ -333,6 +342,82 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
             localStorage.setItem("selectedLanguage", language);
             alert("Language changed to " + language);
         });
+
+        // Handle form submission using AJAX
+        $('#createAccountForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show a loading indicator (optional)
+            $('#createAccountForm').html('<div class="loader"></div>');
+
+            // Send the form data using AJAX
+            $.ajax({
+                url: 'create_users.php', // The PHP file that processes the form
+                type: 'POST', // Use POST method
+                data: $(this).serialize(), // Serialize the form data
+                success: function(response) {
+                    // Handle the response from the server
+                    if (response === "Data inserted successfully") {
+                        alert("Account created successfully!");
+                        // Redirect to the manage_users.php page
+                        window.location.href = 'admin_page.php?contentpage=gerer_les_comptes/manage_users.php';
+                    } else {
+                        // Display the error message
+                        alert("Error: " + response);
+                        // Reload the form to allow the user to try again
+                        $('#createAccountForm').load('create_users.php #createAccountForm', function() {
+                            toggleFields(); // Reinitialize the toggleFields function
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle AJAX errors
+                    alert("An error occurred while submitting the form: " + error);
+                    // Reload the form to allow the user to try again
+                    $('#createAccountForm').load('create_users.php #createAccountForm', function() {
+                        toggleFields(); // Reinitialize the toggleFields function
+                    });
+                }
+            });
+        });
+
+        $('#panneForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show a loading indicator (optional)
+            $('#panneForm').html('<div class="loader"></div>');
+
+            // Send the form data using AJAX
+            $.ajax({
+                url: 'gerer_pn/signaler_des_panne.php', // The PHP file that processes the form
+                type: 'POST', // Use POST method
+                data: $(this).serialize(), // Serialize the form data
+                success: function(response) {
+                    // Handle the response from the server
+                    if (response === "Data inserted successfully") {
+                        alert("Account created successfully!");
+                        // Redirect to the manage_users.php page
+                        window.location.href = 'admin_page.php?contentpage=gerer_pn/signaler_des_panne.php';
+                    } else {
+                        // Display the error message
+                        alert("Error: " + response);
+                        // Reload the form to allow the user to try again
+                        $('#createAccountForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
+                            toggleFields(); // Reinitialize the toggleFields function
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle AJAX errors
+                    alert("An error occurred while submitting the form: " + error);
+                    // Reload the form to allow the user to try again
+                    $('#panneForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
+                        toggleFields(); // Reinitialize the toggleFields function
+                    });
+                }
+            });
+        });
+
     });
 
     // Handle the popstate event for back/forward navigation

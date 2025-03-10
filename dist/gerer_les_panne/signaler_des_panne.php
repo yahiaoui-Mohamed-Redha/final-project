@@ -99,6 +99,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signaler_panne'])) {
             // Extract the numeric part of the last panne_num and increment it
             $last_number = intval(substr($last_panne_num, 0, 4)); // Extract the first 4 digits
             $next_number = $last_number + 1;
+
+            // Ensure the number is always 4 digits (e.g., 0001, 0002, etc.)
+            if ($next_number > 9999) {
+                throw new Exception("Maximum number of pannes reached for this postal code.");
+            }
+            $formatted_number = str_pad($next_number, 4, '0', STR_PAD_LEFT);
         }
 
         // Insert each panne into the panne table
@@ -180,8 +186,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signaler_panne'])) {
                 </select>
             </div>
         </div>
-        <button type="button" id="add-panne">إضافة عطل آخر</button>
-        <button type="submit" name="signaler_panne">إبلاغ</button>
+        <div>
+            <button type="button" id="add-panne">إضافة عطل آخر</button>
+            <button type="submit" name="signaler_panne">إبلاغ</button>
+        </div>
     </form>
 
     <script>
