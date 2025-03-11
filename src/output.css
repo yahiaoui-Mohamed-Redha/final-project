@@ -1024,6 +1024,9 @@
   .w-\[18px\] {
     width: 18px;
   }
+  .w-\[22\%\] {
+    width: 22%;
+  }
   .w-\[calc\(100\%-16\.3rem\)\] {
     width: calc(100% - 16.3rem);
   }
@@ -3298,6 +3301,12 @@
       --tw-ring-color: var(--color-indigo-500);
     }
   }
+  .focus\:outline {
+    &:focus {
+      outline-style: var(--tw-outline-style);
+      outline-width: 1px;
+    }
+  }
   .focus\:outline-2 {
     &:focus {
       outline-style: var(--tw-outline-style);
@@ -3318,6 +3327,12 @@
     &:focus {
       --tw-outline-style: none;
       outline-style: none;
+    }
+  }
+  .focus-visible\:outline {
+    &:focus-visible {
+      outline-style: var(--tw-outline-style);
+      outline-width: 1px;
     }
   }
   .focus-visible\:outline-2 {

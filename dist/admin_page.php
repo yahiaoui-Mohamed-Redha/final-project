@@ -268,6 +268,12 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                             console.log('gerer_pn.js loaded and executed');
                         });
                     }
+
+                    if (window.location.href.includes('gerer_rp.php')) {
+                        $.getScript('js/gerer_rp.js', function() {
+                            console.log('gerer_rp.js loaded and executed');
+                        });
+                    }
                 },
                 error: function(xhr, status, error) {
                     alert("An error occurred while loading the page: " + error);
