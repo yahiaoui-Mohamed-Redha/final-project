@@ -160,6 +160,18 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
 
                             <span class="mx-2 text-sm font-medium">Gérer les Rapports</span>
                         </a>
+
+                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_ordres_des_missions/gerer_ord.php?admin_id=<?php echo $user_id; ?>">
+                            <svg class="flex-shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
+                                <path d="M3 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
+                                <path d="M10 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
+                                <path d="M17 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
+                                <path d="M5 11v-3a3 3 0 0 1 3 -3h8a3 3 0 0 1 3 3v3"></path>
+                                <path d="M16.5 8.5l2.5 2.5l2.5 -2.5"></path>
+                            </svg>
+
+                            <span class="mx-2 text-sm font-medium">Gérer les orders de mission</span>
+                        </a>
                     </div>
                 </div>
 
@@ -302,6 +314,15 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
         if (currentPage.includes("gerer_les_comptes")) {
             // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
             $("aside a[href*='gerer_les_comptes']").addClass("active");
+        } else {
+            // إذا لم تكن، فعِّل الرابط المناسب
+            $("aside a[href='" + currentPage + "']").addClass("active");
+        }
+
+                // تحديد الرابط النشط بناءً على الصفحة الحالية
+                if (currentPage.includes("gerer_les_ordres_des_missions")) {
+            // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
+            $("aside a[href*='gerer_les_ordres_des_missions']").addClass("active");
         } else {
             // إذا لم تكن، فعِّل الرابط المناسب
             $("aside a[href='" + currentPage + "']").addClass("active");
