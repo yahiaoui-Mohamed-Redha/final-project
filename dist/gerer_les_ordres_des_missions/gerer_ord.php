@@ -34,8 +34,19 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
 
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérer les orders de mission</title>
+    
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+
+</head>
+<body>
 <section class="form-container">
-<div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
+    <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
     <div class="p-2">
         <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
             <!-- Tabs -->
@@ -79,7 +90,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                 <button type="submit" id="search-button" class="text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900 font-medium rounded-lg text-sm px-6 py-2 text-center  cursor-pointer">Search</button>
             </div>
         </div>
-        <button class="flex items-center px-3 py-2 border cursor-pointer border-gray-300 rounded-lg text-sm text-gray-600 transition-colors duration-300 transform hover:bg-[#c8d3f659] hover:text-[#0455b7]">
+        <button class="flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 transition-colors duration-300 transform hover:bg-[#c8d3f659] hover:text-[#0455b7]">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                 <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
                 <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
@@ -89,7 +100,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
             <span class="mx-2 text-sm font-medium">Exporter</span>
         </button>
     </div>
-    <!-- /search bar -->
+    <!-- /  search bar -->
     <div class="w-full">
         <table  class="w-full divide-y divide-gray-200">
         <tr class="tr-head">
@@ -130,7 +141,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                             echo htmlspecialchars($technicien['nom'] . ' ' . $technicien['prenom']);
                             ?>
                         </td>
-                        
+
                         <td class="px-6 py-4 w-[3%] whitespace-nowrap text-sm font-medium">
                         <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50" type="button">
                             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
@@ -163,6 +174,10 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
     </div>
 </div>
 </section>
+<script src="js/gerer_ord.js"></script>
+</body>
+</html>
+
 
 <script>
     // Search order missions
