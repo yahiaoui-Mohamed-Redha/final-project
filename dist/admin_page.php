@@ -88,12 +88,28 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
         .notification-item:hover {
             background-color: #f3f4f6;
         }
+
+        /* Modal overlay styles */
+        #modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Modal styles */
+        #modal {
+            transition: transform 0.3s ease;
+            transform: translateX(-100%);
+        }
+
+        /* Slide-in animation */
+        #modal.slide-in {
+            transform: translateX(0);
+        }
     </style>
 </head>
 
-<body class="bg-[#f8f8f8]">
+<body class="bg-[#f6f6f6]">
 
-    <aside class="fixed flex flex-col justify-start top-0 left-0 z-40 min-w-[16.3rem] h-screen pt-2 overflow-hidden bg-white transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+    <aside class=" z-[99] fixed flex flex-col justify-start top-0 left-0 min-w-[16.3rem] h-screen pt-2 overflow-hidden bg-white transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
         <div class="flex items-center justify-start pl-5 pr-5">
             <!-- Logo -->
             <img src="../assets/image/logo-head.png" alt="Logo" class="h-12 w-12 mr-3 mt-3">
@@ -200,7 +216,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
     </aside>
 
     <div class="content sm:ml-[17rem] w-[calc(100%-16.3rem)] float-right">
-        <header class="bg-white shadow-md p-4 flex justify-between items-center">
+        <header class=" fixed w-[calc(100%-16.3rem)] float-right z-50 bg-white shadow-md p-4 flex justify-between items-center">
             <h1 class="font-medium text-gray-700 text-xl text-left">Tableau de bord</h1>
             <div class="flex items-center space-x-9">
                 <!-- User Information -->
@@ -240,293 +256,313 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 </div>
             </div>
         </div>
-        <div class="px-6 py-8 mt-10" id="contentpage"></div>
+        <div class="px-6 py-8 mt-20" id="contentpage"></div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-    function loadPage(page) {
-        // Show loading animation
-        $("#contentpage").html("<div class='loader'></div>");
+        const labels = <?= $labels_js ?>;
+        const data = <?= $data_js ?>;
+    </script>
 
-        // Save the current page in sessionStorage
-        sessionStorage.setItem("currentPage", page);
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../apexcharts/dist/apexcharts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
+    <script>
+        function loadPage(page) {
+            // Show loading animation
+            $("#contentpage").html("<div class='loader'></div>");
 
-        // Simulate a delay for the loading animation (optional)
-        setTimeout(function() {
-            $.ajax({
-                type: "GET",
-                url: page,
-                success: function(data) {
-                    // Add content to the contentpage element
-                    $("#contentpage").html(data);
+            // Save the current page in sessionStorage
+            sessionStorage.setItem("currentPage", page);
 
-                    // Set the active link in the sidebar
-                    setActiveLink();
+            // Simulate a delay for the loading animation (optional)
+            setTimeout(function() {
+                $.ajax({
+                    type: "GET",
+                    url: page,
+                    success: function(data) {
+                        // Add content to the contentpage element
+                        $("#contentpage").html(data);
 
-                    // Push the new state to the browser's history
-                    history.pushState({ page: page }, "", "admin_page.php?contentpage=" + page);
-                    const currentPage = window.location.href;
+                        // Set the active link in the sidebar
+                        setActiveLink();
 
-                    // Load and execute JavaScript specific to the loaded page
-                    if (window.location.href.includes('manage_users.php')) {
-                        $.getScript('js/manage_users.js', function() {
-                            console.log('manage_users.js loaded and executed');
-                        });
+                        // Push the new state to the browser's history
+                        history.pushState({ page: page }, "", "admin_page.php?contentpage=" + page);
+                        const currentPage = window.location.href;
+
+                        // Load and execute JavaScript specific to the loaded page
+                        if (window.location.href.includes('manage_users.php')) {
+                            $.getScript('js/manage_users.js', function() {
+                                console.log('manage_users.js loaded and executed');
+                            });
+                        }
+
+                        if (window.location.href.includes('gerer_pn.php')) {
+                            $.getScript('js/gerer_pn.js', function() {
+                                console.log('gerer_pn.js loaded and executed');
+                            });
+                        }
+
+                        if (window.location.href.includes('gerer_rp.php')) {
+                            $.getScript('js/gerer_rp.js', function() {
+                                console.log('gerer_rp.js loaded and executed');
+                            });
+                        }
+
+                        if (window.location.href.includes('gerer_ord.php')) {
+                            $.getScript('js/gerer_ord.js', function() {
+                                console.log('gerer_ord.js loaded and executed');
+                            });
+                        }
+
+                        if (window.location.href.includes('statistiques.php')) {
+                            $.getScript('js/statistiques.js', function() {
+                                console.log('statistiques.js loaded and executed');
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("An error occurred while loading the page: " + error);
                     }
+                });
+            }, 500); // Adjust the delay time (in milliseconds) as needed
+        }
 
-                    if (window.location.href.includes('gerer_pn.php')) {
-                        $.getScript('js/gerer_pn.js', function() {
-                            console.log('gerer_pn.js loaded and executed');
-                        });
-                    }
+        // Set the active link in the sidebar
+        function setActiveLink() {
+            var currentPage = sessionStorage.getItem("currentPage") || 'statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>';
 
-                    if (window.location.href.includes('gerer_rp.php')) {
-                        $.getScript('js/gerer_rp.js', function() {
-                            console.log('gerer_rp.js loaded and executed');
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert("An error occurred while loading the page: " + error);
+            // إزالة النشاط من جميع الروابط
+            $("aside a").removeClass("active");
+
+            // تحديد الرابط النشط بناءً على الصفحة الحالية
+            if (currentPage.includes("gerer_les_panne")) {
+                // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
+                $("aside a[href*='gerer_les_panne']").addClass("active");
+            } else {
+                // إذا لم تكن، فعِّل الرابط المناسب
+                $("aside a[href='" + currentPage + "']").addClass("active");
+            }
+
+            // تحديد الرابط النشط بناءً على الصفحة الحالية
+            if (currentPage.includes("gerer_les_comptes")) {
+                // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
+                $("aside a[href*='gerer_les_comptes']").addClass("active");
+            } else {
+                // إذا لم تكن، فعِّل الرابط المناسب
+                $("aside a[href='" + currentPage + "']").addClass("active");
+            }
+
+            // تحديد الرابط النشط بناءً على الصفحة الحالية
+            if (currentPage.includes("gerer_les_ordres_des_missions")) {
+                // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
+                $("aside a[href*='gerer_les_ordres_des_missions']").addClass("active");
+            } else {
+                // إذا لم تكن، فعِّل الرابط المناسب
+                $("aside a[href='" + currentPage + "']").addClass("active");
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm("Are you sure you want to log out?")) {
+                sessionStorage.clear();
+                window.location.href = "../app/logout.php";
+            }
+        }
+
+        // Load the current page when the document is ready
+        $(document).ready(function() {
+            // Load the current page from sessionStorage or default to 'statistiques.php'
+            var currentPage = sessionStorage.getItem("currentPage");
+            if (currentPage) {
+                loadPage(currentPage);
+            } else {
+                loadPage('statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>'); // Default page
+            }
+
+            // التعامل مع النقر على الروابط التي تحتوي على class="load-page-link"
+            $(document).on("click", "a.load-page-link", function(event) {
+                event.preventDefault(); // منع التحميل التقليدي للصفحة
+                var page = $(this).attr("href"); // الحصول على رابط الصفحة
+                loadPage(page); // تحميل الصفحة داخل #contentpage
+            });
+
+            // Delegate events to all links in the sidebar
+            $("aside").on("click", "a[href]", function(event) {
+                event.preventDefault();
+                var page = $(this).attr("href");
+                if (page !== "#") {
+                    loadPage(page);
                 }
             });
-        }, 500); // Adjust the delay time (in milliseconds) as needed
-    }
 
-    // Set the active link in the sidebar
-    function setActiveLink() {
-        var currentPage = sessionStorage.getItem("currentPage") || 'statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>';
+            // Manage language selector
+            $("select[name='language']").on("change", function() {
+                var language = $(this).val();
+                localStorage.setItem("selectedLanguage", language);
+                alert("Language changed to " + language);
+            });
 
-        // إزالة النشاط من جميع الروابط
-        $("aside a").removeClass("active");
+            // Handle form submission using AJAX
+            $('#createAccountForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
 
-        // تحديد الرابط النشط بناءً على الصفحة الحالية
-        if (currentPage.includes("gerer_les_panne")) {
-            // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
-            $("aside a[href*='gerer_les_panne']").addClass("active");
-        } else {
-            // إذا لم تكن، فعِّل الرابط المناسب
-            $("aside a[href='" + currentPage + "']").addClass("active");
-        }
+                // Show a loading indicator (optional)
+                $('#createAccountForm').html('<div class="loader"></div>');
 
-        // تحديد الرابط النشط بناءً على الصفحة الحالية
-        if (currentPage.includes("gerer_les_comptes")) {
-            // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
-            $("aside a[href*='gerer_les_comptes']").addClass("active");
-        } else {
-            // إذا لم تكن، فعِّل الرابط المناسب
-            $("aside a[href='" + currentPage + "']").addClass("active");
-        }
-
-                // تحديد الرابط النشط بناءً على الصفحة الحالية
-                if (currentPage.includes("gerer_les_ordres_des_missions")) {
-            // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
-            $("aside a[href*='gerer_les_ordres_des_missions']").addClass("active");
-        } else {
-            // إذا لم تكن، فعِّل الرابط المناسب
-            $("aside a[href='" + currentPage + "']").addClass("active");
-        }
-    }
-
-    // Logout
-    function logout() {
-        if (confirm("Are you sure you want to log out?")) {
-            sessionStorage.clear();
-            window.location.href = "../app/logout.php";
-        }
-    }
-
-    // Load the current page when the document is ready
-    $(document).ready(function() {
-        // Load the current page from sessionStorage or default to 'statistiques.php'
-        var currentPage = sessionStorage.getItem("currentPage");
-        if (currentPage) {
-            loadPage(currentPage);
-        } else {
-            loadPage('statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>'); // Default page
-        }
-
-        // التعامل مع النقر على الروابط التي تحتوي على class="load-page-link"
-        $(document).on("click", "a.load-page-link", function(event) {
-            event.preventDefault(); // منع التحميل التقليدي للصفحة
-            var page = $(this).attr("href"); // الحصول على رابط الصفحة
-            loadPage(page); // تحميل الصفحة داخل #contentpage
-        });
-
-        // Delegate events to all links in the sidebar
-        $("aside").on("click", "a[href]", function(event) {
-            event.preventDefault();
-            var page = $(this).attr("href");
-            if (page !== "#") {
-                loadPage(page);
-            }
-        });
-
-        // Manage language selector
-        $("select[name='language']").on("change", function() {
-            var language = $(this).val();
-            localStorage.setItem("selectedLanguage", language);
-            alert("Language changed to " + language);
-        });
-
-        // Handle form submission using AJAX
-        $('#createAccountForm').on('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-
-            // Show a loading indicator (optional)
-            $('#createAccountForm').html('<div class="loader"></div>');
-
-            // Send the form data using AJAX
-            $.ajax({
-                url: 'create_users.php', // The PHP file that processes the form
-                type: 'POST', // Use POST method
-                data: $(this).serialize(), // Serialize the form data
-                success: function(response) {
-                    // Handle the response from the server
-                    if (response === "Data inserted successfully") {
-                        alert("Account created successfully!");
-                        // Redirect to the manage_users.php page
-                        window.location.href = 'admin_page.php?contentpage=gerer_les_comptes/manage_users.php';
-                    } else {
-                        // Display the error message
-                        alert("Error: " + response);
+                // Send the form data using AJAX
+                $.ajax({
+                    url: 'create_users.php', // The PHP file that processes the form
+                    type: 'POST', // Use POST method
+                    data: $(this).serialize(), // Serialize the form data
+                    success: function(response) {
+                        // Handle the response from the server
+                        if (response === "Data inserted successfully") {
+                            alert("Account created successfully!");
+                            // Redirect to the manage_users.php page
+                            window.location.href = 'admin_page.php?contentpage=gerer_les_comptes/manage_users.php';
+                        } else {
+                            // Display the error message
+                            alert("Error: " + response);
+                            // Reload the form to allow the user to try again
+                            $('#createAccountForm').load('create_users.php #createAccountForm', function() {
+                                toggleFields(); // Reinitialize the toggleFields function
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle AJAX errors
+                        alert("An error occurred while submitting the form: " + error);
                         // Reload the form to allow the user to try again
                         $('#createAccountForm').load('create_users.php #createAccountForm', function() {
                             toggleFields(); // Reinitialize the toggleFields function
                         });
                     }
-                },
-                error: function(xhr, status, error) {
-                    // Handle AJAX errors
-                    alert("An error occurred while submitting the form: " + error);
-                    // Reload the form to allow the user to try again
-                    $('#createAccountForm').load('create_users.php #createAccountForm', function() {
-                        toggleFields(); // Reinitialize the toggleFields function
-                    });
-                }
+                });
             });
-        });
 
-        $('#panneForm').on('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
+            $('#panneForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
 
-            // Show a loading indicator (optional)
-            $('#panneForm').html('<div class="loader"></div>');
+                // Show a loading indicator (optional)
+                $('#panneForm').html('<div class="loader"></div>');
 
-            // Send the form data using AJAX
-            $.ajax({
-                url: 'gerer_pn/signaler_des_panne.php', // The PHP file that processes the form
-                type: 'POST', // Use POST method
-                data: $(this).serialize(), // Serialize the form data
-                success: function(response) {
-                    // Handle the response from the server
-                    if (response === "Data inserted successfully") {
-                        alert("Account created successfully!");
-                        // Redirect to the manage_users.php page
-                        window.location.href = 'admin_page.php?contentpage=gerer_pn/signaler_des_panne.php';
-                    } else {
-                        // Display the error message
-                        alert("Error: " + response);
+                // Send the form data using AJAX
+                $.ajax({
+                    url: 'gerer_pn/signaler_des_panne.php', // The PHP file that processes the form
+                    type: 'POST', // Use POST method
+                    data: $(this).serialize(), // Serialize the form data
+                    success: function(response) {
+                        // Handle the response from the server
+                        if (response === "Data inserted successfully") {
+                            alert("Account created successfully!");
+                            // Redirect to the manage_users.php page
+                            window.location.href = 'admin_page.php?contentpage=gerer_pn/signaler_des_panne.php';
+                        } else {
+                            // Display the error message
+                            alert("Error: " + response);
+                            // Reload the form to allow the user to try again
+                            $('#createAccountForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
+                                toggleFields(); // Reinitialize the toggleFields function
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle AJAX errors
+                        alert("An error occurred while submitting the form: " + error);
                         // Reload the form to allow the user to try again
-                        $('#createAccountForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
+                        $('#panneForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
                             toggleFields(); // Reinitialize the toggleFields function
                         });
                     }
-                },
-                error: function(xhr, status, error) {
-                    // Handle AJAX errors
-                    alert("An error occurred while submitting the form: " + error);
-                    // Reload the form to allow the user to try again
-                    $('#panneForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
-                        toggleFields(); // Reinitialize the toggleFields function
-                    });
+                });
+            });
+
+        });
+
+        // Handle the popstate event for back/forward navigation
+        $(window).on("popstate", function(event) {
+            if (event.originalEvent.state) {
+                var page = event.originalEvent.state.page;
+                loadPage(page);
+            }
+        });
+
+        // Function to toggle the notification div
+        function toggleNotification() {
+            var notificationDiv = document.getElementById('notificationDiv');
+            var contentPage = document.getElementById('contentpage');
+
+            if (notificationDiv.style.display === "none" || notificationDiv.style.display === "") {
+                notificationDiv.style.display = "block";
+                contentPage.classList.add("blur"); // Optional blur effect
+            } else {
+                notificationDiv.style.display = "none";
+                contentPage.classList.remove("blur");
+            }
+        }
+
+        function closeNotification(event) {
+            const notificationDiv = document.getElementById('notificationDiv');
+            const contentPage = document.getElementById('contentpage');
+
+            if (!notificationDiv.contains(event.target)) {
+                notificationDiv.classList.add('hidden');
+                contentPage.classList.remove('blur');
+            }
+        }
+
+        document.querySelector('button[onclick="toggleNotification()"]').addEventListener('click', function(event) {
+            event.stopPropagation();
+            toggleNotification();
+        });
+
+        document.addEventListener('click', closeNotification);
+
+        document.getElementById('notificationDiv').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // Handle notification item clicks
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const notificationId = this.getAttribute('data-notification-id');
+                const notificationLink = this.getAttribute('data-notification-link');
+
+                // Mark the notification as read (via AJAX)
+                markNotificationAsRead(notificationId);
+
+                // Redirect to the notification link if it exists
+                if (notificationLink) {
+                    window.location.href = notificationLink;
                 }
             });
         });
 
-    });
-
-    // Handle the popstate event for back/forward navigation
-    $(window).on("popstate", function(event) {
-        if (event.originalEvent.state) {
-            var page = event.originalEvent.state.page;
-            loadPage(page);
-        }
-    });
-
-    // Function to toggle the notification div
-    function toggleNotification() {
-        var notificationDiv = document.getElementById('notificationDiv');
-        var contentPage = document.getElementById('contentpage');
-
-        if (notificationDiv.style.display === "none" || notificationDiv.style.display === "") {
-            notificationDiv.style.display = "block";
-            contentPage.classList.add("blur"); // Optional blur effect
-        } else {
-            notificationDiv.style.display = "none";
-            contentPage.classList.remove("blur");
-        }
-    }
-
-    function closeNotification(event) {
-        const notificationDiv = document.getElementById('notificationDiv');
-        const contentPage = document.getElementById('contentpage');
-
-        if (!notificationDiv.contains(event.target)) {
-            notificationDiv.classList.add('hidden');
-            contentPage.classList.remove('blur');
-        }
-    }
-
-    document.querySelector('button[onclick="toggleNotification()"]').addEventListener('click', function(event) {
-        event.stopPropagation();
-        toggleNotification();
-    });
-
-    document.addEventListener('click', closeNotification);
-
-    document.getElementById('notificationDiv').addEventListener('click', function(event) {
-        event.stopPropagation();
-    });
-
-    // Handle notification item clicks
-    document.querySelectorAll('.notification-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const notificationId = this.getAttribute('data-notification-id');
-            const notificationLink = this.getAttribute('data-notification-link');
-
-            // Mark the notification as read (via AJAX)
-            markNotificationAsRead(notificationId);
-
-            // Redirect to the notification link if it exists
-            if (notificationLink) {
-                window.location.href = notificationLink;
-            }
-        });
-    });
-
-    // Function to mark a notification as read
-    function markNotificationAsRead(notificationId) {
-        fetch('../app/mark_notification_as_read.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ notification_id: notificationId }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Optionally, update the UI to reflect the notification as read
-                const notificationItem = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
-                if (notificationItem) {
-                    notificationItem.style.opacity = '0.6'; // Example: Dim the notification
+        // Function to mark a notification as read
+        function markNotificationAsRead(notificationId) {
+            fetch('../app/mark_notification_as_read.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ notification_id: notificationId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Optionally, update the UI to reflect the notification as read
+                    const notificationItem = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
+                    if (notificationItem) {
+                        notificationItem.style.opacity = '0.6'; // Example: Dim the notification
+                    }
                 }
-            }
-        })
-        .catch(error => console.error('Error marking notification as read:', error));
-    }
+            })
+            .catch(error => console.error('Error marking notification as read:', error));
+        }
 
     </script>
 </body>

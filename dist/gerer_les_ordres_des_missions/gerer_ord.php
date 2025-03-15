@@ -34,17 +34,6 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gérer les orders de mission</title>
-    
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
-
-</head>
-<body>
 <section class="form-container">
     <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
     <div class="p-2">
@@ -174,31 +163,3 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
     </div>
 </div>
 </section>
-<script src="js/gerer_ord.js"></script>
-</body>
-</html>
-
-
-<script>
-    // Search order missions
-    document.getElementById('search-button').addEventListener('click', function() {
-        var searchInput = document.getElementById('search-input').value.toLowerCase();
-        var orderMissionsTable = document.getElementById('order-missions-table');
-        var rows = orderMissionsTable.getElementsByTagName('tr');
-
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var cells = row.getElementsByTagName('td');
-            var match = false;
-
-            for (var j = 0; j < cells.length; j++) {
-                if (cells[j].textContent.toLowerCase().includes(searchInput)) {
-                    match = true;
-                    break;
-                }
-            }
-
-            row.style.display = match ? '' : 'none';
-        }
-    });
-</script>

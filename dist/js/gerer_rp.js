@@ -1,3 +1,4 @@
+
 function executeGererPnJavaScript() {
     const tabs = document.querySelectorAll('.tab');
     const tableRows = document.querySelectorAll('table tr.tr-body');

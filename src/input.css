@@ -43,3 +43,18 @@
     @apply text-[#0455b7] bg-[#c8d3f659]
 }
 
+        /* Modal overlay styles */
+        #modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Modal styles */
+        #modal {
+            transition: transform 0.3s ease;
+            transform: translateX(-100%);
+        }
+
+        /* Slide-in animation */
+        #modal.slide-in {
+            transform: translateX(0);
+        }

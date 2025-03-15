@@ -1,3 +1,4 @@
+
 function executeManagUsersJavaScript() {
     const tabs = document.querySelectorAll('.tab');
     const tableRows = document.querySelectorAll('table tr:not(:first-child)');
