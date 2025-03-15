@@ -75,68 +75,70 @@ $(document).ready(function() {
         filterNewOrders(true);
     });
     
-    // Processing the search in the table
-    $('#search-button').on('click', function() {
-        const searchText = $('#search-input').val().toLowerCase();
-        
-        if (searchText.trim() === '') {
-            // If the search field is empty, we return to the default state of the active tab
-            if (nouveauTab.hasClass('bg-white')) {
-                filterNewOrders(true);
-            } else {
-                filterNewOrders(false);
-            }
-            return;
+// إعادة تعريف وظيفة البحث كدالة منفصلة لإعادة استخدامها
+function performSearch() {
+    const searchText = $('#search-input').val().toLowerCase();
+    
+    if (searchText.trim() === '') {
+        // إذا كان حقل البحث فارغًا، نعود إلى الحالة الافتراضية للتبويب النشط
+        if (nouveauTab.hasClass('bg-white')) {
+            filterNewOrders(true);
+        } else {
+            filterNewOrders(false);
         }
-        
-        // Search all cells
-        $('.tr-body').each(function() {
-            let found = false;
-            $(this).find('td').each(function() {
-                if ($(this).text().toLowerCase().includes(searchText)) {
-                    found = true;
-                    return false; // Getting out of the loop
-                }
-            });
-            
-            if (found) {
-                $(this).show();
-            } else {
-                $(this).hide();
+        $('#no-results-message').remove();
+        return;
+    }
+    
+    // البحث في جميع الخلايا
+    $('.tr-body').each(function() {
+        let found = false;
+        $(this).find('td').each(function() {
+            if ($(this).text().toLowerCase().includes(searchText)) {
+                found = true;
+                return false; // الخروج من الحلقة
             }
         });
-        // Display a message if there are no results
-        if ($('.tr-body:visible').length === 0) {
-            if ($('#no-results-message').length === 0) {
-                $('table').after('<div id="no-results-message" class="text-center py-4">Aucun résultat trouvé pour "' + searchText + '".</div>');
-            } else {
-                $('#no-results-message').text('Aucun résultat trouvé pour "' + searchText + '".');
-            }
-        } else {
-            $('#no-results-message').remove();
-        }
         
-        selectAllCheckbox.prop('checked', false);
-    });
-    
-    // Resets the search when clearing text from the search field
-    $('#search-input').on('input', function() {
-        if ($(this).val() === '') {
-            // Resets the display based on the active tab
-            if (nouveauTab.hasClass('bg-white')) {
-                filterNewOrders(true);
-            } else {
-                filterNewOrders(false);
-            }
+        if (found) {
+            $(this).show();
+        } else {
+            $(this).hide();
         }
     });
     
-    // Activating the event of clicking on the search button when pressing ent in the search field
-    $('#search-input').on('keypress', function(e) {
-        if (e.which === 13) {
-            $('#search-button').click();
+    // عرض رسالة إذا لم يكن هناك نتائج
+    if ($('.tr-body:visible').length === 0) {
+        if ($('#no-results-message').length === 0) {
+            $('table').after('<div id="no-results-message" class="text-center py-4">Aucun résultat trouvé pour "' + searchText + '".</div>');
+        } else {
+            $('#no-results-message').text('Aucun résultat trouvé pour "' + searchText + '".');
         }
-    });
+    } else {
+        $('#no-results-message').remove();
+    }
+    
+    // إلغاء تحديد "تحديد الكل" عند البحث
+    selectAllCheckbox.prop('checked', false);
+}
+
+// تطبيق البحث التلقائي عند الكتابة في حقل البحث
+$('#search-input').on('input', function() {
+    performSearch();
+});
+
+// الاحتفاظ بمعالج حدث النقر على زر البحث للتوافق
+$('#search-button').on('click', function() {
+    performSearch();
+});
+
+// الاحتفاظ بمعالج حدث الضغط على Enter (اختياري)
+$('#search-input').on('keypress', function(e) {
+    if (e.which === 13) {
+        e.preventDefault(); // منع إرسال النموذج إذا كان داخل نموذج
+        performSearch();
+    }
+});
     
     // Activation of the drop-down list of actions
     $(document).on('click', '[data-dropdown-toggle="dropdownDots"]', function() {

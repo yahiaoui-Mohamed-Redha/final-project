@@ -55,21 +55,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     Nouveau
                 </button>
             </li>
-            <li>
-                <button id="enCoursTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                    En Cours
-                </button>
-            </li>
-            <li>
-                <button id="resoluTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                    Résolu
-                </button>
-            </li>
-            <li>
-                <button id="fermeTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
-                    Fermé
-                </button>
-            </li>
+         
         </ul>
     </div>
     <div class="flex items-center justify-between">
@@ -85,7 +71,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-    <div class="w-full bg-white flex flex-col items-center py-2 px-4 rounded-md">
+<div class="w-full bg-white flex flex-col items-center py-2 px-4 rounded-md">
     <!-- Filter and search -->
     <div class="w-full py-2 px-4 flex justify-between items-center">
         <div class="flex space-x-2">
@@ -95,13 +81,14 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </svg>
                 Filter
             </button>
-            <div class="relative">
+            <div class="relative search-bar">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input type="text" class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm w-64" placeholder="Search panne...">
+                <input type="text" id="search-input" class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm w-64" placeholder="Search rapports ...">
+                <button type="submit" id="search-button" class="text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900 font-medium rounded-lg text-sm px-6 py-2 text-center  cursor-pointer">Search</button>
             </div>
         </div>
         <button class="flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 transition-colors duration-300 transform hover:bg-[#c8d3f659] hover:text-[#0455b7]">
@@ -134,6 +121,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td class="pl-4">
                         <input type="checkbox" name="select-rapport" id="select-rapport-<?php echo $rapport['rap_name'] ?? ''; ?>">
                     </td>
+                    
                     <td class="td-class"><?php echo htmlspecialchars($rapport['rap_name']); ?></td>
                     <td class="td-class"><?php echo $rapport['rap_date']; ?></td>
                     <td class="td-class"><?php echo htmlspecialchars($rapport['description']); ?></td>
@@ -146,7 +134,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         
                     </td> -->
                     <td class="px-6 py-4 w-[3%] whitespace-nowrap text-sm font-medium">
-                        <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50" type="button">
+                    <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50" type="button">
                             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
                                 <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                             </svg>
@@ -154,12 +142,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Dropdown menu -->
                         <div id="dropdownDots" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                             <div class="py-2">
-                                <a href="edit_panne.php" class="text-indigo-600 hover:text-indigo-900">تعديل</a>
+                            <a href="gerer_les_rapport/rapport_view.php?rap_num=<?php echo $order_mission['order_num']; ?>" class="view-button">Vue</a>
                             </div>
                             <div class="py-2">
-                                <a href="delete_panne.php" class="text-red-600 hover:text-red-900 ml-2">حذف</a>
+                            <a href="gerer_les_rapport/rapport_edit.php?rap_num=<?php echo $order_mission['order_num']; ?>" class="edit-button">Modifier</a>
+                            </div>
+                            <div class="py-2">
+                            <a href="gerer_les_rapport/rapport_delete.php?rap_num=<?php echo $order_mission['order_num']; ?>" class="delete-button">Supprimer</a>
                             </div>
                         </div>
+                        <!-- /Dropdown menu -->
                     </td>
                 </tr>
             <?php endforeach; ?>
