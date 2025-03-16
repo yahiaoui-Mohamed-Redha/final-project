@@ -195,4 +195,4 @@ function executeGererODJavaScript() {
 }
 
 // Execute the function when the script is loaded
-executeGererPnJavaScript();
+executeGererODJavaScript();
