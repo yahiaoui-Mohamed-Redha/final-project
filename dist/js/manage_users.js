@@ -97,5 +97,70 @@ function executeManagUsersJavaScript() {
         });
 }
 
+// إعادة تعريف وظيفة البحث كدالة منفصلة لإعادة استخدامها
+function performSearch() {
+    const searchText = $('#search-input').val().toLowerCase();
+    
+    if (searchText.trim() === '') {
+        // إذا كان حقل البحث فارغًا، نعود إلى الحالة الافتراضية للتبويب النشط
+        if (nouveauTab.hasClass('bg-white')) {
+            filterNewOrders(true);
+        } else {
+            filterNewOrders(false);
+        }
+        $('#no-results-message').remove();
+        return;
+    }
+    
+    // البحث في جميع الخلايا
+    $('.tr-body').each(function() {
+        let found = false;
+        $(this).find('td').each(function() {
+            if ($(this).text().toLowerCase().includes(searchText)) {
+                found = true;
+                return false; // الخروج من الحلقة
+            }
+        });
+        
+        if (found) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+    
+    // عرض رسالة إذا لم يكن هناك نتائج
+    if ($('.tr-body:visible').length === 0) {
+        if ($('#no-results-message').length === 0) {
+            $('table').after('<div id="no-results-message" class="text-center py-4">Aucun résultat trouvé pour "' + searchText + '".</div>');
+        } else {
+            $('#no-results-message').text('Aucun résultat trouvé pour "' + searchText + '".');
+        }
+    } else {
+        $('#no-results-message').remove();
+    }
+    
+    // إلغاء تحديد "تحديد الكل" عند البحث
+    selectAllCheckbox.prop('checked', false);
+}
+
+// تطبيق البحث التلقائي عند الكتابة في حقل البحث
+$('#search-input').on('input', function() {
+    performSearch();
+});
+
+// الاحتفاظ بمعالج حدث النقر على زر البحث للتوافق
+$('#search-button').on('click', function() {
+    performSearch();
+});
+
+// الاحتفاظ بمعالج حدث الضغط على Enter (اختياري)
+$('#search-input').on('keypress', function(e) {
+    if (e.which === 13) {
+        e.preventDefault(); // منع إرسال النموذج إذا كان داخل نموذج
+        performSearch();
+    }
+});
+
 // Execute the function when the script is loaded
 executeManagUsersJavaScript();
