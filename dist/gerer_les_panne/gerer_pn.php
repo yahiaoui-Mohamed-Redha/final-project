@@ -120,7 +120,17 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
 // Determine the current content page
 $contentPage = basename($_SERVER['PHP_SELF']);
 
+if (isset($_SESSION['success_message'])) {
+    echo '<div class="alert alert-success">' . $_SESSION['success_message'] . '</div>';
+    unset($_SESSION['success_message']);
+}
+if (isset($_SESSION['error_message'])) {
+    echo '<div class="alert alert-danger">' . $_SESSION['error_message'] . '</div>';
+    unset($_SESSION['error_message']);
+}
+
 ?>
+
 
 <!-- Modal Overlay -->
 <div id="modal-overlay" class="hidden fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10 z-50">
@@ -317,7 +327,7 @@ $contentPage = basename($_SERVER['PHP_SELF']);
                                 <a href="edit_panne.php" class="text-indigo-600 hover:text-indigo-900">تعديل</a>
                             </div>
                             <div class="py-2">
-                                <a href="delete_panne.php" class="text-red-600 hover:text-red-900 ml-2">حذف</a>
+                                <a href="../app/delete_panne.php?panne_num=<?php echo $panne['panne_num']; ?>" class="text-red-600 hover:text-red-900 ml-2" onclick="return confirm('Are you sure you want to delete this panne?');">حذف</a>
                             </div>
                         </div>
                     </td>

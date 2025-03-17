@@ -141,6 +141,7 @@ function executeGererPnJavaScript() {
                 performSearch();
             }
         });
+             
         // تفعيل القائمة المنسدلة للإجراءات
         $(document).on('click', '[data-dropdown-toggle="dropdownDots"]', function() {
             const dropdown = $(this).next('.z-10');

@@ -175,25 +175,32 @@ function performSearch() {
     
     // إلغاء تحديد "تحديد الكل" عند البحث
     selectAllCheckbox.prop('checked', false);
+
+        // تطبيق البحث التلقائي عند الكتابة في حقل البحث
+        $('#search-input').on('input', function() {
+            performSearch();
+        });
+    
+        // الاحتفاظ بمعالج حدث النقر على زر البحث للتوافق
+        $('#search-button').on('click', function() {
+            performSearch();
+        });
+    
+        // الاحتفاظ بمعالج حدث الضغط على Enter (اختياري)
+        $('#search-input').on('keypress', function(e) {
+            if (e.which === 13) {
+                e.preventDefault(); // منع إرسال النموذج إذا كان داخل نموذج
+                performSearch();
+            }
+        });
+
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this panne?');
+        }
+        
 }
 
-// تطبيق البحث التلقائي عند الكتابة في حقل البحث
-$('#search-input').on('input', function() {
-    performSearch();
-});
 
-// الاحتفاظ بمعالج حدث النقر على زر البحث للتوافق
-$('#search-button').on('click', function() {
-    performSearch();
-});
-
-// الاحتفاظ بمعالج حدث الضغط على Enter (اختياري)
-$('#search-input').on('keypress', function(e) {
-    if (e.which === 13) {
-        e.preventDefault(); // منع إرسال النموذج إذا كان داخل نموذج
-        performSearch();
-    }
-});
 
 // Execute the function when the script is loaded
 executeGererPnJavaScript();
