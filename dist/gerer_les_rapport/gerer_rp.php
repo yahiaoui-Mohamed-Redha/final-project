@@ -19,7 +19,7 @@ if (file_exists($cache_file) && (time() - filemtime($cache_file) < $cache_time))
     $rapports = json_decode(file_get_contents($cache_file), true);
 } else {
     // Fetch all reports from the database
-    $stmt = $conn->prepare("SELECT r.rap_name, r.rap_date, r.description, u.nom, u.prenom 
+    $stmt = $conn->prepare("SELECT r.rap_num, r.rap_name, r.rap_date, r.description, u.nom, u.prenom 
                             FROM Rapport r 
                             INNER JOIN Users u ON r.user_id = u.user_id");
     $stmt->execute();
@@ -109,6 +109,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th scope="col" class="pl-4 w-[3%]">
                     <input type="checkbox" name="select-rapport" id="select-all">
                 </th>
+                <th scope="col" class="th-class">rap_num</th>
                 <th scope="col" class="th-class">اسم التقرير</th>
                 <th scope="col" class="th-class">تاريخ التقرير</th>
                 <th scope="col" class="th-class">وصف التقرير</th>
@@ -121,7 +122,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td class="pl-4">
                         <input type="checkbox" name="select-rapport" id="select-rapport-<?php echo $rapport['rap_name'] ?? ''; ?>">
                     </td>
-                    
+
+                    <td class="td-class"><?php echo htmlspecialchars($rapport['rap_num']); ?></td>
                     <td class="td-class"><?php echo htmlspecialchars($rapport['rap_name']); ?></td>
                     <td class="td-class"><?php echo $rapport['rap_date']; ?></td>
                     <td class="td-class"><?php echo htmlspecialchars($rapport['description']); ?></td>

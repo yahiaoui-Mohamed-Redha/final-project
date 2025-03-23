@@ -133,8 +133,9 @@ if (isset($_SESSION['error_message'])) {
 
 
 <!-- Modal Overlay -->
-<div id="modal-overlay" class="hidden fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10 z-50">
-    <div id="modal" class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6 transform transition-all duration-300 ease-in-out">
+<div id="modal-overlay" class="hidden z-[99] fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10">
+    <div id="modal" class="bg-white relative rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6 transform transition-all duration-300 ease-in-out">
+        <!-- Modal Header -->
         <div class="flex justify-between items-center border-b pb-4">
             <h2 class="text-2xl font-semibold text-gray-800">Panne Details</h2>
             <button id="close-modal" class="text-gray-500 hover:text-gray-700">
@@ -143,18 +144,22 @@ if (isset($_SESSION['error_message'])) {
                 </svg>
             </button>
         </div>
+
+        <!-- Modal Body -->
         <div class="mt-4 space-y-4">
-            <p><strong>Panne Num:</strong> <span id="modal-panne-num"></span></p>
-            <p><strong>Rap Num:</strong> <span id="modal-rap-num"></span></p>
-            <p><strong>Nom de Panne:</strong> <span id="modal-panne-name"></span></p>
-            <p><strong>Date Signalement:</strong> <span id="modal-date-signalement"></span></p>
-            <p><strong>Établissement:</strong> <span id="modal-etablissement-name"></span></p>
-            <p><strong>Type:</strong> <span id="modal-type-name"></span></p>
-            <p><strong>État:</strong> <span id="modal-panne-etat"></span></p>
-            <p><strong>Rapport Date:</strong> <span id="modal-rap-date"></span></p>
-            <p><strong>User Nom:</strong> <span id="modal-user-nom"></span></p>
-            <p><strong>User Prénom:</strong> <span id="modal-user-prenom"></span></p>
+            <p><strong>Panne Num:</strong> <span id="modal-panne-num">N/A</span></p>
+            <p><strong>Rap Num:</strong> <span id="modal-rap-num">N/A</span></p>
+            <p><strong>Nom de Panne:</strong> <span id="modal-panne-name">N/A</span></p>
+            <p><strong>Date Signalement:</strong> <span id="modal-date-signalement">N/A</span></p>
+            <p><strong>Établissement:</strong> <span id="modal-etablissement-name">N/A</span></p>
+            <p><strong>Type:</strong> <span id="modal-type-name">N/A</span></p>
+            <p><strong>État:</strong> <span id="modal-panne-etat">N/A</span></p>
+            <p><strong>Rapport Date:</strong> <span id="modal-rap-date">N/A</span></p>
+            <p><strong>User Nom:</strong> <span id="modal-user-nom">N/A</span></p>
+            <p><strong>User Prénom:</strong> <span id="modal-user-prenom">N/A</span></p>
         </div>
+
+        <!-- Modal Footer -->
         <div class="flex justify-end mt-6 border-t pt-4">
             <button id="close-modal" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Close</button>
         </div>
@@ -272,7 +277,17 @@ if (isset($_SESSION['error_message'])) {
                 <th scope="col" class="th-class">Actions</th>
             </tr>
             <?php foreach ($pannes as $panne): ?>
-                <tr class="tr-body" data-panne-num="<?php echo htmlspecialchars($panne['panne_num'] ?? ''); ?>">
+                <tr class="tr-body" 
+                    data-panne-num="<?php echo htmlspecialchars($panne['panne_num'] ?? ''); ?>" 
+                    data-panne-name="<?php echo htmlspecialchars($panne['panne_name'] ?? ''); ?>" 
+                    data-date-signalement="<?php echo htmlspecialchars($panne['date_signalement'] ?? ''); ?>" 
+                    data-etablissement-name="<?php echo htmlspecialchars($panne['etablissement_name'] ?? ''); ?>" 
+                    data-type-name="<?php echo htmlspecialchars($panne['type_name'] ?? ''); ?>" 
+                    data-panne-etat="<?php echo htmlspecialchars($panne['panne_etat'] ?? ''); ?>" 
+                    data-rap-num="<?php echo htmlspecialchars($panne['rap_num'] ?? ''); ?>" 
+                    data-rap-date="<?php echo htmlspecialchars($panne['rap_date'] ?? ''); ?>" 
+                    data-user-nom="<?php echo htmlspecialchars($panne['user_nom'] ?? ''); ?>" 
+                    data-user-prenom="<?php echo htmlspecialchars($panne['user_prenom'] ?? ''); ?>">
 
                     <td class="pl-4">
                         <input type="checkbox" name="select-panne" id="select-panne-<?php echo $panne['panne_num'] ?? ''; ?>">

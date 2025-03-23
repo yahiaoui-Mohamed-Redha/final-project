@@ -75,56 +75,72 @@ function executeGererPnJavaScript() {
     });
 
 
+    // Selectors
     const modalOverlay = document.getElementById('modal-overlay');
     const modal = document.getElementById('modal');
-    
-    // Add click event listener to all elements with the class 'open-rp'
-    document.querySelectorAll('.open-rp').forEach(function (element) {
-        element.addEventListener('click', function () {
-            const rapNum = this.textContent.trim(); // Get the rap_num from the clicked cell
-            console.log('Clicked rap_num:', rapNum); // Debugging: Check if rap_num is correct
-    
-            // Fetch the rapport data
-            fetch(`get_rapport.php?rap_num=${rapNum}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Fetched data:', data); // Debugging: Check fetched data
-                    if (data) {
-                        // Populate the modal with the fetched data
-                        document.getElementById('modal-panne-num').textContent = data.panne_num || 'N/A';
-                        document.getElementById('modal-rap-num').textContent = data.rap_num || 'N/A';
-                        document.getElementById('modal-panne-name').textContent = data.panne_name || 'N/A';
-                        document.getElementById('modal-date-signalement').textContent = data.date_signalement || 'N/A';
-                        document.getElementById('modal-etablissement-name').textContent = data.etablissement_name || 'N/A';
-                        document.getElementById('modal-type-name').textContent = data.type_name || 'N/A';
-                        document.getElementById('modal-panne-etat').textContent = data.panne_etat || 'N/A';
-                        document.getElementById('modal-rap-date').textContent = data.rap_date || 'N/A';
-                        document.getElementById('modal-user-nom').textContent = data.user_nom || 'N/A';
-                        document.getElementById('modal-user-prenom').textContent = data.user_prenom || 'N/A';
-    
-                        // Show the modal
-                        modalOverlay.classList.remove('hidden');
-                    } else {
-                        console.error('No data received');
-                    }
-                })
-                .catch(error => console.error('Error fetching rapport data:', error));
-        });
-    });
-    
-    // Close modal when clicking the close button or outside the modal
-    document.getElementById('close-modal').addEventListener('click', function () {
+    const closeModalButton = document.getElementById('close-modal');
+
+    // Function to populate the modal with data
+    function populateModal(data) {
+        if (!data) {
+            console.error('No data received');
+            return;
+        }
+
+        // Populate modal fields
+        document.getElementById('modal-panne-num').textContent = data.panneNum || 'N/A';
+        document.getElementById('modal-rap-num').textContent = data.rapNum || 'N/A';
+        document.getElementById('modal-panne-name').textContent = data.panneName || 'N/A';
+        document.getElementById('modal-date-signalement').textContent = data.dateSignalement || 'N/A';
+        document.getElementById('modal-etablissement-name').textContent = data.etablissementName || 'N/A';
+        document.getElementById('modal-type-name').textContent = data.typeName || 'N/A';
+        document.getElementById('modal-panne-etat').textContent = data.panneEtat || 'N/A';
+        document.getElementById('modal-rap-date').textContent = data.rapDate || 'N/A';
+        document.getElementById('modal-user-nom').textContent = data.userNom || 'N/A';
+        document.getElementById('modal-user-prenom').textContent = data.userPrenom || 'N/A';
+
+        // Show the modal
+        modalOverlay.classList.remove('hidden');
+    }
+
+    // Function to handle opening the modal
+    function handleOpenModal(event) {
+        // Get the closest row (<tr>) to the clicked cell
+        const row = event.target.closest('tr');
+
+        // Extract data from data-attributes
+        const data = {
+            panneNum: row.getAttribute('data-panne-num'),
+            panneName: row.getAttribute('data-panne-name'),
+            dateSignalement: row.getAttribute('data-date-signalement'),
+            etablissementName: row.getAttribute('data-etablissement-name'),
+            typeName: row.getAttribute('data-type-name'),
+            panneEtat: row.getAttribute('data-panne-etat'),
+            rapNum: row.getAttribute('data-rap-num'),
+            rapDate: row.getAttribute('data-rap-date'),
+            userNom: row.getAttribute('data-user-nom'),
+            userPrenom: row.getAttribute('data-user-prenom')
+        };
+
+        // Populate and show the modal
+        populateModal(data);
+    }
+
+    // Function to close the modal
+    function closeModal() {
         modalOverlay.classList.add('hidden');
+    }
+
+    // Add event listeners to all cells in the table rows
+    document.querySelectorAll('.tr-body td').forEach(cell => {
+        cell.addEventListener('click', handleOpenModal);
     });
-    
-    modalOverlay.addEventListener('click', function (event) {
+
+    // Close modal when clicking the close button or outside the modal
+    closeModalButton.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (event) => {
         if (event.target === modalOverlay) {
-            modalOverlay.classList.add('hidden');
+            closeModal();
         }
     });
 
