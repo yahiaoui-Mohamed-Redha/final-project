@@ -1,7 +1,10 @@
-
 function executeGererPnJavaScript() {
     const tabs = document.querySelectorAll('.tab');
     const tableRows = document.querySelectorAll('table tr.tr-body');
+    const selectAllCheckbox = document.getElementById('select-all');
+    const checkboxes = document.querySelectorAll('table input[type="checkbox"]:not(#select-all)');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
 
     function switchTab(activeTab) {
         tabs.forEach(tab => {
@@ -49,9 +52,6 @@ function executeGererPnJavaScript() {
         switchTab(defaultTab);
     }
 
-    const selectAllCheckbox = document.getElementById('select-all');
-    const checkboxes = document.querySelectorAll('table input[type="checkbox"]:not(#select-all)');
-
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('click', function () {
             checkboxes.forEach(checkbox => {
@@ -64,8 +64,8 @@ function executeGererPnJavaScript() {
     const dropdownButtons = document.querySelectorAll('[data-dropdown-toggle]');
 
     // Add event listener to each dropdown button
-        dropdownButtons.forEach(button => {
-            button.addEventListener('click', () => {
+    dropdownButtons.forEach(button => {
+        button.addEventListener('click', () => {
             // Get the dropdown menu
             const dropdownMenu = document.getElementById(button.getAttribute('data-dropdown-toggle'));
 
@@ -144,80 +144,84 @@ function executeGererPnJavaScript() {
         }
     });
 
-}
-
-// إعادة تعريف وظيفة البحث كدالة منفصلة لإعادة استخدامها
-function performSearch() {
-    const searchText = $('#search-input').val().toLowerCase();
-    
-    if (searchText.trim() === '') {
-        // إذا كان حقل البحث فارغًا، نعود إلى الحالة الافتراضية للتبويب النشط
-        if (nouveauTab.hasClass('bg-white')) {
-            filterNewOrders(true);
-        } else {
-            filterNewOrders(false);
-        }
-        $('#no-results-message').remove();
-        return;
-    }
-    
-    // البحث في جميع الخلايا
-    $('.tr-body').each(function() {
-        let found = false;
-        $(this).find('td').each(function() {
-            if ($(this).text().toLowerCase().includes(searchText)) {
-                found = true;
-                return false; // الخروج من الحلقة
+    // تعريف وظيفة البحث
+    function performSearch() {
+        const searchText = searchInput.value.toLowerCase();
+        
+        if (searchText.trim() === '') {
+            // إذا كان حقل البحث فارغًا، نعود إلى الحالة الافتراضية للتبويب النشط
+            const activeTab = document.querySelector('.tab.bg-white');
+            if (activeTab) {
+                switchTab(activeTab);
             }
+            
+            const noResultsMessage = document.getElementById('no-results-message');
+            if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+            return;
+        }
+        
+        // البحث في جميع الخلايا
+        tableRows.forEach(row => {
+            let found = false;
+            const cells = row.querySelectorAll('td');
+            
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchText)) {
+                    found = true;
+                }
+            });
+            
+            row.style.display = found ? 'table-row' : 'none';
         });
         
-        if (found) {
-            $(this).show();
-        } else {
-            $(this).hide();
+        // عرض رسالة إذا لم يكن هناك نتائج
+        const visibleRows = document.querySelectorAll('table tr.tr-body[style="display: table-row;"]');
+        let noResultsMessage = document.getElementById('no-results-message');
+        
+        if (visibleRows.length === 0) {
+            if (!noResultsMessage) {
+                noResultsMessage = document.createElement('div');
+                noResultsMessage.id = 'no-results-message';
+                noResultsMessage.className = 'text-center py-4';
+                document.querySelector('table').after(noResultsMessage);
+            }
+            noResultsMessage.textContent = `Aucun résultat trouvé pour "${searchText}".`;
+        } else if (noResultsMessage) {
+            noResultsMessage.remove();
         }
-    });
-    
-    // عرض رسالة إذا لم يكن هناك نتائج
-    if ($('.tr-body:visible').length === 0) {
-        if ($('#no-results-message').length === 0) {
-            $('table').after('<div id="no-results-message" class="text-center py-4">Aucun résultat trouvé pour "' + searchText + '".</div>');
-        } else {
-            $('#no-results-message').text('Aucun résultat trouvé pour "' + searchText + '".');
+        
+        // إلغاء تحديد "تحديد الكل" عند البحث
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = false;
         }
-    } else {
-        $('#no-results-message').remove();
     }
-    
-    // إلغاء تحديد "تحديد الكل" عند البحث
-    selectAllCheckbox.prop('checked', false);
 
-        // تطبيق البحث التلقائي عند الكتابة في حقل البحث
-        $('#search-input').on('input', function() {
-            performSearch();
-        });
-    
-        // الاحتفاظ بمعالج حدث النقر على زر البحث للتوافق
-        $('#search-button').on('click', function() {
-            performSearch();
-        });
-    
-        // الاحتفاظ بمعالج حدث الضغط على Enter (اختياري)
-        $('#search-input').on('keypress', function(e) {
+    // إضافة معالجات الأحداث مرة واحدة فقط
+    if (searchInput) {
+        // تفعيل البحث التلقائي بمجرد الكتابة
+        searchInput.addEventListener('input', performSearch);
+        
+        // الاحتفاظ بمعالج حدث الضغط على Enter
+        searchInput.addEventListener('keypress', function(e) {
             if (e.which === 13) {
                 e.preventDefault(); // منع إرسال النموذج إذا كان داخل نموذج
                 performSearch();
             }
         });
-        
-
-        function confirmDelete() {
-            return confirm('Are you sure you want to delete this panne?');
-        }
-
+    }
+    
+    if (searchButton) {
+        // الاحتفاظ بمعالج حدث النقر على زر البحث
+        searchButton.addEventListener('click', performSearch);
+    }
+    
+    // دالة تأكيد الحذف
+    window.confirmDelete = function() {
+        return confirm('Are you sure you want to delete this panne?');
+    };
 }
 
-
-
-// Execute the function when the script is loaded
+// تنفيذ الوظيفة عند تحميل البرنامج النصي
 executeGererPnJavaScript();
