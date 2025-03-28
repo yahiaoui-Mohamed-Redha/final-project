@@ -199,7 +199,7 @@ if (isset($_SESSION['error_message'])) {
     </div>
     <div class="flex items-center justify-between">
 
-        <button id="new" onclick="window.location.href='create_panne.php'" class="flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform mr-2 hover:bg-blue-900">
+        <a id="new" href="gérer_les_types_des_panne/manage_type_panne.php" class="load-page-link flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform mr-2 hover:bg-blue-900">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                 <path d="M5.931 6.936l1.275 4.249m5.607 5.609l4.251 1.275"></path>
                 <path d="M11.683 12.317l5.759 -5.759"></path>
@@ -209,7 +209,7 @@ if (isset($_SESSION['error_message'])) {
                 <path d="M8.5 15.5m-4.5 0a4.5 4.5 0 1 0 9 0a4.5 4.5 0 1 0 -9 0"></path>
             </svg>
             <span class="mx-2 text-sm font-medium">Gérer les type</span>
-        </button>
+        </a>
 
         <a id="new" href="gerer_les_panne/signaler_des_panne.php" class="load-page-link flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">

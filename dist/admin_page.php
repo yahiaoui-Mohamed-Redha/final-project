@@ -329,6 +329,13 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                                 console.log('statistiques.js loaded and executed');
                             });
                         }
+
+                        
+                        if (window.location.href.includes('manage_type_panne.php')) {
+                            $.getScript('js/gerer_typpn.js', function() {
+                                console.log('gerer_typpn.js loaded and executed');
+                            });
+                        }
                     },
                     error: function(xhr, status, error) {
                         alert("An error occurred while loading the page: " + error);

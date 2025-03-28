@@ -3,9 +3,10 @@ include '../../app/config.php';
 session_start();
 
 // Check if the user is logged in and has the admin role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
-    header('Location: login.php');
-    exit;
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
+    // Redirect to the login page or show an error message
+    header('location: index.php');
+    exit(); // Stop further execution
 }
 
 // Handle form submission for creating a new Type_panne
@@ -64,29 +65,7 @@ $stmt->execute();
 $type_pannes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Manage Type_panne</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-        main {
-            padding: 20px;
-        }
         .form-container {
             background-color: #fff;
             padding: 20px;
@@ -153,8 +132,7 @@ $type_pannes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #dc3545;
         }
     </style>
-</head>
-<body>
+
     <header>
         <h1>Manage Type_panne</h1>
     </header>
@@ -197,5 +175,3 @@ $type_pannes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h2>Proposed Type_panne</h2>
         <a href="approve_type_panne.php">View Proposed Types</a>
     </main>
-</body>
-</html>s

@@ -2,10 +2,11 @@
 session_start();
 include '../../app/config.php';
 
-// Check if the user is logged in and has the 'receveur' role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'receveur') {
-    header('Location: login.php');
-    exit;
+// Check if the user is logged in and has the 'Technicien' role
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Receveur') {
+    // Redirect to the login page or show an error message
+    header('location: index.php');
+    exit(); // Stop further execution
 }
 
 // Handle form submission for proposing a new Type_panne
