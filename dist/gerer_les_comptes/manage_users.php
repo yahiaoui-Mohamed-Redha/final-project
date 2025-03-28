@@ -44,7 +44,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $contentPage = basename($_SERVER['PHP_SELF']);
 ?>
 
-
+<html>
+<body>
+    
 <div id="modal-overlay" class="hidden fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10 z-50">
         <div id="modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-1/3">
             <h2 class="text-xl font-semibold mb-4">Modifier l'utilisateur</h2>
@@ -109,15 +111,35 @@ $contentPage = basename($_SERVER['PHP_SELF']);
         </ul>
     </div>
     <div class="flex items-center justify-between">
-        <button class="flex items-center p-1.5 border rounded-lg text-gray-600 border-gray-200 transition-colors duration-300 transform mr-2 hover:bg-[#c8d3f659] hover:text-[#0455b7]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
-                <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                <path d="M9 15h6"></path>
-                <path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5"></path>
-            </svg>
-            <span class="mx-2 text-sm font-medium">Exporter</span>
-        </button>
+    <div class="relative">
+            <button id="export-button" class="flex items-center p-1.5 border rounded-lg text-gray-600 border-gray-200 transition-colors duration-300 transform mr-2 hover:bg-[#c8d3f659] hover:text-[#0455b7]">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                    <path d="M9 15h6"></path>
+                    <path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5"></path>
+                </svg>
+                <span class="mx-2 text-sm font-medium cursor-pointer">Exporter</span>
+            </button>
+            <div id="export-dropdown" class="hidden absolute z-10 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                <a href="../../app/export_users.php?format=pdf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Exporter en PDF
+                    </div>
+                </a>
+                <a href="../../app/export_users.php?format=excel" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Exporter en Excel
+                    </div>
+                </a>
+            </div>
+        </div>
         <a id="new" href="gerer_les_comptes/create_users.php" class="load-page-link flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                 <path d="M12 5l0 14"></path>
@@ -214,3 +236,24 @@ $contentPage = basename($_SERVER['PHP_SELF']);
     </div>
 
 </div>
+<script>
+    // Export dropdown functionality
+    const exportButton = document.getElementById('export-button');
+    const exportDropdown = document.getElementById('export-dropdown');
+    
+    exportButton.addEventListener('click', function() {
+        exportDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
+            exportDropdown.classList.add('hidden');
+        }
+    });
+    
+    // Existing JavaScript for user management
+    // ... (keep any existing JavaScript here)
+</script>
+</body>
+</html>
