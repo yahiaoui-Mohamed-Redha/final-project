@@ -277,17 +277,17 @@ if (isset($_SESSION['error_message'])) {
                 <th scope="col" class="th-class">Actions</th>
             </tr>
             <?php foreach ($pannes as $panne): ?>
-                <tr class="tr-body" 
-                    data-panne-num="<?php echo htmlspecialchars($panne['panne_num'] ?? ''); ?>" 
-                    data-panne-name="<?php echo htmlspecialchars($panne['panne_name'] ?? ''); ?>" 
-                    data-date-signalement="<?php echo htmlspecialchars($panne['date_signalement'] ?? ''); ?>" 
-                    data-etablissement-name="<?php echo htmlspecialchars($panne['etablissement_name'] ?? ''); ?>" 
-                    data-type-name="<?php echo htmlspecialchars($panne['type_name'] ?? ''); ?>" 
-                    data-panne-etat="<?php echo htmlspecialchars($panne['panne_etat'] ?? ''); ?>" 
-                    data-rap-num="<?php echo htmlspecialchars($panne['rap_num'] ?? ''); ?>" 
-                    data-rap-date="<?php echo htmlspecialchars($panne['rap_date'] ?? ''); ?>" 
-                    data-user-nom="<?php echo htmlspecialchars($panne['user_nom'] ?? ''); ?>" 
-                    data-user-prenom="<?php echo htmlspecialchars($panne['user_prenom'] ?? ''); ?>">
+                <tr class="tr-body"
+                data-panne-num="<?php echo htmlspecialchars($panne['panne_num'] ?? ''); ?>" 
+                        data-panne-name="<?php echo htmlspecialchars($panne['panne_name'] ?? ''); ?>" 
+                        data-date-signalement="<?php echo htmlspecialchars($panne['date_signalement'] ?? ''); ?>" 
+                        data-etablissement-name="<?php echo htmlspecialchars($panne['etablissement_name'] ?? ''); ?>" 
+                        data-type-name="<?php echo htmlspecialchars($panne['type_name'] ?? ''); ?>" 
+                        data-panne-etat="<?php echo htmlspecialchars($panne['panne_etat'] ?? ''); ?>" 
+                        data-rap-num="<?php echo htmlspecialchars($panne['rap_num'] ?? ''); ?>" 
+                        data-rap-date="<?php echo htmlspecialchars($panne['rap_date'] ?? ''); ?>" 
+                        data-user-nom="<?php echo htmlspecialchars($panne['user_nom'] ?? ''); ?>" 
+                        data-user-prenom="<?php echo htmlspecialchars($panne['user_prenom'] ?? ''); ?>">
 
                     <td class="pl-4">
                         <input type="checkbox" name="select-panne" id="select-panne-<?php echo $panne['panne_num'] ?? ''; ?>">
