@@ -245,9 +245,6 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                                     <p class="notification-time"><?php echo date('M j, Y g:i A', strtotime($notification['created_at'])); ?></p>
                                 </a>
                                 <div class="flex justify-end mt-2">
-                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="markAsRead(<?php echo $notification['id']; ?>)">
-                                        Mark as Read
-                                    </button>
                                     <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2" onclick="deleteNotification(<?php echo $notification['id']; ?>)">
                                         Delete
                                     </button>
