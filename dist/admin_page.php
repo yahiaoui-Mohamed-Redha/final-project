@@ -9,11 +9,9 @@ error_reporting(E_ALL);
 include '../app/config.php';
 
 // Verify user authorization
-// Check if the user is logged in and has the 'admin' role
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
-    // Redirect to the login page or show an error message
     header('location: index.php');
-    exit(); // Stop further execution
+    exit();
 }
 
 // Fetch admin details
@@ -22,15 +20,18 @@ $select = $conn->prepare("SELECT u.*, r.role_nom AS role_name FROM Users u INNER
 $select->execute([$user_id]);
 $user = $select->fetch(PDO::FETCH_ASSOC);
 
+// Fetch unread notifications count
+$stmt_count = $conn->prepare("SELECT COUNT(*) as unread_count FROM notifications WHERE user_id = ? AND notification_status = 'unread'");
+$stmt_count->execute([$user_id]);
+$unread_count = $stmt_count->fetch(PDO::FETCH_ASSOC)['unread_count'];
+
 // Fetch notifications for the logged-in user
-$user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC");
+$stmt = $conn->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10");
 $stmt->execute([$user_id]);
 $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get the contentpage parameter from the URL
 $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistiques/statistiques.php';
-
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +47,9 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
             background-color: #c8d3f659;
             color: #0455b7;
         }
-            /* Loading Animation */
+        
+        
+        /* Loading Animation */
         .loader {
             border: 5px solid #f3f3f3;
             border-top: 5px solid #3498db;
@@ -70,40 +73,8 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
         #contentpage.loaded {
             opacity: 1;
         }
-        /* Add this to your existing styles */
-        #notificationDiv {
-            display: none; /* Hidden by default */
-            transition: opacity 0.3s ease-in-out;
-        }
+        
 
-        #contentpage.blur {
-            opacity: 0.5;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .notification-item {
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        .notification-item:hover {
-            background-color: #f3f4f6;
-        }
-
-        /* Modal overlay styles */
-        #modal-overlay {
-            transition: opacity 0.3s ease;
-        }
-
-        /* Modal styles */
-        #modal {
-            transition: transform 0.3s ease;
-            transform: translateX(-100%);
-        }
-
-        /* Slide-in animation */
-        #modal.slide-in {
-            transform: translateX(0);
-        }
     </style>
 </head>
 
@@ -135,12 +106,17 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                             <span class="mx-2 text-sm font-medium">Tableau de bord</span>
                         </a>
 
-                        <button class="w-full flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" onclick="toggleNotification()">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
-                                <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path>
-                                <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
-                            </svg>
-                            <span class="mx-2 text-sm font-medium">Notification</span>
+                        <button class="flex w-full items-center justify-between px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" onclick="toggleNotificationModal()">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
+                                    <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path>
+                                    <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
+                                </svg>
+                                <span class="mx-2 text-sm font-medium">Notification</span>
+                            </div>
+                            <?php if ($unread_count > 0): ?>
+                                <span class="notification-badge text-xs font-bold font  bg-red-600 text-white rounded-full px-1"><?php echo $unread_count; ?></span>
+                            <?php endif; ?>
                         </button>
                     </div>
 
@@ -244,38 +220,154 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 </select>
             </div>
         </header>
-        <!-- Notification Div -->
-        <div id="notificationDiv" class="hidden fixed top-16 left-64 w-64 bg-white shadow-lg z-50 max-h-80 overflow-y-auto">
-            <div class="p-4">
-                <h2 class="text-lg font-semibold">Notifications</h2>
-                <div id="notificationList">
+        
+        <!-- Notification Modal -->
+        <div id="modal-overlay" class="hidden z-[99] fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10">
+            <div id="modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-1/3">
+
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">Notifications</h2>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="notificationList" class="divide-y divide-gray-200">
                     <?php if (empty($notifications)): ?>
-                        <p class="text-gray-500">No new notifications.</p>
+                        <div class="p-4 text-center text-gray-500">No notifications found</div>
                     <?php else: ?>
                         <?php foreach ($notifications as $notification): ?>
-                            <div class="notification-item p-2 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                            <div class="notification-item <?php echo $notification['is_read'] ? '' : 'unread'; ?>" 
                                 data-notification-id="<?php echo $notification['id']; ?>"
                                 data-notification-link="<?php echo $notification['notification_link']; ?>">
                                 <p class="text-sm font-medium"><?php echo htmlspecialchars($notification['notification_message']); ?></p>
-                                <p class="text-xs text-gray-500"><?php echo $notification['created_at']; ?></p>
+                                <p class="notification-time"><?php echo date('M j, Y g:i A', strtotime($notification['created_at'])); ?></p>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
+                <div class="p-3 border-t border-gray-200 text-center">
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-800">View all notifications</a>
+                </div>
             </div>
         </div>
+        
         <div class="px-6 py-8 mt-20" id="contentpage"></div>
     </div>
-
-    <script>
-        const labels = <?= $labels_js ?>;
-        const data = <?= $data_js ?>;
-    </script>
 
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../apexcharts/dist/apexcharts.min.js"></script>
     
     <script>
+        // Function to toggle the notification modal
+        function toggleNotificationModal() {
+            const modalOverlay = document.getElementById('modal-overlay');
+            if (modalOverlay.style.display === 'flex') {
+                modalOverlay.style.display = 'none';
+            } else {
+                modalOverlay.style.display = 'flex';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // Close modal when clicking the close button
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('modal-overlay').style.display = 'none';
+        });
+
+        // Handle notification item clicks
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const notificationId = this.getAttribute('data-notification-id');
+                const notificationLink = this.getAttribute('data-notification-link');
+                
+                // Mark the notification as read
+                markNotificationAsRead(notificationId);
+                
+                // Close the modal
+                document.getElementById('modal-overlay').style.display = 'none';
+                
+                // Navigate to the link if it exists
+                if (notificationLink && notificationLink !== '') {
+                    window.location.href = notificationLink;
+                }
+            });
+        });
+
+        // Function to mark a notification as read
+        function markNotificationAsRead(notificationId) {
+            $.ajax({
+                url: '../app/mark_notification_as_read.php',
+                type: 'POST',
+                data: { notification_id: notificationId },
+                success: function(response) {
+                    if (response.success) {
+                        // Update the UI to show the notification as read
+                        const notificationItem = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
+                        if (notificationItem) {
+                            notificationItem.classList.remove('unread');
+                        }
+                        
+                        // Update the notification status to 'read'
+                        $.ajax({
+                            url: '../app/update_notification_status.php',
+                            type: 'POST',
+                            data: { notification_id: notificationId, notification_status: 'read' },
+                            success: function(response) {
+                                // Update the unread count badge
+                                updateUnreadCount();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error updating notification status:', error);
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error marking notification as read:', error);
+                }
+            });
+        }
+
+        // Function to update the unread count badge
+        function updateUnreadCount() {
+            $.ajax({
+                url: '../app/get_unread_notifications_count.php',
+                type: 'GET',
+                success: function(response) {
+                    const badge = document.querySelector('.notification-badge');
+                    if (response.count > 0) {
+                        if (!badge) {
+                            // Create the badge if it doesn't exist
+                            const newBadge = document.createElement('span');
+                            newBadge.className = 'notification-badge';
+                            newBadge.textContent = response.count;
+                            document.querySelector('button[onclick="toggleNotificationModal()"]').appendChild(newBadge);
+                        } else {
+                            // Update the existing badge
+                            badge.textContent = response.count;
+                        }
+                    } else if (badge) {
+                        // Remove the badge if there are no unread notifications
+                        badge.remove();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching unread notifications count:', error);
+                }
+            });
+        }
+
+        // Check for new notifications periodically (every 30 seconds)
+        setInterval(updateUnreadCount, 30000);
+
         function loadPage(page) {
             // Show loading animation
             $("#contentpage").html("<div class='loader'></div>");
@@ -330,7 +422,6 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                             });
                         }
 
-                        
                         if (window.location.href.includes('manage_type_panne.php')) {
                             $.getScript('js/gerer_typpn.js', function() {
                                 console.log('gerer_typpn.js loaded and executed');
@@ -341,40 +432,24 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                         alert("An error occurred while loading the page: " + error);
                     }
                 });
-            }, 500); // Adjust the delay time (in milliseconds) as needed
+            }, 500);
         }
 
         // Set the active link in the sidebar
         function setActiveLink() {
             var currentPage = sessionStorage.getItem("currentPage") || 'statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>';
 
-            // إزالة النشاط من جميع الروابط
+            // Remove active class from all links
             $("aside a").removeClass("active");
 
-            // تحديد الرابط النشط بناءً على الصفحة الحالية
+            // Activate the appropriate link based on the current page
             if (currentPage.includes("gerer_les_panne")) {
-                // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
                 $("aside a[href*='gerer_les_panne']").addClass("active");
-            } else {
-                // إذا لم تكن، فعِّل الرابط المناسب
-                $("aside a[href='" + currentPage + "']").addClass("active");
-            }
-
-            // تحديد الرابط النشط بناءً على الصفحة الحالية
-            if (currentPage.includes("gerer_les_comptes")) {
-                // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
+            } else if (currentPage.includes("gerer_les_comptes")) {
                 $("aside a[href*='gerer_les_comptes']").addClass("active");
-            } else {
-                // إذا لم تكن، فعِّل الرابط المناسب
-                $("aside a[href='" + currentPage + "']").addClass("active");
-            }
-
-            // تحديد الرابط النشط بناءً على الصفحة الحالية
-            if (currentPage.includes("gerer_les_ordres_des_missions")) {
-                // إذا كانت الصفحة الحالية تحتوي على "gerer_les_panne"، فعِّل رابط "Gerer les pannes"
+            } else if (currentPage.includes("gerer_les_ordres_des_missions")) {
                 $("aside a[href*='gerer_les_ordres_des_missions']").addClass("active");
             } else {
-                // إذا لم تكن، فعِّل الرابط المناسب
                 $("aside a[href='" + currentPage + "']").addClass("active");
             }
         }
@@ -397,11 +472,11 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 loadPage('statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>'); // Default page
             }
 
-            // التعامل مع النقر على الروابط التي تحتوي على class="load-page-link"
+            // Handle clicks on links with class="load-page-link"
             $(document).on("click", "a.load-page-link", function(event) {
-                event.preventDefault(); // منع التحميل التقليدي للصفحة
-                var page = $(this).attr("href"); // الحصول على رابط الصفحة
-                loadPage(page); // تحميل الصفحة داخل #contentpage
+                event.preventDefault();
+                var page = $(this).attr("href");
+                loadPage(page);
             });
 
             // Delegate events to all links in the sidebar
@@ -422,79 +497,58 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
 
             // Handle form submission using AJAX
             $('#createAccountForm').on('submit', function(e) {
-                e.preventDefault(); // Prevent the default form submission
-
-                // Show a loading indicator (optional)
+                e.preventDefault();
                 $('#createAccountForm').html('<div class="loader"></div>');
-
-                // Send the form data using AJAX
                 $.ajax({
-                    url: 'create_users.php', // The PHP file that processes the form
-                    type: 'POST', // Use POST method
-                    data: $(this).serialize(), // Serialize the form data
+                    url: 'create_users.php',
+                    type: 'POST',
+                    data: $(this).serialize(),
                     success: function(response) {
-                        // Handle the response from the server
                         if (response === "Data inserted successfully") {
                             alert("Account created successfully!");
-                            // Redirect to the manage_users.php page
                             window.location.href = 'admin_page.php?contentpage=gerer_les_comptes/manage_users.php';
                         } else {
-                            // Display the error message
                             alert("Error: " + response);
-                            // Reload the form to allow the user to try again
                             $('#createAccountForm').load('create_users.php #createAccountForm', function() {
-                                toggleFields(); // Reinitialize the toggleFields function
+                                toggleFields();
                             });
                         }
                     },
                     error: function(xhr, status, error) {
-                        // Handle AJAX errors
                         alert("An error occurred while submitting the form: " + error);
-                        // Reload the form to allow the user to try again
                         $('#createAccountForm').load('create_users.php #createAccountForm', function() {
-                            toggleFields(); // Reinitialize the toggleFields function
+                            toggleFields();
                         });
                     }
                 });
             });
 
             $('#panneForm').on('submit', function(e) {
-                e.preventDefault(); // Prevent the default form submission
-
-                // Show a loading indicator (optional)
+                e.preventDefault();
                 $('#panneForm').html('<div class="loader"></div>');
-
-                // Send the form data using AJAX
                 $.ajax({
-                    url: 'gerer_pn/signaler_des_panne.php', // The PHP file that processes the form
-                    type: 'POST', // Use POST method
-                    data: $(this).serialize(), // Serialize the form data
+                    url: 'gerer_pn/signaler_des_panne.php',
+                    type: 'POST',
+                    data: $(this).serialize(),
                     success: function(response) {
-                        // Handle the response from the server
                         if (response === "Data inserted successfully") {
                             alert("Account created successfully!");
-                            // Redirect to the manage_users.php page
                             window.location.href = 'admin_page.php?contentpage=gerer_pn/signaler_des_panne.php';
                         } else {
-                            // Display the error message
                             alert("Error: " + response);
-                            // Reload the form to allow the user to try again
                             $('#createAccountForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
-                                toggleFields(); // Reinitialize the toggleFields function
+                                toggleFields();
                             });
                         }
                     },
                     error: function(xhr, status, error) {
-                        // Handle AJAX errors
                         alert("An error occurred while submitting the form: " + error);
-                        // Reload the form to allow the user to try again
                         $('#panneForm').load('gerer_pn/signaler_des_panne.php #panneForm', function() {
-                            toggleFields(); // Reinitialize the toggleFields function
+                            toggleFields();
                         });
                     }
                 });
             });
-
         });
 
         // Handle the popstate event for back/forward navigation
@@ -504,80 +558,6 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 loadPage(page);
             }
         });
-
-        // Function to toggle the notification div
-        function toggleNotification() {
-            var notificationDiv = document.getElementById('notificationDiv');
-            var contentPage = document.getElementById('contentpage');
-
-            if (notificationDiv.style.display === "none" || notificationDiv.style.display === "") {
-                notificationDiv.style.display = "block";
-                contentPage.classList.add("blur"); // Optional blur effect
-            } else {
-                notificationDiv.style.display = "none";
-                contentPage.classList.remove("blur");
-            }
-        }
-
-        function closeNotification(event) {
-            const notificationDiv = document.getElementById('notificationDiv');
-            const contentPage = document.getElementById('contentpage');
-
-            if (!notificationDiv.contains(event.target)) {
-                notificationDiv.classList.add('hidden');
-                contentPage.classList.remove('blur');
-            }
-        }
-
-        document.querySelector('button[onclick="toggleNotification()"]').addEventListener('click', function(event) {
-            event.stopPropagation();
-            toggleNotification();
-        });
-
-        document.addEventListener('click', closeNotification);
-
-        document.getElementById('notificationDiv').addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-
-        // Handle notification item clicks
-        document.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const notificationId = this.getAttribute('data-notification-id');
-                const notificationLink = this.getAttribute('data-notification-link');
-
-                // Mark the notification as read (via AJAX)
-                markNotificationAsRead(notificationId);
-
-                // Redirect to the notification link if it exists
-                if (notificationLink) {
-                    window.location.href = notificationLink;
-                }
-            });
-        });
-
-        // Function to mark a notification as read
-        function markNotificationAsRead(notificationId) {
-            fetch('../app/mark_notification_as_read.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ notification_id: notificationId }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Optionally, update the UI to reflect the notification as read
-                    const notificationItem = document.querySelector(`.notification-item[data-notification-id="${notificationId}"]`);
-                    if (notificationItem) {
-                        notificationItem.style.opacity = '0.6'; // Example: Dim the notification
-                    }
-                }
-            })
-            .catch(error => console.error('Error marking notification as read:', error));
-        }
-
     </script>
 </body>
 </html>

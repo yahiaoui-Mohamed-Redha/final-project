@@ -47,8 +47,8 @@ $contentPage = basename($_SERVER['PHP_SELF']);
 <html>
 <body>
     
-<div id="modal-overlay" class="hidden fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10 z-50">
-        <div id="modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-1/3">
+<div id="modal-overlay-modify" class="hidden z-[99] fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10">
+        <div id="modal-modify" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-1/3">
             <h2 class="text-xl font-semibold mb-4">Modifier l'utilisateur</h2>
             <form action="../app/modifying_users.php" method="post" id="modify-user-form">
                 <!-- Hidden User ID -->
@@ -82,7 +82,7 @@ $contentPage = basename($_SERVER['PHP_SELF']);
                 </div>
 
                 <div class="flex justify-end space-x-2">
-                    <button type="button" id="close-modal" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Fermer</button>
+                    <button type="button" id="close-modal-modify" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Fermer</button>
                     <button type="submit" name="update_account" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Enregistrer</button>
                 </div>
             </form>

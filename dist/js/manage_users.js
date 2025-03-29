@@ -59,8 +59,8 @@ function executeManagUsersJavaScript() {
 
         // JavaScript code for handling the modal and form submission
         const modifyButtons = document.querySelectorAll('.modify-user-btn');
-        const modalOverlay = document.getElementById('modal-overlay');
-        const closeModalButton = document.getElementById('close-modal');
+        const modalOverlay = document.getElementById('modal-overlay-modify');
+        const closeModalButton = document.getElementById('close-modal-modify');
 
         modifyButtons.forEach(button => {
             button.addEventListener('click', () => {

@@ -1,18 +1,25 @@
 <?php
 session_start();
-include '../app/config.php';
+include 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    exit();
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
-$notificationId = $data['notification_id'];
-
-// Update the notification status to "read"
-$stmt = $conn->prepare("UPDATE notifications SET notification_status = 'read' WHERE id = ? AND user_id = ?");
-$stmt->execute([$notificationId, $_SESSION['user_id']]);
-
-echo json_encode(['success' => true]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['notification_id'])) {
+    $notification_id = $_POST['notification_id'];
+    $user_id = $_SESSION['user_id'];
+    
+    try {
+        $stmt = $conn->prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?");
+        $stmt->execute([$notification_id, $user_id]);
+        
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request']);
+}
 ?>
