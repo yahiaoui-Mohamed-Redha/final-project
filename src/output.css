@@ -605,6 +605,18 @@
   .top-16 {
     top: calc(var(--spacing) * 16);
   }
+  .top-24 {
+    top: calc(var(--spacing) * 24);
+  }
+  .top-56 {
+    top: calc(var(--spacing) * 56);
+  }
+  .top-\[5\.5\] {
+    top: 5.5;
+  }
+  .top-\[5\.5rem\] {
+    top: 5.5rem;
+  }
   .top-\[90px\] {
     top: 90px;
   }
@@ -628,6 +640,15 @@
   }
   .left-64 {
     left: calc(var(--spacing) * 64);
+  }
+  .left-\[17\.2rem\] {
+    left: 17.2rem;
+  }
+  .left-\[17rem\] {
+    left: 17rem;
+  }
+  .left-\[35rem\] {
+    left: 35rem;
   }
   .isolate {
     isolation: isolate;
@@ -1025,6 +1046,9 @@
   }
   .w-1\/3 {
     width: calc(1/3 * 100%);
+  }
+  .w-1\/4 {
+    width: calc(1/4 * 100%);
   }
   .w-3 {
     width: calc(var(--spacing) * 3);
@@ -1926,6 +1950,9 @@
   .bg-\[var\(--my_variable\)\] {
     background-color: var(--my_variable);
   }
+  .bg-blue-100 {
+    background-color: var(--color-blue-100);
+  }
   .bg-blue-500 {
     background-color: var(--color-blue-500);
   }
@@ -1943,6 +1970,9 @@
   }
   .bg-green-100 {
     background-color: var(--color-green-100);
+  }
+  .bg-green-500 {
+    background-color: var(--color-green-500);
   }
   .bg-indigo-600 {
     background-color: var(--color-indigo-600);
@@ -2178,9 +2208,6 @@
   .px-1 {
     padding-inline: calc(var(--spacing) * 1);
   }
-  .px-1\.5 {
-    padding-inline: calc(var(--spacing) * 1.5);
-  }
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
   }
@@ -2195,12 +2222,6 @@
   }
   .px-6 {
     padding-inline: calc(var(--spacing) * 6);
-  }
-  .py-0 {
-    padding-block: calc(var(--spacing) * 0);
-  }
-  .py-0\.5 {
-    padding-block: calc(var(--spacing) * 0.5);
   }
   .py-1 {
     padding-block: calc(var(--spacing) * 1);
@@ -3257,10 +3278,24 @@
       }
     }
   }
+  .hover\:bg-green-700 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-green-700);
+      }
+    }
+  }
   .hover\:bg-indigo-500 {
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-indigo-500);
+      }
+    }
+  }
+  .hover\:bg-red-700 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-red-700);
       }
     }
   }
@@ -3721,7 +3756,6 @@
 }
 #modal {
   transition: transform 0.3s ease;
-  transform: translateX(-100%);
 }
 #modal.slide-in {
   transform: translateX(0);

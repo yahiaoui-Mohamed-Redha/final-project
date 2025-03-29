@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['notification_id'])) {
     $user_id = $_SESSION['user_id'];
     
     try {
-        $stmt = $conn->prepare("UPDATE notifications SET notification_status = 'read' WHERE id = ? AND user_id = ?");
+        $stmt = $conn->prepare("DELETE FROM notifications WHERE id = ? AND user_id = ?");
         $stmt->execute([$notification_id, $user_id]);
         
         echo json_encode(['success' => true]);

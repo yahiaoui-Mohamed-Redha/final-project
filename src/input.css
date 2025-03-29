@@ -51,7 +51,6 @@
         /* Modal styles */
         #modal {
             transition: transform 0.3s ease;
-            transform: translateX(-100%);
         }
 
         /* Slide-in animation */
