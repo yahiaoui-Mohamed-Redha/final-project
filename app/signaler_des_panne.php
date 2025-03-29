@@ -99,6 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signaler_panne'])) {
             throw new Exception("Duplicate rap_num detected: " . $next_rap_num);
         }
 
+        // Get rapport description from form
+        $rapport_description = $_POST['rapport_description'] ?? 'تقرير تم إنشاؤه تلقائيًا مع الأعطال';
+
         // Create a new report in the rapport table
         $stmt_rapport = $conn->prepare("INSERT INTO rapport (rap_num, rap_name, rap_date, description, user_id) 
                                       VALUES (:rap_num, :rap_name, :rap_date, :description, :user_id)");
@@ -106,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signaler_panne'])) {
             'rap_num' => $next_rap_num, // Use the generated rap_num
             'rap_name' => 'تقرير الأعطال ' . date('Y-m-d H:i:s'),
             'rap_date' => date('Y-m-d'),
-            'description' => 'تقرير تم إنشاؤه تلقائيًا مع الأعطال',
+            'description' => $rapport_description,
             'user_id' => $userId
         ]);
         $rapportId = $next_rap_num; // Use the generated rap_num as the rapportId
@@ -130,19 +133,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signaler_panne'])) {
             ]);
         }
 
+        // Handle file uploads
+        if (!empty($_FILES['files']['name'][0])) {
+            $uploadDir = '../uploads/rapports/';
+            
+            // Create upload directory if it doesn't exist
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            // Process each uploaded file
+            for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
+                if ($_FILES['files']['error'][$i] === UPLOAD_ERR_OK) {
+                    $fileName = basename($_FILES['files']['name'][$i]);
+                    $fileTmp = $_FILES['files']['tmp_name'][$i];
+                    $fileSize = $_FILES['files']['size'][$i];
+                    $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                    
+                    // Validate file type
+                    $allowedTypes = ['pdf', 'png', 'jpeg', 'jpg', 'mp4', 'mp3', 'docx', 'sql'];
+                    if (!in_array($fileType, $allowedTypes)) {
+                        throw new Exception("Le type de fichier $fileType n'est pas autorisé.");
+                    }
+                    
+                    // Validate file size (10MB max)
+                    if ($fileSize > 10 * 1024 * 1024) {
+                        throw new Exception("Le fichier $fileName dépasse la taille maximale de 10MB.");
+                    }
+                    
+                    // Generate unique filename
+                    $uniqueName = uniqid() . '_' . $fileName;
+                    $uploadPath = $uploadDir . $uniqueName;
+                    
+                    // Move uploaded file
+                    if (move_uploaded_file($fileTmp, $uploadPath)) {
+                        // Insert file info into RapFichiers table
+                        $stmt_file = $conn->prepare("INSERT INTO RapFichiers (rap_num, nom_fichier, chemin_fichier, taille_fichier, type_fichier) 
+                                                   VALUES (:rap_num, :nom_fichier, :chemin_fichier, :taille_fichier, :type_fichier)");
+                        $stmt_file->execute([
+                            'rap_num' => $rapportId,
+                            'nom_fichier' => $fileName,
+                            'chemin_fichier' => $uploadPath,
+                            'taille_fichier' => $fileSize,
+                            'type_fichier' => $fileType
+                        ]);
+                    } else {
+                        throw new Exception("Erreur lors du téléchargement du fichier $fileName.");
+                    }
+                }
+            }
+        }
+
         // Commit the transaction
         $conn->commit();
-        $success_message = "تم الإبلاغ عن الأعطال وإنشاء التقرير بنجاح!";
+        $_SESSION['success_message'] = "تم الإبلاغ عن الأعطال وإنشاء التقرير بنجاح!";
         header('Location: ../dist/admin_page.php?contentpage=gerer_les_panne/gerer_pn.php');
         exit;
     } catch (PDOException $e) {
         // Rollback the transaction on error
         $conn->rollBack();
-        $error_message = "خطأ أثناء الإبلاغ عن الأعطال: " . $e->getMessage();
+        $_SESSION['error_message'] = "خطأ أثناء الإبلاغ عن الأعطال: " . $e->getMessage();
+        header('Location: ../dist/admin_page.php?contentpage=signaler_des_panne/signaler_des_panne.php');
+        exit;
     } catch (Exception $e) {
         // Rollback the transaction on error
         $conn->rollBack();
-        $error_message = "خطأ أثناء الإبلاغ عن الأعطال: " . $e->getMessage();
+        $_SESSION['error_message'] = "خطأ أثناء الإبلاغ عن الأعطال: " . $e->getMessage();
+        header('Location: ../dist/admin_page.php?contentpage=signaler_des_panne/signaler_des_panne.php');
+        exit;
     }
 }
-?>

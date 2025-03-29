@@ -132,40 +132,6 @@ if (isset($_SESSION['error_message'])) {
 ?>
 
 
-<!-- Modal Overlay -->
-<div id="modal-overlay" class="hidden z-[99] fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10">
-    <div id="modal" class="bg-white relative rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6 transform transition-all duration-300 ease-in-out">
-        <!-- Modal Header -->
-        <div class="flex justify-between items-center border-b pb-4">
-            <h2 class="text-2xl font-semibold text-gray-800">Panne Details</h2>
-            <button id="close-modal" class="text-gray-500 hover:text-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-
-        <!-- Modal Body -->
-        <div class="mt-4 space-y-4">
-            <p><strong>Panne Num:</strong> <span id="modal-panne-num">N/A</span></p>
-            <p><strong>Rap Num:</strong> <span id="modal-rap-num">N/A</span></p>
-            <p><strong>Nom de Panne:</strong> <span id="modal-panne-name">N/A</span></p>
-            <p><strong>Date Signalement:</strong> <span id="modal-date-signalement">N/A</span></p>
-            <p><strong>Établissement:</strong> <span id="modal-etablissement-name">N/A</span></p>
-            <p><strong>Type:</strong> <span id="modal-type-name">N/A</span></p>
-            <p><strong>État:</strong> <span id="modal-panne-etat">N/A</span></p>
-            <p><strong>Rapport Date:</strong> <span id="modal-rap-date">N/A</span></p>
-            <p><strong>User Nom:</strong> <span id="modal-user-nom">N/A</span></p>
-            <p><strong>User Prénom:</strong> <span id="modal-user-prenom">N/A</span></p>
-        </div>
-
-        <!-- Modal Footer -->
-        <div class="flex justify-end mt-6 border-t pt-4">
-            <button id="close-modal" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Close</button>
-        </div>
-    </div>
-</div>
-
 <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
     <div class="p-2">
         <ul class="flex gap-4 bg-[#f6f6f6] rounded-md p-1 w-max overflow-hidden relative">
@@ -292,22 +258,24 @@ if (isset($_SESSION['error_message'])) {
                     <td class="pl-4">
                         <input type="checkbox" name="select-panne" id="select-panne-<?php echo $panne['panne_num'] ?? ''; ?>">
                     </td>
-                    <td class="td-class"><?php echo htmlspecialchars($panne['panne_num'] ?? ''); ?></td>
-                    <td id="open-rp" class="td-class open-rp cursor-pointer hover:text-blue-500 hover:underline">
-                        <?php echo htmlspecialchars($panne['rap_num'] ?? ''); ?>
-                    </td>
+                    <a id="open-rp" class="open-rp" href="dqdsds">
+                        <td class="td-class"><?php echo htmlspecialchars($panne['panne_num'] ?? ''); ?></td>
+                        <td class="td-class cursor-pointer hover:text-blue-500 hover:underline">
+                            <?php echo htmlspecialchars($panne['rap_num'] ?? ''); ?>
+                        </td>
 
-                    <!-- Define the popover content element -->
-                    <div id="popover-top" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-xs opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                        <div class="px-3 py-2">
-                            <p>And here's some amazing content. It's very engaging. Right?</p>
+                        <!-- Define the popover content element -->
+                        <div id="popover-top" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-xs opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                            <div class="px-3 py-2">
+                                <p>And here's some amazing content. It's very engaging. Right?</p>
+                            </div>
+                            <div data-popper-arrow></div>
                         </div>
-                        <div data-popper-arrow></div>
-                    </div>
-                    <td class="td-class"><?php echo htmlspecialchars($panne['panne_name'] ?? ''); ?></td>
-                    <td class="td-class"><?php echo $panne['date_signalement'] ?? ''; ?></td>
-                    <td class="td-class w-[22%]"><?php echo htmlspecialchars($panne['etablissement_name'] ?? ''); ?></td>
-                    <td class="td-class"><?php echo htmlspecialchars($panne['type_name'] ?? ''); ?></td>
+                        <td class="td-class"><?php echo htmlspecialchars($panne['panne_name'] ?? ''); ?></td>
+                        <td class="td-class"><?php echo $panne['date_signalement'] ?? ''; ?></td>
+                        <td class="td-class w-[22%]"><?php echo htmlspecialchars($panne['etablissement_name'] ?? ''); ?></td>
+                        <td class="td-class"><?php echo htmlspecialchars($panne['type_name'] ?? ''); ?></td>
+                    </a>
                     <!-- hidden -->
                     <td class="td-class hidden"><?php echo htmlspecialchars($panne['rap_date'] ?? ''); ?></td>
                     <td class="td-class hidden"><?php echo htmlspecialchars($panne['user_nom'] ?? ''); ?></td>

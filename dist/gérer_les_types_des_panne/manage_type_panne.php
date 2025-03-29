@@ -66,6 +66,7 @@ $type_pannes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
     <style>
+
         .form-container {
             background-color: #fff;
             padding: 20px;
