@@ -223,8 +223,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
         
         <!-- Notification Modal -->
         <div id="modal-overlay" class="hidden z-40 fixed w-full h-full flex items-start justify-start inset-0 bg-[#0000007a] backdrop-opacity-10">
-            <div id="modal" class="fixed top-[5.5rem] left-[17.2rem] bg-white p-6 rounded-lg shadow-lg w-1/3">
-
+            <div id="modal" class="fixed top-[5.5rem] left-[17.2rem] bg-white p-6 rounded-lg shadow-lg w-1/3 max-h-[80vh] overflow-y-auto">
                 <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                     <h2 class="text-lg font-semibold">Notifications</h2>
                     <button id="close-modal" class="text-gray-500 hover:text-gray-700">
@@ -237,20 +236,35 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                     <?php if (empty($notifications)): ?>
                         <div class="p-4 text-center text-gray-500">No notifications found</div>
                     <?php else: ?>
-                        <?php foreach ($notifications as $notification): ?>
-                            <div class="notification-container <?php echo $notification['notification_status'] === 'unread' ? 'bg-blue-100' : 'bg-white'; ?> p-4 rounded">
-                                <a class="notification-item" 
-                                    href="<?php echo $notification['notification_link']; ?>">
-                                    <p class="text-sm font-medium"><?php echo htmlspecialchars($notification['notification_message']); ?></p>
-                                    <p class="notification-time"><?php echo date('M j, Y g:i A', strtotime($notification['created_at'])); ?></p>
-                                </a>
-                                <div class="flex justify-end mt-2">
-                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="markAsRead(<?php echo $notification['id']; ?>)">
-                                        Mark as Read
-                                    </button>
-                                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2" onclick="deleteNotification(<?php echo $notification['id']; ?>)">
-                                        Delete
-                                    </button>
+                        <?php 
+                        // Separate read and unread notifications
+                        $unread_notifications = array_filter($notifications, function($n) { return $n['notification_status'] === 'unread'; });
+                        $read_notifications = array_filter($notifications, function($n) { return $n['notification_status'] === 'read'; });
+                        
+                        // Display unread first, then read
+                        foreach (array_merge($unread_notifications, $read_notifications) as $notification): ?>
+                            <div class="notification-container p-4 rounded <?php echo $notification['notification_status'] === 'unread' ? 'bg-blue-50' : 'bg-white'; ?>">
+                                <div class="flex justify-between items-start">
+                                    <a href="<?php echo $notification['notification_link']; ?>" class="flex-1">
+                                        <p class="text-sm font-medium <?php echo $notification['notification_status'] === 'unread' ? 'text-gray-900 font-semibold' : 'text-gray-700'; ?>">
+                                            <?php echo htmlspecialchars($notification['notification_message']); ?>
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            <?php echo date('M j, Y g:i A', strtotime($notification['created_at'])); ?>
+                                        </p>
+                                    </a>
+                                    <div class="flex space-x-2 ml-2">
+                                        <?php if ($notification['notification_status'] === 'unread'): ?>
+                                            <button class="mark-as-read-btn text-xs bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded" 
+                                                    onclick="markAsRead(<?php echo $notification['id']; ?>, this)">
+                                                Mark as Read
+                                            </button>
+                                        <?php endif; ?>
+                                        <button class="delete-notification-btn text-xs bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded" 
+                                                onclick="deleteNotification(<?php echo $notification['id']; ?>, this)">
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -311,35 +325,34 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
         });
 
         // Function to mark a notification as read
-        function markAsRead(notificationId) {
+        function markAsRead(notificationId, buttonElement) {
             $.ajax({
                 url: '../app/mark_notification_as_read.php',
                 type: 'POST',
                 data: { notification_id: notificationId },
                 success: function(response) {
                     if (response.success) {
-                        // Update the notification status to "read"
-                        $.ajax({
-                            url: '../app/update_notification_status.php',
-                            type: 'POST',
-                            data: { notification_id: notificationId, notification_status: 'read' },
-                            success: function(response) {
-                                // Update the notification container
-                                updateNotificationContainer(notificationId);
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('Error updating notification status:', error);
-                            }
-                        });
+                        // Remove the "Mark as Read" button
+                        $(buttonElement).remove();
+                        
+                        // Update the notification appearance
+                        const container = $(buttonElement).closest('.notification-container');
+                        container.removeClass('bg-blue-50').addClass('bg-white');
+                        container.find('p').removeClass('text-gray-900 font-semibold').addClass('text-gray-700');
+                        
+                        // Update the unread count
+                        updateUnreadCount();
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error marking notification as read:', error);
+                    alert('Failed to mark notification as read. Please try again.');
                 }
             });
         }
 
-        function deleteNotification(notificationId) {
+        // Function to delete a notification
+        function deleteNotification(notificationId, buttonElement) {
             if (confirm('Are you sure you want to delete this notification?')) {
                 $.ajax({
                     url: '../app/delete_notification.php',
@@ -348,27 +361,23 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                     success: function(response) {
                         if (response.success) {
                             // Remove the notification container
-                            removeNotificationContainer(notificationId);
+                            $(buttonElement).closest('.notification-container').remove();
+                            
+                            // Update the unread count
+                            updateUnreadCount();
+                            
+                            // If no notifications left, show message
+                            if ($('#notificationList .notification-container').length === 0) {
+                                $('#notificationList').html('<div class="p-4 text-center text-gray-500">No notifications found</div>');
+                            }
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error('Error deleting notification:', error);
+                        alert('Failed to delete notification. Please try again.');
                     }
                 });
             }
-        }
-
-        function updateNotificationContainer(notificationId) {
-            // Update the notification container to reflect the new status
-            var notificationContainer = document.querySelector('.notification-container[data-notification-id="' + notificationId + '"]');
-            notificationContainer.classList.remove('bg-blue-100');
-            notificationContainer.classList.add('bg-white');
-        }
-
-        function removeNotificationContainer(notificationId) {
-            // Remove the notification container
-            var notificationContainer = document.querySelector('.notification-container[data-notification-id="' + notificationId + '"]');
-            notificationContainer.remove();
         }
 
         // Function to update the unread count badge
@@ -377,19 +386,18 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 url: '../app/get_unread_notifications_count.php',
                 type: 'GET',
                 success: function(response) {
-                    const badge = document.querySelector('.notification-badge');
+                    const badge = $('.notification-badge');
                     if (response.count > 0) {
-                        if (!badge) {
+                        if (badge.length === 0) {
                             // Create the badge if it doesn't exist
-                            const newBadge = document.createElement('span');
-                            newBadge.className = 'notification-badge';
-                            newBadge.textContent = response.count;
-                            document.querySelector('button[onclick="toggleNotificationModal()"]').appendChild(newBadge);
+                            $('button[onclick="toggleNotificationModal()"]').append(
+                                '<span class="notification-badge text-xs font-bold bg-red-600 text-white rounded-full px-1.5 py-0.5 ml-1">' + 
+                                response.count + '</span>');
                         } else {
                             // Update the existing badge
-                            badge.textContent = response.count;
+                            badge.text(response.count);
                         }
-                    } else if (badge) {
+                    } else if (badge.length > 0) {
                         // Remove the badge if there are no unread notifications
                         badge.remove();
                     }
