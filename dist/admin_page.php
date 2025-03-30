@@ -89,7 +89,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 <p class="text-xs font-semibold text-gray-400">By Algérie Poste <?php echo date("Y"); ?></p>
             </div>
         </div>
-        <div class="mt-6 pl-5 pr-5 pb-4 overflow-y-auto
+        <div class="mt-6 pl-5 pb-4 overflow-y-auto
             [&::-webkit-scrollbar]:w-2
             [&::-webkit-scrollbar-track]:bg-gray-100
             [&::-webkit-scrollbar-thumb]:bg-gray-300">
@@ -243,7 +243,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                         
                         // Display unread first, then read
                         foreach (array_merge($unread_notifications, $read_notifications) as $notification): ?>
-                            <div class="notification-container p-4 rounded <?php echo $notification['notification_status'] === 'unread' ? 'bg-blue-50' : 'bg-white'; ?>">
+                            <div class="notification-container p-4 rounded <?php echo $notification['notification_status'] === 'unread' ? 'bg-blue-100' : 'bg-white'; ?>">
                                 <div class="flex justify-between items-start">
                                     <a href="<?php echo $notification['notification_link']; ?>" class="flex-1">
                                         <p class="text-sm font-medium <?php echo $notification['notification_status'] === 'unread' ? 'text-gray-900 font-semibold' : 'text-gray-700'; ?>">
@@ -255,12 +255,12 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                                     </a>
                                     <div class="flex space-x-2 ml-2">
                                         <?php if ($notification['notification_status'] === 'unread'): ?>
-                                            <button class="mark-as-read-btn text-xs bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded" 
+                                            <button class="mark-as-read-btn cursor-pointer text-xs bg-green-600 hover:bg-green-600 text-white py-1 px-2 rounded" 
                                                     onclick="markAsRead(<?php echo $notification['id']; ?>, this)">
                                                 Mark as Read
                                             </button>
                                         <?php endif; ?>
-                                        <button class="delete-notification-btn text-xs bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded" 
+                                        <button class="delete-notification-btn cursor-pointer text-xs bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded" 
                                                 onclick="deleteNotification(<?php echo $notification['id']; ?>, this)">
                                             Delete
                                         </button>

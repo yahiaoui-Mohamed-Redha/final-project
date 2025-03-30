@@ -59,120 +59,143 @@ if (isset($_GET['reject_id'])) {
     exit;
 }
 
+// Handle form submission for approving a proposed Type_panne
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['approve_type'])) {
+    $propos_id = $_POST['propos_id'];
+
+    // Fetch the proposed type from the database
+    $stmt_proposed = $conn->prepare("SELECT * FROM propos_type WHERE propos_id = ?");
+    $stmt_proposed->execute([$propos_id]);
+    $proposed_type = $stmt_proposed->fetch(PDO::FETCH_ASSOC);
+
+    // Insert the proposed type into the Type_panne table
+    $insert_stmt = $conn->prepare("INSERT INTO Type_panne (type_name, description) VALUES (:type_name, :description)");
+    $insert_stmt->bindParam(':type_name', $proposed_type['type_name']);
+    $insert_stmt->bindParam(':description', $proposed_type['description']);
+    $insert_stmt->execute();
+
+    // Update the status of the proposed type to 'approved'
+    $update_stmt = $conn->prepare("UPDATE propos_type SET status = 'approved' WHERE propos_id = ?");
+    $update_stmt->execute([$propos_id]);
+
+    // Display a success message
+    $success_message = "The proposed type has been approved.";
+}
+
+// Fetch all proposed types from the database
+$stmt_proposed = $conn->prepare("SELECT * FROM propos_type WHERE status = 'pending'");
+$stmt_proposed->execute();
+$proposed_types = $stmt_proposed->fetchAll(PDO::FETCH_ASSOC);
+
 // Fetch all Type_panne from the database
 $stmt = $conn->prepare("SELECT * FROM Type_panne");
 $stmt->execute();
 $type_pannes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
-    <style>
 
-        .form-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        .form-container h2 {
-            margin-top: 0;
-        }
-        .form-container label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        .form-container input[type="text"],
-        .form-container textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        
-        .form-container button {
-            background-color: #28a745;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .form-container button:hover {
-            background-color: #218838;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        table th,
-        table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        table th {
-            background-color: #333;
-            color: #fff;
-        }
-        table tr:hover {
-            background-color: #f5f5f5;
-        }
-        .actions a {
-            color: #007bff;
-            text-decoration: none;
-            margin-right: 10px;
-        }
-        .actions a:hover {
-            text-decoration: underline;
-        }
-        .actions a.delete {
-            color: #dc3545;
-        }
-    </style>
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Manage Type_panne</h1>
+        </header>
 
-    <header>
-        <h1>Manage Type_panne</h1>
-    </header>
-    <main>
-        <!-- Form to create a new Type_panne -->
-        <div class="form-container">
-            <h2>Create New Type_panne</h2>
-            <form method="POST">
-                <label for="type_name">Type Name:</label>
-                <input type="text" name="type_name" id="type_name" required>
+        <!-- Success message -->
+        <?php if (isset($success_message)) { ?>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+                <p><?php echo $success_message; ?></p>
+            </div>
+        <?php } ?>
 
-                <label for="description">Description:</label>
-                <textarea name="description" id="description" required></textarea>
-
-                <button type="submit" name="create_type">Create</button>
-            </form>
+        <!-- Table at the top -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-800">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Type Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Description</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php foreach ($type_pannes as $type_panne) { ?>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($type_panne['type_name']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($type_panne['description']); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="space-x-4">
+                                    <a href="modifier_type_panne.php?id=<?php echo $type_panne['type_id']; ?>" class="text-indigo-600 hover:text-indigo-900">Modify</a>
+                                    <a href="manage_type_panne.php?delete_id=<?php echo $type_panne['type_id']; ?>" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this type?');">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- Table to display all Type_panne -->
-        <h2>All Type_panne</h2>
-        <table>
-            <tr>
-                <th>Type Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-            <?php foreach ($type_pannes as $type_panne) { ?>
-            <tr>
-                <td><?php echo htmlspecialchars($type_panne['type_name']); ?></td>
-                <td><?php echo htmlspecialchars($type_panne['description']); ?></td>
-                <td class="actions">
-                    <a href="modifier_type_panne.php?id=<?php echo $type_panne['type_id']; ?>">Modify</a>
-                    <a href="manage_type_panne.php?delete_id=<?php echo $type_panne['type_id']; ?>" class="delete" onclick="return confirm('Are you sure you want to delete this type?');">Delete</a>
-                </td>
-            </tr>
-            <?php } ?>
-        </table>
+        <!-- Two-column layout for forms -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Left column - Create new type form -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Create New Type_panne</h2>
+                <form method="POST" class="space-y-4">
+                    <div>
+                        <label for="type_name" class="block text-sm font-medium text-gray-700 mb-1">Type Name:</label>
+                        <input type="text" name="type_name" id="type_name" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description:</label>
+                        <textarea name="description" id="description" required
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+                    
+                    <button type="submit" name="create_type" 
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Create
+                    </button>
+                </form>
+            </div>
 
-        <!-- Table to display proposed Type_panne -->
-        <h2>Proposed Type_panne</h2>
-        <a href="approve_type_panne.php">View Proposed Types</a>
-    </main>
+            <!-- Right column - Proposed types list -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Proposed Type_panne</h2>
+                <div class="space-y-4">
+                    <?php if (empty($proposed_types)): ?>
+                        <p class="text-gray-500">No proposed types pending approval.</p>
+                    <?php else: ?>
+                        <?php foreach ($proposed_types as $proposed_type): ?>
+                        <?php
+                        $receveur_id = $proposed_type['receveur_id'];
+                        $stmt_receveur = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
+                        $stmt_receveur->execute([$receveur_id]);
+                        $receveur = $stmt_receveur->fetch(PDO::FETCH_ASSOC);
+                        ?>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-800"><?php echo htmlspecialchars($proposed_type['type_name']); ?></h3>
+                            <p class="text-sm text-gray-600 mt-1"><?php echo htmlspecialchars($proposed_type['description']); ?></p>
+                            <p class="text-xs text-gray-500 mt-2">Proposed by: <?php echo htmlspecialchars($receveur['username']); ?></p>
+                            <div class="flex space-x-2 mt-3">
+                                <form method="POST" class="flex-1">
+                                    <input type="hidden" name="propos_id" value="<?php echo $proposed_type['propos_id']; ?>">
+                                    <button type="submit" name="approve_type" 
+                                            class="w-full py-1 px-3 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        Approve
+                                    </button>
+                                </form>
+                                <a href="manage_type_panne.php?reject_id=<?php echo $proposed_type['propos_id']; ?>" 
+                                   class="flex-1 py-1 px-3 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-center"
+                                   onclick="return confirm('Are you sure you want to reject this proposed type?');">
+                                    Reject
+                                </a>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
