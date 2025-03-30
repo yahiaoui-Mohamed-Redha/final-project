@@ -308,9 +308,9 @@ $pannes_etab_data = json_encode(array_column($pannes_by_etab, 'panne_count'));
 </div>
 
 <!-- Main Charts Section -->
-<div class="mt-5 grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 gap-5">
+<div class="mt-5 grid lg:grid-cols-3 md:grid-cols-1 grid-cols-1 gap-5">
     <!-- Line Chart - Pannes Over Time -->
-    <div class="h-[28rem] relative flex flex-col justify-center rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+    <div class="h-[28rem] relative col-span-2 flex flex-col justify-center rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
         <div class="relative mx-4 mt-4 flex flex-col gap-4 overflow-hidden rounded-none bg-transparent bg-clip-border text-gray-700 shadow-none md:flex-row md:items-center">
             <div>
                 <h6 class="block font-sans text-base font-semibold leading-relaxed tracking-normal text-blue-gray-900 antialiased">

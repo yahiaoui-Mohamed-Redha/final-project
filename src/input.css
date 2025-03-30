@@ -43,6 +43,18 @@
     @apply text-[#0455b7] bg-[#c8d3f659]
 }
 
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+   /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+  }
+}
+
         /* Modal overlay styles */
         #modal-overlay {
             transition: opacity 0.3s ease;
