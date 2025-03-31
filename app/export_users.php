@@ -32,134 +32,129 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Export based on the requested format
 if ($format === 'excel') {
-    // Excel export
-    require '../vendor/autoload.php'; // Make sure you have PhpSpreadsheet installed via Composer
-    
-    use PhpOffice\PhpSpreadsheet\Spreadsheet;
-    use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-    
-    // Create a new spreadsheet
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    
-    // Set headers
-    $sheet->setCellValue('A1', 'ID');
-    $sheet->setCellValue('B1', 'Username');
-    $sheet->setCellValue('C1', 'Nom');
-    $sheet->setCellValue('D1', 'Prénom');
-    $sheet->setCellValue('E1', 'Email');
-    $sheet->setCellValue('F1', 'Établissement');
-    $sheet->setCellValue('G1', 'Rôle');
-    $sheet->setCellValue('H1', 'État du compte');
-    
-    // Style the header row
-    $sheet->getStyle('A1:H1')->getFont()->setBold(true);
-    
-    // Add data
-    $row = 2;
-    foreach ($users as $user) {
-        $sheet->setCellValue('A' . $row, $user['user_id']);
-        $sheet->setCellValue('B' . $row, $user['username']);
-        $sheet->setCellValue('C' . $row, $user['nom']);
-        $sheet->setCellValue('D' . $row, $user['prenom']);
-        $sheet->setCellValue('E' . $row, $user['email']);
-        $sheet->setCellValue('F' . $row, $user['etablissement_name'] ?? 'UPW Boumerdes');
-        $sheet->setCellValue('G' . $row, $user['role_name']);
-        $sheet->setCellValue('H' . $row, $user['etat_compte_text']);
-        $row++;
-    }
-    
-    // Auto-size columns
-    foreach (range('A', 'H') as $col) {
-        $sheet->getColumnDimension($col)->setAutoSize(true);
-    }
-    
-    // Set the filename
-    $filename = 'liste_utilisateurs_' . date('Y-m-d') . '.xlsx';
-    
-    // Set headers for download
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="' . $filename . '"');
+    // Excel export without Composer
+    // Set headers for Excel file
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment;filename="liste_utilisateurs_' . date('Y-m-d') . '.xls"');
     header('Cache-Control: max-age=0');
     
-    // Save to output
-    $writer = new Xlsx($spreadsheet);
-    $writer->save('php://output');
+    // Create Excel XML content
+    echo '<?xml version="1.0" encoding="UTF-8"?>';
+    echo '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40">';
+    echo '<Worksheet ss:Name="Liste des Utilisateurs">';
+    echo '<Table>';
+    
+    // Header row
+    echo '<Row>';
+    echo '<Cell><Data ss:Type="String">ID</Data></Cell>';
+    echo '<Cell><Data ss:Type="String">Username</Data></Cell>';
+    echo '<Cell><Data ss:Type="String">Nom</Data></Cell>';
+    echo '<Cell><Data ss:Type="String">Prénom</Data></Cell>';
+    echo '<Cell><Data ss:Type="String">Email</Data></Cell>';
+    echo '<Cell><Data ss:Type="String">Établissement</Data></Cell>';
+    echo '<Cell><Data ss:Type="String">Rôle</Data></Cell>';
+    echo '<Cell><Data ss:Type="String">État du compte</Data></Cell>';
+    echo '</Row>';
+    
+    // Data rows
+    foreach ($users as $user) {
+        echo '<Row>';
+        echo '<Cell><Data ss:Type="Number">' . $user['user_id'] . '</Data></Cell>';
+        echo '<Cell><Data ss:Type="String">' . htmlspecialchars($user['username']) . '</Data></Cell>';
+        echo '<Cell><Data ss:Type="String">' . htmlspecialchars($user['nom']) . '</Data></Cell>';
+        echo '<Cell><Data ss:Type="String">' . htmlspecialchars($user['prenom']) . '</Data></Cell>';
+        echo '<Cell><Data ss:Type="String">' . htmlspecialchars($user['email']) . '</Data></Cell>';
+        echo '<Cell><Data ss:Type="String">' . htmlspecialchars($user['etablissement_name'] ?? 'UPW Boumerdes') . '</Data></Cell>';
+        echo '<Cell><Data ss:Type="String">' . $user['role_name'] . '</Data></Cell>';
+        echo '<Cell><Data ss:Type="String">' . $user['etat_compte_text'] . '</Data></Cell>';
+        echo '</Row>';
+    }
+    
+    echo '</Table>';
+    echo '</Worksheet>';
+    echo '</Workbook>';
     exit;
     
 } else {
-    // PDF export
-    require_once '../vendor/autoload.php'; // Make sure you have TCPDF installed via Composer
+    // Simple PDF export using HTML and browser's print-to-PDF functionality
     
-    // Create new PDF document
-    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    // Set headers to force download of an HTML file that will auto-convert to PDF
+    header('Content-Type: text/html; charset=utf-8');
     
-    // Set document information
-    $pdf->SetCreator('UPW Boumerdes');
-    $pdf->SetAuthor('Admin System');
-    $pdf->SetTitle('Liste des Utilisateurs');
-    $pdf->SetSubject('Liste des Utilisateurs');
-    
-    // Set default header data
-    $pdf->SetHeaderData('', 0, 'Liste des Utilisateurs', 'Généré le ' . date('d/m/Y H:i:s'));
-    
-    // Set header and footer fonts
-    $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-    $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-    
-    // Set default monospaced font
-    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-    
-    // Set margins
-    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-    $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-    
-    // Set auto page breaks
-    $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-    
-    // Set image scale factor
-    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-    
-    // Add a page
-    $pdf->AddPage();
-    
-    // Create the table content
-    $html = '<table border="1" cellpadding="5">
-        <thead>
-            <tr style="background-color: #0455b7; color: white; font-weight: bold;">
-                <th>ID</th>
-                <th>Username</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Email</th>
-                <th>Établissement</th>
-                <th>Rôle</th>
-                <th>État</th>
-            </tr>
-        </thead>
-        <tbody>';
+    // Create HTML content
+    echo '<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Liste des Utilisateurs</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background-color: #0455b7; color: white; font-weight: bold; text-align: left; padding: 8px; }
+            td { border: 1px solid #ddd; padding: 8px; }
+            tr:nth-child(even) { background-color: #f2f2f2; }
+            h1 { color: #0455b7; }
+            .header { margin-bottom: 20px; }
+            .date { color: #666; }
+            @media print {
+                body { font-size: 12pt; }
+                table { page-break-inside: auto; }
+                tr { page-break-inside: avoid; page-break-after: auto; }
+                button { display: none; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Liste des Utilisateurs</h1>
+            <div class="date">Généré le ' . date('d/m/Y H:i:s') . '</div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Établissement</th>
+                    <th>Rôle</th>
+                    <th>État</th>
+                </tr>
+            </thead>
+            <tbody>';
     
     foreach ($users as $user) {
-        $html .= '<tr>
-            <td>' . $user['user_id'] . '</td>
-            <td>' . htmlspecialchars($user['username']) . '</td>
-            <td>' . htmlspecialchars($user['nom']) . '</td>
-            <td>' . htmlspecialchars($user['prenom']) . '</td>
-            <td>' . htmlspecialchars($user['email']) . '</td>
-            <td>' . htmlspecialchars($user['etablissement_name'] ?? 'UPW Boumerdes') . '</td>
-            <td>' . $user['role_name'] . '</td>
-            <td>' . $user['etat_compte_text'] . '</td>
-        </tr>';
+        echo '<tr>
+                <td>' . $user['user_id'] . '</td>
+                <td>' . htmlspecialchars($user['username']) . '</td>
+                <td>' . htmlspecialchars($user['nom']) . '</td>
+                <td>' . htmlspecialchars($user['prenom']) . '</td>
+                <td>' . htmlspecialchars($user['email']) . '</td>
+                <td>' . htmlspecialchars($user['etablissement_name'] ?? 'UPW Boumerdes') . '</td>
+                <td>' . $user['role_name'] . '</td>
+                <td>' . $user['etat_compte_text'] . '</td>
+            </tr>';
     }
     
-    $html .= '</tbody></table>';
-    
-    // Output the HTML content
-    $pdf->writeHTML($html, true, false, true, false, '');
-    
-    // Close and output PDF document
-    $pdf->Output('liste_utilisateurs_' . date('Y-m-d') . '.pdf', 'D');
+    echo '</tbody>
+        </table>
+        <script>
+            // Auto-print as PDF when page loads
+            window.onload = function() {
+                // Set print options to save as PDF
+                const printOptions = {
+                    destination: "save-as-pdf",
+                    filename: "liste_utilisateurs_' . date('Y-m-d') . '.pdf"
+                };
+                
+                // Trigger print dialog with PDF settings
+                window.print();
+            }
+        </script>
+    </body>
+    </html>';
     exit;
 }
 ?>
