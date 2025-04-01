@@ -163,5 +163,23 @@ function executeManagUsersJavaScript() {
         });
 }
 
+    // Export dropdown functionality
+    const exportButton = document.getElementById('export-button');
+    const exportDropdown = document.getElementById('export-dropdown');
+    
+    exportButton.addEventListener('click', function() {
+        exportDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
+            exportDropdown.classList.add('hidden');
+        }
+    });
+    
+    // Existing JavaScript for user management
+    // ... (keep any existing JavaScript here)
+    
 // Execute the function when the script is loaded
 executeManagUsersJavaScript();

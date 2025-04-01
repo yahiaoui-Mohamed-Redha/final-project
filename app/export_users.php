@@ -76,10 +76,11 @@ if ($format === 'excel') {
     exit;
     
 } else {
-    // Simple PDF export using HTML and browser's print-to-PDF functionality
+    // HTML export (previously PDF)
     
-    // Set headers to force download of an HTML file that will auto-convert to PDF
+    // Set headers to force download of an HTML file
     header('Content-Type: text/html; charset=utf-8');
+    header('Content-Disposition: attachment; filename="liste_utilisateurs_' . date('Y-m-d') . '.html"');
     
     // Create HTML content
     echo '<!DOCTYPE html>
@@ -96,11 +97,21 @@ if ($format === 'excel') {
             h1 { color: #0455b7; }
             .header { margin-bottom: 20px; }
             .date { color: #666; }
+            .print-button { 
+                display: block; 
+                margin: 20px auto; 
+                padding: 10px 20px; 
+                background-color: #0455b7; 
+                color: white; 
+                border: none; 
+                border-radius: 4px; 
+                cursor: pointer; 
+            }
             @media print {
+                .print-button { display: none; }
                 body { font-size: 12pt; }
                 table { page-break-inside: auto; }
                 tr { page-break-inside: avoid; page-break-after: auto; }
-                button { display: none; }
             }
         </style>
     </head>
@@ -109,6 +120,8 @@ if ($format === 'excel') {
             <h1>Liste des Utilisateurs</h1>
             <div class="date">Généré le ' . date('d/m/Y H:i:s') . '</div>
         </div>
+        
+        <button class="print-button" onclick="window.print()">Imprimer en PDF</button>
         
         <table>
             <thead>
@@ -140,19 +153,6 @@ if ($format === 'excel') {
     
     echo '</tbody>
         </table>
-        <script>
-            // Auto-print as PDF when page loads
-            window.onload = function() {
-                // Set print options to save as PDF
-                const printOptions = {
-                    destination: "save-as-pdf",
-                    filename: "liste_utilisateurs_' . date('Y-m-d') . '.pdf"
-                };
-                
-                // Trigger print dialog with PDF settings
-                window.print();
-            }
-        </script>
     </body>
     </html>';
     exit;
