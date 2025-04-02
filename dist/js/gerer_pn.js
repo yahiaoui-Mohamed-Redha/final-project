@@ -154,4 +154,51 @@ function executeGererPnJavaScript() {
 }
 
 // تنفيذ الوظيفة عند تحميل البرنامج النصي
+
+$(document).on('click', '[data-dropdown-toggle="dropdownDots"]', function() {
+    const dropdown = $(this).next('.z-10');
+    if (dropdown.hasClass('hidden')) {
+    // Close all open drop-down lists first
+        $('.z-10').addClass('hidden');
+        // Then open the current drop-down menu
+        dropdown.removeClass('hidden');
+        
+        
+        const button = $(this);
+        const buttonRect = button[0].getBoundingClientRect();
+        dropdown.css({
+            'top': buttonRect.bottom + window.scrollY + 'px',
+            'left': buttonRect.left + window.scrollX - dropdown.width() + button.width() + 'px'
+        });
+    } else {
+        dropdown.addClass('hidden');
+    }
+});
+
+// Close the drop-down menu when clicking anywhere else
+$(document).on('click', function(e) {
+    if (!$(e.target).is('[data-dropdown-toggle="dropdownDots"]') && !$(e.target).parents('[data-dropdown-toggle="dropdownDots"]').length) {
+        $('.z-10').addClass('hidden');
+    }
+});
+    
+
+    // Export dropdown functionality
+    const exportButton = document.getElementById('export-button');
+    const exportDropdown = document.getElementById('export-dropdown');
+    
+    exportButton.addEventListener('click', function() {
+        exportDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
+            exportDropdown.classList.add('hidden');
+        }
+    });
+    
+    // Existing JavaScript for user management
+    // ... (keep any existing JavaScript here)
+    
 executeGererPnJavaScript();

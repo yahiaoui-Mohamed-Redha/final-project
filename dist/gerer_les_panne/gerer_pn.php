@@ -131,6 +131,9 @@ if (isset($_SESSION['error_message'])) {
 
 ?>
 
+<html>
+    <body>
+        
 
 <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
     <div class="p-2">
@@ -208,15 +211,34 @@ if (isset($_SESSION['error_message'])) {
             </div>
         </div>
         <div class="flex items-center justify-center space-x-2">
-            <button class="flex items-center px-2 py-1 border border-gray-300 rounded-lg text-sm text-gray-600 transition-colors duration-300 transform hover:bg-[#c8d3f659] hover:text-[#0455b7]">
+        <button id="export-button" class="flex items-center p-1.5 border rounded-lg text-gray-600 border-gray-200 transition-colors duration-300 transform mr-2 hover:bg-[#c8d3f659] hover:text-[#0455b7] cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                     <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
                     <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
                     <path d="M9 15h6"></path>
                     <path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5"></path>
                 </svg>
-                <span class="mx-2 text-sm font-medium">Exporter</span>
+                <span class="mx-2 text-sm font-medium cursor-pointer">Exporter</span>
             </button>
+            <!-- Update with absolute URLs -->
+            <div id="export-dropdown" class="hidden absolute z-50 mt-20 w-48 bg-white rounded-md shadow-lg py-1">
+                <a href="../app/export_pn.php?format=pdf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Exporter en PDF
+                    </div>
+                </a>
+                <a href="../app/export_pn.php?format=excel" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Exporter en Excel
+                    </div>
+                </a>
+            </div>
             <button class="flex items-center border p-1 border-gray-300 rounded-md text-xs text-gray-600 transition-colors duration-300 transform hover:bg-black hover:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5"> 
                     <path d="M3 9l4 -4l4 4m-4 -4v14"></path> 
@@ -299,23 +321,33 @@ if (isset($_SESSION['error_message'])) {
                         </div>
                     </td>
                     <td class="px-6 py-4 w-[3%] whitespace-nowrap text-sm font-medium">
-                        <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50" type="button">
-                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
-                                <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-                            </svg>
-                        </button>
-                        <!-- Dropdown menu -->
-                        <div id="dropdownDots" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
-                            <div class="py-2">
-                                <a href="edit_panne.php" class="text-indigo-600 hover:text-indigo-900">تعديل</a>
+                            <button data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 cursor-pointer" type="button">
+                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                </svg>
+                            </button>
+                            <!-- Dropdown menu -->
+                            <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
+                                <div class="py-2">
+                                    <a href="../app/panne_mission_view.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View</a>
+                                </div>
+                                <div class="py-2">
+                                    <a href="gerer_les_panne/panne_edit.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">modifier</a>
+                                </div>
+                                <div class="py-2">
+                                    <a href="gerer_les_panne/panne_delete.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">supprimer</a>
+                                </div>
+                                <div class="py-2">
+                                    <a href="gerer_les_panne/panne_export.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export</a>
+                                </div>
                             </div>
-                            <div class="py-2">
-                                <a href="../app/delete_panne.php?panne_num=<?php echo $panne['panne_num']; ?>" class="text-red-600 hover:text-red-900 ml-2" onclick="return confirm('Are you sure you want to delete this panne?');">حذف</a>
-                            </div>
-                        </div>
-                    </td>
+                            <!-- /Dropdown menu -->
+                        </td>
                 </tr>
             <?php endforeach; ?>
         </table>
     </div>
 </div>
+<script src="js/gerer_pn.js"></script>
+</body>
+</html>
