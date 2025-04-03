@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 ?>
 
-<body class="bg-gray-100">
+
     <div class="max-w-2xl mx-auto bg-white p-8 mt-10 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">تعديل الحساب</h2>
         <form action="../../app/modifuserinf.php" method="POST">
@@ -56,4 +56,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" class="mt-6 w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">حفظ التعديلات</button>
         </form>
     </div>
-<script src="https://cdn.tailwindcss.com"></script>
