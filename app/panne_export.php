@@ -236,12 +236,7 @@ try {
         </div>
     </div>
 
-    <script>
-        // You can add additional JavaScript for handling the print action
-        document.querySelector('.print-button').addEventListener('click', function() {
-            window.print();
-        });
-    </script>
+
 </body>
 </html>
 <?php
