@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $update->execute([$prenom, $nom, $email, $username, $user_mobile, $user_fixe, $user_id]);
     }
     
-    header('Location: ../dist/admin_page.php');
+    header('Location: ../dist/admin_page.php?contentpage=Parametres/Parametres.php');
     exit();
 }
 ?>
