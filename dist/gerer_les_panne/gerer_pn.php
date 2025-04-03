@@ -338,7 +338,7 @@ if (isset($_SESSION['error_message'])) {
                                     <a href="gerer_les_panne/panne_delete.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">supprimer</a>
                                 </div>
                                 <div class="py-2">
-                                    <a href="gerer_les_panne/panne_export.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export</a>
+                                    <a href="../app/panne_export.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Exporter la panne</a>
                                 </div>
                             </div>
                             <!-- /Dropdown menu -->
