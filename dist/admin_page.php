@@ -222,7 +222,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
         </header>
         
         <!-- Notification Modal -->
-        <div id="modal-overlay" class="hidden z-40 fixed w-full h-full flex items-start justify-start inset-0 bg-[#0000007a] backdrop-opacity-10">
+        <div id="modal-overlayN" class="hidden z-40 fixed w-full h-full flex items-start justify-start inset-0 bg-[#0000007a] backdrop-opacity-10">
             <div id="modal" class="fixed top-[5.5rem] left-[17.2rem] bg-white p-6 rounded-lg shadow-lg w-1/3 max-h-[80vh] overflow-y-auto">
                 <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                     <h2 class="text-lg font-semibold">Notifications</h2>
@@ -285,16 +285,16 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
     <script>
         // Function to toggle the notification modal
         function toggleNotificationModal() {
-            const modalOverlay = document.getElementById('modal-overlay');
-            if (modalOverlay.style.display === 'flex') {
-                modalOverlay.style.display = 'none';
+            const modalOverlayN = document.getElementById('modal-overlayN');
+            if (modalOverlayN.style.display === 'flex') {
+                modalOverlayN.style.display = 'none';
             } else {
-                modalOverlay.style.display = 'flex';
+                modalOverlayN.style.display = 'flex';
             }
         }
 
         // Close modal when clicking outside
-        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+        document.getElementById('modal-overlayN').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.style.display = 'none';
             }
@@ -302,7 +302,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
 
         // Close modal when clicking the close button
         document.getElementById('close-modal').addEventListener('click', function() {
-            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('modal-overlayN').style.display = 'none';
         });
 
         // Handle notification item clicks
@@ -315,7 +315,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 markNotificationAsRead(notificationId);
                 
                 // Close the modal
-                document.getElementById('modal-overlay').style.display = 'none';
+                document.getElementById('modal-overlayN').style.display = 'none';
                 
                 // Navigate to the link if it exists
                 if (notificationLink && notificationLink !== '') {

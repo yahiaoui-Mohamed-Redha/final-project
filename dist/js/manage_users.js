@@ -1,25 +1,29 @@
-
 function executeManagUsersJavaScript() {
+    console.log("Initializing user management script...");
+
+    // 1. Tab Switching Functionality
     const tabs = document.querySelectorAll('.tab');
-    const tableRows = document.querySelectorAll('table tr:not(:first-child)');
-    const selectAllCheckbox = document.getElementById('select-all');
-    const checkboxes = document.querySelectorAll('table input[type="checkbox"]:not(#select-all)');
+    const tableRows = document.querySelectorAll('table tr:not(.tr-head)');
 
     function switchTab(activeTab) {
         tabs.forEach(tab => {
             tab.classList.remove('text-[#0455b7]', 'bg-white', 'rounded-lg');
             tab.classList.add('text-gray-600', 'rounded-xl');
+            tab.setAttribute('aria-selected', 'false');
         });
 
         activeTab.classList.remove('text-gray-600', 'rounded-xl');
         activeTab.classList.add('text-[#0455b7]', 'bg-white', 'rounded-lg');
+        activeTab.setAttribute('aria-selected', 'true');
 
         const selectedRole = activeTab.dataset.role || 'all';
 
         tableRows.forEach(row => {
             if (row.cells.length > 5) {
                 const role = row.cells[5].textContent.trim().toLowerCase();
-                if (selectedRole === 'all' || role === selectedRole) {
+                const roleToMatch = selectedRole.toLowerCase();
+                
+                if (selectedRole === 'all' || role.includes(roleToMatch)) {
                     row.style.display = 'table-row';
                 } else {
                     row.style.display = 'none';
@@ -29,208 +33,209 @@ function executeManagUsersJavaScript() {
     }
 
     tabs.forEach(tab => {
-        tab.addEventListener('click', () => switchTab(tab));
-    });
-
-    switchTab(tabs[0]);
-
-    selectAllCheckbox.addEventListener('click', function () {
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = selectAllCheckbox.checked;
+        tab.addEventListener('click', () => {
+            console.log(`Switching to tab: ${tab.dataset.role}`);
+            switchTab(tab);
         });
     });
 
-        // Handle toggle switch change event
-        document.querySelectorAll('input[id^="account-status-"]').forEach(function (toggleSwitch) {
-            toggleSwitch.addEventListener('change', function () {
-                const userId = this.getAttribute('data-user-id');
-                const newStatus = this.checked ? 1 : 0;
-    
-                // Redirect to the appropriate PHP script
-                if (newStatus === 1) {
-                    window.location.href = `gerer_les_comptes/enable_user.php?id=${userId}`;
-                } else {
-                    window.location.href = `gerer_les_comptes/disable_user.php?id=${userId}`;
-                }
+    // Initialize first tab as active
+    if (tabs.length > 0) {
+        switchTab(tabs[0]);
+    }
+
+    // 2. Checkbox Selection
+    const selectAllCheckbox = document.getElementById('select-all');
+    const userCheckboxes = document.querySelectorAll('input[name="select-user"]');
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            console.log(`Select all checked: ${this.checked}`);
+            userCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
             });
         });
+    }
 
+    // 3. Account Status Toggle
+    document.querySelectorAll('input[id^="account-status-"]').forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            const userId = this.dataset.userId;
+            const newStatus = this.checked ? 1 : 0;
+            console.log(`Changing status for user ${userId} to ${newStatus}`);
 
-        // JavaScript code for handling the modal and form submission
-        const modifyButtons = document.querySelectorAll('.modify-user-btn');
-        const modalOverlay = document.getElementById('modal-overlay');
-        const closeModalButton = document.getElementById('close-modal');
+            // Update UI immediately
+            const statusText = document.getElementById(`status-text-${userId}`);
+            if (statusText) {
+                statusText.textContent = newStatus ? 'Activé' : 'Désactivé';
+            }
 
-        modifyButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const userId = button.getAttribute('data-user-id');
-                const username = button.getAttribute('data-username');
-                const nom = button.getAttribute('data-nom');
-                const prenom = button.getAttribute('data-prenom');
-                const email = button.getAttribute('data-email');
-                const roleId = button.getAttribute('data-role-id');
+            // Send request to server
+            const endpoint = newStatus ? 'enable_user.php' : 'disable_user.php';
+            window.location.href = `gerer_les_comptes/${endpoint}?id=${userId}`;
+        });
+    });
 
-                // Populate form fields
-                document.getElementById('user_id').value = userId;
-                document.getElementById('nom').value = nom;
-                document.getElementById('prenom').value = prenom;
-                document.getElementById('email').value = email;
+    // 4. Modal Functionality
+    const modalOverlay = document.getElementById('modal-overlay-M');
+    const modal = document.getElementById('modal');
+    const closeModalButton = document.getElementById('close-modal');
+    const modifyButtons = document.querySelectorAll('.modify-user-btn');
 
-                // Role Mapping
-                let roleName = (roleId == 1) ? 'Admin' : (roleId == 2) ? 'Technicien' : 'Receveur';
-                document.getElementById('account_type').textContent = roleName;
-                document.getElementById('role_id').value = roleId;
+    function showModal() {
+        console.log("Showing modal");
+        modalOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
 
-                // Show modal
-                modalOverlay.classList.remove('hidden');
+    function hideModal() {
+        console.log("Hiding modal");
+        modalOverlay.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    modifyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.dataset.userId;
+            const username = this.dataset.username;
+            const nom = this.dataset.nom;
+            const prenom = this.dataset.prenom;
+            const email = this.dataset.email;
+            const roleId = this.dataset.roleId;
+
+            console.log(`Editing user ${userId}`);
+
+            // Fill form fields
+            document.getElementById('user_id').value = userId;
+            document.getElementById('nom').value = nom;
+            document.getElementById('prenom').value = prenom;
+            document.getElementById('email').value = email;
+
+            // Set role display
+            const roleName = roleId == 1 ? 'Admin' : 
+                           roleId == 2 ? 'Technicien' : 'Receveur';
+            document.getElementById('account_type').textContent = 
+                `Type de compte est : ${roleName}`;
+            document.getElementById('role_id').value = roleId;
+
+            showModal();
+        });
+    });
+
+    closeModalButton.addEventListener('click', hideModal);
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            hideModal();
+        }
+    });
+
+    // 5. Search Functionality
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        console.log(`Searching for: ${searchTerm}`);
+
+        if (!searchTerm) {
+            // Reset to current tab view if search is empty
+            const activeTab = document.querySelector('.tab[aria-selected="true"]') || tabs[0];
+            switchTab(activeTab);
+            document.getElementById('no-results-message')?.remove();
+            return;
+        }
+
+        let hasResults = false;
+        tableRows.forEach(row => {
+            let rowText = '';
+            row.querySelectorAll('td').forEach(cell => {
+                rowText += cell.textContent.toLowerCase() + ' ';
             });
-        });
 
-        closeModalButton.addEventListener('click', () => {
-            modalOverlay.classList.add('hidden');
-        });
-
-        modalOverlay.addEventListener('click', (event) => {
-            if (event.target === modalOverlay) {
-                modalOverlay.classList.add('hidden');
+            if (rowText.includes(searchTerm)) {
+                row.style.display = 'table-row';
+                hasResults = true;
+            } else {
+                row.style.display = 'none';
             }
         });
-}
 
-// إعادة تعريف وظيفة البحث كدالة منفصلة لإعادة استخدامها
-function performSearch() {
-    const searchText = $('#search-input').val().toLowerCase();
-    
-    if (searchText.trim() === '') {
-        // إذا كان حقل البحث فارغًا، نعود إلى الحالة الافتراضية للتبويب النشط
-        if (nouveauTab.hasClass('bg-white')) {
-            filterNewOrders(true);
-        } else {
-            filterNewOrders(false);
-        }
-        $('#no-results-message').remove();
-        return;
-    }
-    
-    // البحث في جميع الخلايا
-    $('.tr-body').each(function() {
-        let found = false;
-        $(this).find('td').each(function() {
-            if ($(this).text().toLowerCase().includes(searchText)) {
-                found = true;
-                return false; // الخروج من الحلقة
+        // Show no results message if needed
+        const noResultsMsg = document.getElementById('no-results-message');
+        if (!hasResults) {
+            if (!noResultsMsg) {
+                const msg = document.createElement('div');
+                msg.id = 'no-results-message';
+                msg.className = 'text-center py-4 text-gray-500';
+                msg.textContent = `Aucun résultat trouvé pour "${searchTerm}"`;
+                document.querySelector('table').after(msg);
             }
-        });
-        
-        if (found) {
-            $(this).show();
         } else {
-            $(this).hide();
+            noResultsMsg?.remove();
+        }
+    }
+
+    searchInput.addEventListener('input', performSearch);
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
         }
     });
-    
-    // عرض رسالة إذا لم يكن هناك نتائج
-    if ($('.tr-body:visible').length === 0) {
-        if ($('#no-results-message').length === 0) {
-            $('table').after('<div id="no-results-message" class="text-center py-4">Aucun résultat trouvé pour "' + searchText + '".</div>');
-        } else {
-            $('#no-results-message').text('Aucun résultat trouvé pour "' + searchText + '".');
-        }
-    } else {
-        $('#no-results-message').remove();
-    }
-    
-    // إلغاء تحديد "تحديد الكل" عند البحث
-    selectAllCheckbox.prop('checked', false);
-}
 
-// تطبيق البحث التلقائي عند الكتابة في حقل البحث
-$('#search-input').on('input', function() {
-    performSearch();
-});
-
-// الاحتفاظ بمعالج حدث النقر على زر البحث للتوافق
-$('#search-button').on('click', function() {
-    performSearch();
-});
-
-// الاحتفاظ بمعالج حدث الضغط على Enter (اختياري)
-$('#search-input').on('keypress', function(e) {
-    if (e.which === 13) {
-        e.preventDefault(); // منع إرسال النموذج إذا كان داخل نموذج
-        performSearch();
-    }
-});
-
-    // Export dropdown functionality
+    // 6. Export Functionality
     const exportButton = document.getElementById('export-button');
     const exportDropdown = document.getElementById('export-dropdown');
-    
-    exportButton.addEventListener('click', function() {
-        exportDropdown.classList.toggle('hidden');
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
-            exportDropdown.classList.add('hidden');
-        }
-    });
-    
-    // Existing JavaScript for user management
-    // ... (keep any existing JavaScript here)
-    
-    // Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded - initializing export functionality');
-    initializeExportButton();
-    
-    // Add other initialization functions here
-});
 
-// Function to initialize the export button functionality
-function initializeExportButton() {
-    const exportButton = document.getElementById('export-button');
-    const exportDropdown = document.getElementById('export-dropdown');
-    
     if (exportButton && exportDropdown) {
-        console.log('Export button found, attaching event listeners');
-        
-        // Toggle dropdown when export button is clicked
         exportButton.addEventListener('click', function(e) {
-            e.preventDefault();
             e.stopPropagation();
             exportDropdown.classList.toggle('hidden');
-            console.log('Export button clicked, dropdown toggled');
         });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
+
+        document.addEventListener('click', function(e) {
+            if (!exportButton.contains(e.target)) {
                 exportDropdown.classList.add('hidden');
             }
         });
-        
-        // Make sure export links work properly
-        const exportLinks = exportDropdown.querySelectorAll('a');
-        exportLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                console.log('Export link clicked:', this.href);
-                // Let the default link behavior happen (navigate to the export URL)
+
+        // Update export links with selected users
+        document.querySelectorAll('#export-dropdown a').forEach(link => {
+            link.addEventListener('click', function() {
+                const selectedUsers = [];
+                document.querySelectorAll('input[name="select-user"]:checked').forEach(checkbox => {
+                    selectedUsers.push(checkbox.id.replace('select-user-', ''));
+                });
+
+                // If none selected, export all
+                if (selectedUsers.length === 0) {
+                    document.querySelectorAll('input[name="select-user"]').forEach(checkbox => {
+                        selectedUsers.push(checkbox.id.replace('select-user-', ''));
+                    });
+                }
+
+                // Add users to URL
+                const url = new URL(this.href);
+                url.searchParams.set('users', selectedUsers.join(','));
+                this.href = url.toString();
+                console.log(`Exporting users: ${selectedUsers.join(', ')}`);
             });
         });
-    } else {
-        console.warn('Export button or dropdown not found in the DOM');
     }
+
+    console.log("User management script initialized successfully");
 }
 
-// If you're using AJAX to load content, call this function after loading new content
-function reinitializeAfterContentLoad() {
-    console.log('Content loaded via AJAX - reinitializing components');
-    initializeExportButton();
-    // Reinitialize other components as needed
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded");
+    executeManagUsersJavaScript();
+});
+
+// For AJAX loaded content
+function reinitializeManagUsers() {
+    console.log("Reinitializing user management script");
+    executeManagUsersJavaScript();
 }
 
-// Add any other existing functionality from your manage_users.js file here
-// Execute the function when the script is loaded
 executeManagUsersJavaScript();

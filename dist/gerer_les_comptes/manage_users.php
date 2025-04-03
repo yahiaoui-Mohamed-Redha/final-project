@@ -44,10 +44,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $contentPage = basename($_SERVER['PHP_SELF']);
 ?>
 
-<html>
-<body>
     
-<div id="modal-overlay" class="hidden fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10 z-50">
+    <div id="modal-overlay-M" class="hidden fixed w-full h-full flex items-center justify-center inset-0 bg-[#0000007a] backdrop-opacity-10 z-[99]">
         <div id="modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-1/3">
             <h2 class="text-xl font-semibold mb-4">Modifier l'utilisateur</h2>
             <form action="../app/modifying_users.php" method="post" id="modify-user-form">
@@ -88,6 +86,7 @@ $contentPage = basename($_SERVER['PHP_SELF']);
             </form>
         </div>
     </div>
+
 
 <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
     <div class="p-2">
@@ -237,7 +236,3 @@ $contentPage = basename($_SERVER['PHP_SELF']);
     </div>
 
 </div>
-
-<script src="../../js/manage_users.js"></script>
-</body>
-</html>

@@ -15,7 +15,6 @@ $select = $conn->prepare("SELECT * FROM Users WHERE user_id = ?");
 $select->execute([$user_id]);
 $user = $select->fetch(PDO::FETCH_ASSOC);
 
-
 ?>
 
 
