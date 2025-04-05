@@ -27,7 +27,7 @@ function executeGererPnJavaScript() {
                 oneWeekAgo.setDate(currentDate.getDate() - 5);
                 
                 rows.each(function() {
-                    const dateString = $(this).find('td:nth-child(3)').text();  
+                    const dateString = $(this).find('td:nth-child(4)').text();  
                     if (dateString) {
                         //   
                         const dateParts = dateString.split('-');
@@ -56,7 +56,7 @@ function executeGererPnJavaScript() {
             
             if (showOnlyNew && $('.tr-body:visible').length === 0) {
                 if ($('#no-results-message').length === 0) {
-                    $('table').after('<div id="no-results-message" class="text-center py-4">Aucun nouvel ordre de mission trouvé.</div>');
+                    $('table').after('<div id="no-results-message" class="text-center py-4">Aucun nouvel rapport trouvé.</div>');
                 }
             } else {
                 $('#no-results-message').remove();
