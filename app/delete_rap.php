@@ -31,7 +31,7 @@ try {
 } catch (PDOException $e) {
     // of an error in the database
     $_SESSION['error'] = "Erreur lors de la suppression : " . $e->getMessage();
-    header('Location: ../dist/gerer_les_rapport/gerer_pn.php');
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 ?>

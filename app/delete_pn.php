@@ -16,7 +16,7 @@ try {
     
     if ($checkPanne->rowCount() === 0) {
         $_SESSION['error'] = "La panne n'existe pas ou a déjà été supprimée.";
-        header('Location: gerer_pn.php');
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
