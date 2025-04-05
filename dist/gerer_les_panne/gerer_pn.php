@@ -134,6 +134,43 @@ if (isset($_SESSION['error_message'])) {
 <html>
     <body>
         
+    <!-- Success Alert -->
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm shadow-sm transition-all duration-300 ease-in-out border-l-4 border-green-500 flex items-center"  role="alert">
+        <div class="flex-shrink-0 mr-3">
+            <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="flex-1 text-green-800 font-medium">
+            <?= htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
+        </div>
+        <button type="button" class="ml-auto inline-flex text-green-600 hover:text-green-800 focus:outline-none" onclick="this.parentElement.style.display='none';">
+            <svg class="h-4 w-4 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+<?php endif; ?>
+
+<!-- Error Alert -->
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm shadow-sm transition-all duration-300 ease-in-out border-l-4 border-red-500 flex items-center" role="alert">
+        <div class="flex-shrink-0 mr-3">
+            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="flex-1 text-red-800 font-medium">
+            <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
+        </div>
+        <button type="button" class="ml-auto inline-flex text-red-600 hover:text-red-800 focus:outline-none" onclick="this.parentElement.style.display='none';">
+            <svg class="h-4 w-4 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+<?php endif; ?>
 
 <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
     <div class="p-2">
@@ -335,7 +372,7 @@ if (isset($_SESSION['error_message'])) {
                                     <a href="gerer_les_panne/panne_edit.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">modifier</a>
                                 </div>
                                 <div class="py-2">
-                                    <a href="gerer_les_panne/panne_delete.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">supprimer</a>
+                                <a href="../app/delete_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="return confirm('Are you sure you want to delete this item ?');">Supprimer</a>
                                 </div>
                                 <div class="py-2">
                                     <a href="../app/panne_export.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Exporter la panne</a>

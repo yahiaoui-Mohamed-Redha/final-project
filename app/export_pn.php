@@ -96,50 +96,84 @@ if ($format === 'excel') {
 } else {
     // HTML export (for PDF)
     
-    // Set headers to force download of an HTML file
-    header('Content-Type: text/html; charset=utf-8');
-    header('Content-Disposition: attachment; filename="liste_pn_' . date('Y-m-d') . '.html"');
+// Set headers for HTML content
+header('Content-Type: text/html; charset=utf-8');
     
-    // Create HTML content
-    echo '<!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Liste Des Pannes</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th { background-color: #0455b7; color: white; font-weight: bold; text-align: left; padding: 8px; }
-            td { border: 1px solid #ddd; padding: 8px; }
-            tr:nth-child(even) { background-color: #f2f2f2; }
-            h1 { color: #0455b7; }
-            .header { margin-bottom: 20px; }
-            .date { color: #666; }
-            .print-button { 
-                display: block; 
-                margin: 20px auto; 
-                padding: 10px 20px; 
-                background-color: #0455b7; 
-                color: white; 
-                border: none; 
-                border-radius: 4px; 
-                cursor: pointer; 
-            }
-            @media print {
-                .print-button { display: none; }
-                body { font-size: 12pt; }
-                table { page-break-inside: auto; }
-                tr { page-break-inside: avoid; page-break-after: auto; }
-            }
-        </style>
-    </head>
+// Create HTML content
+echo '<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des pannes</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background-color: #0455b7; color: white; font-weight: bold; text-align: left; padding: 8px; }
+        td { border: 1px solid #ddd; padding: 8px; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        h1 { color: #0455b7; }
+        .header { margin-bottom: 20px; }
+        .date { color: #666; }
+        @media print {
+            body { font-size: 12pt; }
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            button { display: none; }
+        }
+            .button-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+    .print-button {
+        background-color: #0455b7;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .print-button:hover {
+        background-color: #033b7e;
+    }
+    .back-button {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .back-button:hover {
+        background-color: #5a6268;
+    }
+    
+    @media print {
+        .button-container {
+            display: none;
+        }
+        .container {
+            border: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
     <body>
         <div class="header">
             <h1>Liste Des Pannes</h1>
             <div class="date">Généré le ' . date('d/m/Y H:i:s') . '</div>
         </div>
         
-        <button class="print-button" onclick="window.print()">Imprimer en PDF</button>
+        <div class="button-container">
+            <a href="javascript:history.back()" class="back-button">Retour</a>
+            <button onclick="window.print()" class="print-button">Imprimer en PDF</button>
+        </div>
+        
         
         <table>
             <thead>
@@ -171,6 +205,13 @@ if ($format === 'excel') {
     
     echo '</tbody>
         </table>
+                <script>
+            // Immediately open print dialog when page loads
+            document.addEventListener("DOMContentLoaded", function() {
+                // Force immediate print dialog
+                window.print();
+            });
+        </script>
     </body>
     </html>';
     exit;
