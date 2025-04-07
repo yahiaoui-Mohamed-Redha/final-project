@@ -131,8 +131,6 @@ if (isset($_SESSION['error_message'])) {
 
 ?>
 
-<html>
-    <body>
         
 
 <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
@@ -307,7 +305,7 @@ if (isset($_SESSION['error_message'])) {
                         <div class="cursor-pointer" ondblclick="showEtatList(this)">
                             <span class="etat-text"><?php echo htmlspecialchars($panne['panne_etat'] ?? ''); ?></span>
                         </div>
-                        <div class="etat-list absolute z-50 bg-white border border-gray-200 shadow-lg p-2 hidden top-0 left-0 transform translate-y-8">
+                        <div class="etat-list absolute z-50 bg-white border border-gray-200 shadow-lg p-2 hidden transform">
                             <select class="w-full p-1 border rounded">
                                 <option value="nouveau">جديد</option>
                                 <option value="en cours">قيد المعالجة</option>
@@ -326,7 +324,7 @@ if (isset($_SESSION['error_message'])) {
                                     <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                 </svg>
                             </button>
-                            <!-- Dropdown menu -->
+                            <!-- Dropdown menu for action -->
                             <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                                 <div class="py-2">
                                     <a href="../app/panne_mission_view.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View</a>
@@ -348,6 +346,3 @@ if (isset($_SESSION['error_message'])) {
         </table>
     </div>
 </div>
-<script src="js/gerer_pn.js"></script>
-</body>
-</html>
