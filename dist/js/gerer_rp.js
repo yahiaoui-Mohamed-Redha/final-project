@@ -27,7 +27,7 @@ function executeGererPnJavaScript() {
                 oneWeekAgo.setDate(currentDate.getDate() - 5);
                 
                 rows.each(function() {
-                    const dateString = $(this).find('td:nth-child(3)').text();  
+                    const dateString = $(this).find('td:nth-child(4)').text();  
                     if (dateString) {
                         //   
                         const dateParts = dateString.split('-');
@@ -56,7 +56,7 @@ function executeGererPnJavaScript() {
             
             if (showOnlyNew && $('.tr-body:visible').length === 0) {
                 if ($('#no-results-message').length === 0) {
-                    $('table').after('<div id="no-results-message" class="text-center py-4">Aucun nouvel ordre de mission trouvé.</div>');
+                    $('table').after('<div id="no-results-message" class="text-center py-4">Aucun nouvel rapport trouvé.</div>');
                 }
             } else {
                 $('#no-results-message').remove();
@@ -195,6 +195,82 @@ function executeGererPnJavaScript() {
     });
     
 }
+    // Export dropdown functionality
+    const exportButton = document.getElementById('export-button');
+    const exportDropdown = document.getElementById('export-dropdown');
+    
+    exportButton.addEventListener('click', function() {
+        exportDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
+            exportDropdown.classList.add('hidden');
+        }
+    });
+    
+    // Existing JavaScript for user management
+    // ... (keep any existing JavaScript here)
+    
+    // Handle action dropdown buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize action dropdowns
+    const actionButtons = document.querySelectorAll('[data-dropdown-toggle="dropdownDots"]');
+    
+    actionButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = this.nextElementSibling;
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.absolute.z-10').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.classList.add('hidden');
+                }
+            });
+            
+            // Toggle current dropdown
+            dropdown.classList.toggle('hidden');
+            
+            // Position the dropdown
+            const rect = button.getBoundingClientRect();
+            dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+            dropdown.style.left = `${rect.left + window.scrollX}px`;
+        });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.absolute.z-10').forEach(menu => {
+            menu.classList.add('hidden');
+        });
+    });
+});
 
+// Handle main export button
+document.addEventListener('DOMContentLoaded', function() {
+    const exportButton = document.getElementById('export-button');
+    const exportDropdown = document.getElementById('export-dropdown');
+    
+    if (exportButton && exportDropdown) {
+        exportButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            exportDropdown.classList.toggle('hidden');
+            
+            // Position the dropdown
+            const rect = exportButton.getBoundingClientRect();
+            exportDropdown.style.top = `${rect.bottom + window.scrollY}px`;
+            exportDropdown.style.left = `${rect.left + window.scrollX}px`;
+        });
+        
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!exportButton.contains(e.target) && !exportDropdown.contains(e.target)) {
+                exportDropdown.classList.add('hidden');
+            }
+        });
+    }
+});
 // Execute the function when the script is loaded
 executeGererPnJavaScript();

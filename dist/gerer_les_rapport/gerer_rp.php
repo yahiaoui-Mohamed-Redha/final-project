@@ -41,6 +41,47 @@ $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
+<html>
+    <body>
+        
+    <!-- Success Alert -->
+    <?php if (isset($_SESSION['success'])): ?>
+    <div class="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm shadow-sm transition-all duration-300 ease-in-out border-l-4 border-green-500 flex items-center"  role="alert">
+        <div class="flex-shrink-0 mr-3">
+            <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="flex-1 text-green-800 font-medium">
+            <?= htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
+        </div>
+        <button type="button" class="ml-auto inline-flex text-green-600 hover:text-green-800 focus:outline-none" onclick="this.parentElement.style.display='none';">
+            <svg class="h-4 w-4 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+<?php endif; ?>
+
+<!-- Error Alert -->
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm shadow-sm transition-all duration-300 ease-in-out border-l-4 border-red-500 flex items-center" role="alert">
+        <div class="flex-shrink-0 mr-3">
+            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="flex-1 text-red-800 font-medium">
+            <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
+        </div>
+        <button type="button" class="ml-auto inline-flex text-red-600 hover:text-red-800 focus:outline-none" onclick="this.parentElement.style.display='none';">
+            <svg class="h-4 w-4 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+<?php endif; ?>
+
 <div class="w-full bg-white flex items-center justify-between py-2 px-4 rounded-md mb-2">
     <div class="p-2">
         <ul class="flex gap-4 bg-[#f8f8f8] rounded-md p-1 w-max overflow-hidden relative">
@@ -91,15 +132,37 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <button type="submit" id="search-button" class="text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900 font-medium rounded-lg text-sm px-6 py-2 text-center  cursor-pointer">Search</button>
             </div>
         </div>
-        <button class="flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 transition-colors duration-300 transform hover:bg-[#c8d3f659] hover:text-[#0455b7]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
-                <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                <path d="M9 15h6"></path>
-                <path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5"></path>
-            </svg>
-            <span class="mx-2 text-sm font-medium">Exporter</span>
-        </button>
+        <div class="flex items-center justify-center space-x-2">
+        <button id="export-button" class="flex items-center p-1.5 border rounded-lg text-gray-600 border-gray-200 transition-colors duration-300 transform mr-2 hover:bg-[#c8d3f659] hover:text-[#0455b7] cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                    <path d="M9 15h6"></path>
+                    <path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5"></path>
+                </svg>
+                <span class="mx-2 text-sm font-medium cursor-pointer">Exporter</span>
+            </button>
+            <!-- Update with absolute URLs -->
+            <div id="export-dropdown" class="hidden absolute z-50 mt-20 w-48 bg-white rounded-md shadow-lg py-1">
+                <a href="../app/export_rap.php?format=pdf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Exporter en PDF
+                    </div>
+                </a>
+                <a href="../app/export_rap.php?format=excel" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Exporter en Excel
+                    </div>
+                </a>
+            </div>
+            
+        </div>
     </div>
     <!-- /Filter and search -->
 
@@ -129,14 +192,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td class="td-class"><?php echo htmlspecialchars($rapport['description']); ?></td>
                     <td class="td-class"><?php echo htmlspecialchars($rapport['nom'] . ' ' . $rapport['prenom']); ?></td>
                     
-                    <!-- <td class="p-3 relative group etat-cell">
-                        <div class="cursor-pointer" ondblclick="showEtatList(this)">
-                            <span class="date-text"><?php echo htmlspecialchars($rapport['rap_date'] ?? ''); ?></span>
-                        </div>
-                        
-                    </td> -->
                     <td class="px-6 py-4 w-[3%] whitespace-nowrap text-sm font-medium">
-                    <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50" type="button">
+                        <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 cursor-pointer" type="button">
                             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
                                 <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                             </svg>
@@ -144,13 +201,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Dropdown menu -->
                         <div id="dropdownDots" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                             <div class="py-2">
-                            <a href="gerer_les_rapport/rapport_view.php?rap_num=<?php echo $order_mission['order_num']; ?>" class="view-button">Vue</a>
+                            <a href="../app/view_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Vue</a>
                             </div>
                             <div class="py-2">
-                            <a href="gerer_les_rapport/rapport_edit.php?rap_num=<?php echo $order_mission['order_num']; ?>" class="edit-button">Modifier</a>
+                            <a href="../appt/edit_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
                             </div>
                             <div class="py-2">
-                            <a href="gerer_les_rapport/rapport_delete.php?rap_num=<?php echo $order_mission['order_num']; ?>" class="delete-button">Supprimer</a>
+                            <a href="../app/delete_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="return confirm('Are you sure you want to delete this rapport ?');">Supprimer</a>
+                            </div>
+                            <div class="py-2">
+                                    <a href="../app/rapport_export.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export rapport</a>
                             </div>
                         </div>
                         <!-- /Dropdown menu -->
@@ -161,4 +221,5 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
     
-
+</body>
+</html>

@@ -1,45 +1,29 @@
 <?php
-// Include database configuration
 include 'config.php';
 session_start();
 
-// Check if the user is logged in and has the appropriate role
+// Check if the user is logged in and has the 'admin' role
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
     // Redirect to the login page or show an error message
-    header('location: ../dist/index.php');
+    header('location: index.php');
     exit();
 }
 
-// Get the export format from the URL
-$format = isset($_GET['format']) ? $_GET['format'] : 'pdf';
+// Get requested format
+$format = isset($_GET['format']) ? $_GET['format'] : '';
 
-// Fetch all PN data from the database
-$stmt = $conn->prepare("SELECT 
-            p.panne_num, 
-            p.panne_name, 
-            p.date_signalement, 
-            COALESCE(e.etablissement_name, 'UNITE-POSTAL-WILAYA-DE-BOUMERDES') AS etablissement_name, 
-            t.type_name, 
-            p.panne_etat, 
-            r.rap_num, 
-            r.rap_name, 
-            r.rap_date, 
-            u.nom AS user_nom, 
-            u.prenom AS user_prenom 
-          FROM Panne p 
-          INNER JOIN Type_panne t ON p.type_id = t.type_id 
-          INNER JOIN Users u ON p.receveur_id = u.user_id 
-          LEFT JOIN Epost e ON u.postal_code = e.postal_code
-          LEFT JOIN Rapport r ON p.rap_num = r.rap_num
-          ORDER BY p.date_signalement DESC");
+// Fetch all reports from the database
+$stmt = $conn->prepare("SELECT r.rap_num, r.rap_name, r.rap_date, r.description, u.nom, u.prenom 
+                        FROM Rapport r 
+                        INNER JOIN Users u ON r.user_id = u.user_id");
 $stmt->execute();
-$pannes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$rapports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Export based on the requested format
 if ($format === 'excel') {
     // Set proper content type for Excel
     header('Content-Type: application/vnd.ms-excel; charset=UTF-8');
-    header('Content-Disposition: attachment;filename="liste_pn_' . date('Y-m-d') . '.xls"');
+    header('Content-Disposition: attachment;filename="liste_rapport_' . date('Y-m-d') . '.xls"');
     header('Cache-Control: max-age=0');
     
     // Simple HTML table approach instead of XML (more compatible)
@@ -49,7 +33,7 @@ if ($format === 'excel') {
     echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
     echo '<!--[if gte mso 9]><xml>';
     echo '<x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
-    echo '<x:Name>Liste des pannes</x:Name>';
+    echo '<x:Name>Liste des rapport</x:Name>';
     echo '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
     echo '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook>';
     echo '</xml><![endif]-->';
@@ -65,27 +49,24 @@ if ($format === 'excel') {
     echo '<table>';
     // Header row
     echo '<tr>';
-    echo '<th>Panne Num</th>';
     echo '<th>Rap Num</th>';
-    echo '<th>Nom de Panne</th>';
+    echo '<th>Nom Rapport</th>';
     echo '<th>Date</th>';
-    echo '<th>Établissement</th>';
-    echo '<th>Type</th>';
-    echo '<th>Date Rapport</th>';
-    echo '<th>État</th>';
+    echo '<th>Description</th>';
+    echo '<th>Reçu par</th>';
     echo '</tr>';
     
     // Data rows
-    foreach ($pannes as $panne) {
+    foreach ($rapports as $rapport) {
         echo '<tr>';
-        echo '<td>' . $panne['panne_num'] . '</td>';
-        echo '<td>' . (isset($panne['rap_num']) ? htmlspecialchars($panne['rap_num']) : '') . '</td>';
-        echo '<td>' . htmlspecialchars($panne['panne_name']) . '</td>';
-        echo '<td>' . htmlspecialchars($panne['date_signalement']) . '</td>';
-        echo '<td>' . htmlspecialchars($panne['etablissement_name']) . '</td>';
-        echo '<td>' . htmlspecialchars($panne['type_name']) . '</td>';
-        echo '<td>' . (isset($panne['rap_date']) ? htmlspecialchars($panne['rap_date']) : '') . '</td>';
-        echo '<td>' . htmlspecialchars($panne['panne_etat']) . '</td>';
+        // echo '<td>' . $panne['panne_num'] . '</td>';
+        // echo '<td>' . (isset($panne['rap_num']) ? htmlspecialchars($panne['rap_num']) : '') . '</td>';
+        echo '<td>' . htmlspecialchars($rapport['rap_num']) . '</td>';
+        echo '<td>' . htmlspecialchars($rapport['rap_name']) . '</td>';
+        echo '<td>' . htmlspecialchars($rapport['rap_date']) . '</td>';
+        echo '<td>' . htmlspecialchars($rapport['description']) . '</td>';
+        // echo '<td>' . (isset($panne['rap_date']) ? htmlspecialchars($panne['rap_date']) : '') . '</td>';
+        echo '<td>' . htmlspecialchars($rapport['nom'] . ' ' . $rapport['prenom']) . '</td>';
         echo '</tr>';
     }
     
@@ -104,7 +85,7 @@ echo '<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Liste des pannes</title>
+    <title>Liste des rapports</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -165,7 +146,7 @@ echo '<!DOCTYPE html>
 </head>
     <body>
         <div class="header">
-            <h1>Liste Des Pannes</h1>
+            <h1>Liste Des rapport</h1>
             <div class="date">Généré le ' . date('d/m/Y H:i:s') . '</div>
         </div>
         
@@ -178,28 +159,22 @@ echo '<!DOCTYPE html>
         <table>
             <thead>
                 <tr>
-                    <th>Panne Num</th>
                     <th>Rap Num</th>
-                    <th>Nom de Panne</th>
+                    <th>Nom Rapport</th>
                     <th>Date</th>
-                    <th>Établissement</th>
-                    <th>Type</th>
-                    <th>État</th>
-                    <th>Action</th>
+                    <th>Description</th>
+                    <th>Reçu par</th>
                 </tr>
             </thead>
             <tbody>';
     
-    foreach ($pannes as $panne) {
+    foreach ($rapports as $rapport) {
         echo '<tr>
-                <td>' . $panne['panne_num'] . '</td>
-                <td>' . (isset($panne['rap_num']) ? htmlspecialchars($panne['rap_num']) : '') . '</td>
-                <td>' . htmlspecialchars($panne['panne_name']) . '</td>
-                <td>' . htmlspecialchars($panne['date_signalement']) . '</td>
-                <td>' . htmlspecialchars($panne['etablissement_name']) . '</td>
-                <td>' . htmlspecialchars($panne['type_name']) . '</td>
-                <td>' . (isset($panne['rap_date']) ? htmlspecialchars($panne['rap_date']) : '') . '</td>
-                <td>' . htmlspecialchars($panne['panne_etat']) . '</td>
+                <td>' . htmlspecialchars($rapport['rap_num']) . '</td>
+                <td>' . htmlspecialchars($rapport['rap_name']) . '</td>
+                <td>' . htmlspecialchars($rapport['rap_date']) . '</td>
+                <td>' . htmlspecialchars($rapport['description']) . '</td>
+                <td>' . htmlspecialchars($rapport['nom'] . ' ' . $rapport['prenom']) . '</td>
             </tr>';
     }
     

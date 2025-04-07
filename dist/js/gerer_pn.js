@@ -1,10 +1,9 @@
 function executeGererPnJavaScript() {
+    console.log("Initializing panne management script...");
+
+    // 1. Tab Switching Functionality
     const tabs = document.querySelectorAll('.tab');
     const tableRows = document.querySelectorAll('table tr.tr-body');
-    const selectAllCheckbox = document.getElementById('select-all');
-    const checkboxes = document.querySelectorAll('table input[type="checkbox"]:not(#select-all)');
-    const searchInput = document.getElementById('search-input');
-    const searchButton = document.getElementById('search-button');
 
     function switchTab(activeTab) {
         tabs.forEach(tab => {
@@ -20,26 +19,27 @@ function executeGererPnJavaScript() {
             if (!etatCell) return;
 
             const etat = etatCell.textContent.trim().toLowerCase();
+            let shouldShow = false;
 
             switch (activeTab.id) {
                 case 'allTab':
-                    row.style.display = 'table-row';
+                    shouldShow = true;
                     break;
                 case 'nouveauTab':
-                    row.style.display = etat.includes('nouveau') ? 'table-row' : 'none';
+                    shouldShow = etat.includes('nouveau') || etat.includes('جديد');
                     break;
                 case 'enCoursTab':
-                    row.style.display = etat.includes('en cours') ? 'table-row' : 'none';
+                    shouldShow = etat.includes('en cours') || etat.includes('قيد المعالجة');
                     break;
                 case 'resoluTab':
-                    row.style.display = etat.includes('résolu') ? 'table-row' : 'none';
+                    shouldShow = etat.includes('résolu') || etat.includes('تم الحل');
                     break;
                 case 'fermeTab':
-                    row.style.display = etat.includes('fermé') ? 'table-row' : 'none';
+                    shouldShow = etat.includes('fermé') || etat.includes('مغلق');
                     break;
-                default:
-                    row.style.display = 'none';
             }
+
+            row.style.display = shouldShow ? 'table-row' : 'none';
         });
     }
 
@@ -47,197 +47,76 @@ function executeGererPnJavaScript() {
         tab.addEventListener('click', () => switchTab(tab));
     });
 
-    const defaultTab = document.getElementById('allTab');
-    if (defaultTab) {
-        switchTab(defaultTab);
-    }
+    // Initialize with first tab active
+    if (tabs.length > 0) switchTab(tabs[0]);
+
+    // 2. Checkbox Selection
+    const selectAllCheckbox = document.getElementById('select-all');
+    const checkboxes = document.querySelectorAll('input[name="select-panne"]:not(#select-all)');
 
     if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('click', function () {
+        selectAllCheckbox.addEventListener('change', function() {
             checkboxes.forEach(checkbox => {
-                checkbox.checked = selectAllCheckbox.checked;
+                checkbox.checked = this.checked;
             });
         });
     }
 
-    // Get all dropdown buttons
-    const dropdownButtons = document.querySelectorAll('[data-dropdown-toggle]');
+    // 3. Search Functionality
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
 
-    // Add event listener to each dropdown button
-    dropdownButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Get the dropdown menu
-            const dropdownMenu = document.getElementById(button.getAttribute('data-dropdown-toggle'));
-
-            // Toggle the dropdown menu
-            dropdownMenu.classList.toggle('hidden');
-        });
-    });
-
-    // تعريف وظيفة البحث
     function performSearch() {
-        const searchText = searchInput.value.toLowerCase();
+        const searchTerm = searchInput.value.toLowerCase().trim();
         
-        if (searchText.trim() === '') {
-            // إذا كان حقل البحث فارغًا، نعود إلى الحالة الافتراضية للتبويب النشط
-            const activeTab = document.querySelector('.tab.bg-white');
-            if (activeTab) {
-                switchTab(activeTab);
-            }
-            
-            const noResultsMessage = document.getElementById('no-results-message');
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
+        if (!searchTerm) {
+            const activeTab = document.querySelector('.tab.bg-white') || tabs[0];
+            if (activeTab) switchTab(activeTab);
+            document.getElementById('no-results-message')?.remove();
             return;
         }
-        
-        // البحث في جميع الخلايا
+
+        let hasResults = false;
         tableRows.forEach(row => {
-            let found = false;
-            const cells = row.querySelectorAll('td');
-            
-            cells.forEach(cell => {
-                if (cell.textContent.toLowerCase().includes(searchText)) {
-                    found = true;
-                }
+            let rowText = '';
+            row.querySelectorAll('td').forEach(cell => {
+                rowText += cell.textContent.toLowerCase() + ' ';
             });
-            
-            row.style.display = found ? 'table-row' : 'none';
-        });
-        
-        // عرض رسالة إذا لم يكن هناك نتائج
-        const visibleRows = document.querySelectorAll('table tr.tr-body[style="display: table-row;"]');
-        let noResultsMessage = document.getElementById('no-results-message');
-        
-        if (visibleRows.length === 0) {
-            if (!noResultsMessage) {
-                noResultsMessage = document.createElement('div');
-                noResultsMessage.id = 'no-results-message';
-                noResultsMessage.className = 'text-center py-4';
-                document.querySelector('table').after(noResultsMessage);
+
+            if (rowText.includes(searchTerm)) {
+                row.style.display = 'table-row';
+                hasResults = true;
+            } else {
+                row.style.display = 'none';
             }
-            noResultsMessage.textContent = `Aucun résultat trouvé pour "${searchText}".`;
-        } else if (noResultsMessage) {
-            noResultsMessage.remove();
-        }
-        
-        // إلغاء تحديد "تحديد الكل" عند البحث
-        if (selectAllCheckbox) {
-            selectAllCheckbox.checked = false;
+        });
+
+        const noResultsMsg = document.getElementById('no-results-message');
+        if (!hasResults) {
+            if (!noResultsMsg) {
+                const msg = document.createElement('div');
+                msg.id = 'no-results-message';
+                msg.className = 'text-center py-4 text-gray-500';
+                msg.textContent = `Aucun résultat trouvé pour "${searchTerm}"`;
+                document.querySelector('table').after(msg);
+            }
+        } else {
+            noResultsMsg?.remove();
         }
     }
 
-    // إضافة معالجات الأحداث مرة واحدة فقط
     if (searchInput) {
-        // تفعيل البحث التلقائي بمجرد الكتابة
         searchInput.addEventListener('input', performSearch);
-        
-        // الاحتفاظ بمعالج حدث الضغط على Enter
         searchInput.addEventListener('keypress', function(e) {
-            if (e.which === 13) {
-                e.preventDefault(); // منع إرسال النموذج إذا كان داخل نموذج
-                performSearch();
-            }
+            if (e.key === 'Enter') performSearch();
         });
     }
-    
+
     if (searchButton) {
-        // الاحتفاظ بمعالج حدث النقر على زر البحث
         searchButton.addEventListener('click', performSearch);
     }
-    
-    // دالة تأكيد الحذف
-    window.confirmDelete = function() {
-        return confirm('Are you sure you want to delete this panne?');
-    };
-}
 
-// تنفيذ الوظيفة عند تحميل البرنامج النصي
-
-$(document).on('click', '[data-dropdown-toggle="dropdownDots"]', function() {
-    const dropdown = $(this).next('.z-10');
-    if (dropdown.hasClass('hidden')) {
-    // Close all open drop-down lists first
-        $('.z-10').addClass('hidden');
-        // Then open the current drop-down menu
-        dropdown.removeClass('hidden');
-        
-        
-        const button = $(this);
-        const buttonRect = button[0].getBoundingClientRect();
-        dropdown.css({
-            'top': buttonRect.bottom + window.scrollY + 'px',
-            'left': buttonRect.left + window.scrollX - dropdown.width() + button.width() + 'px'
-        });
-    } else {
-        dropdown.addClass('hidden');
-    }
-});
-
-// Close the drop-down menu when clicking anywhere else
-$(document).on('click', function(e) {
-    if (!$(e.target).is('[data-dropdown-toggle="dropdownDots"]') && !$(e.target).parents('[data-dropdown-toggle="dropdownDots"]').length) {
-        $('.z-10').addClass('hidden');
-    }
-});
-    
-
-    // Export dropdown functionality
-    const exportButton = document.getElementById('export-button');
-    const exportDropdown = document.getElementById('export-dropdown');
-    
-    exportButton.addEventListener('click', function() {
-        exportDropdown.classList.toggle('hidden');
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
-            exportDropdown.classList.add('hidden');
-        }
-    });
-    
-    // Existing JavaScript for user management
-    // ... (keep any existing JavaScript here)
-    
-    // Handle action dropdown buttons
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize action dropdowns
-    const actionButtons = document.querySelectorAll('[data-dropdown-toggle="dropdownDots"]');
-    
-    actionButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const dropdown = this.nextElementSibling;
-            
-            // Close all other dropdowns
-            document.querySelectorAll('.absolute.z-10').forEach(menu => {
-                if (menu !== dropdown) {
-                    menu.classList.add('hidden');
-                }
-            });
-            
-            // Toggle current dropdown
-            dropdown.classList.toggle('hidden');
-            
-            // Position the dropdown
-            const rect = button.getBoundingClientRect();
-            dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-            dropdown.style.left = `${rect.left + window.scrollX}px`;
-        });
-    });
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function() {
-        document.querySelectorAll('.absolute.z-10').forEach(menu => {
-            menu.classList.add('hidden');
-        });
-    });
-});
-
-// Handle main export button
-document.addEventListener('DOMContentLoaded', function() {
+    // 4. Export Dropdown Functionality
     const exportButton = document.getElementById('export-button');
     const exportDropdown = document.getElementById('export-dropdown');
     
@@ -245,19 +124,145 @@ document.addEventListener('DOMContentLoaded', function() {
         exportButton.addEventListener('click', function(e) {
             e.stopPropagation();
             exportDropdown.classList.toggle('hidden');
-            
-            // Position the dropdown
-            const rect = exportButton.getBoundingClientRect();
-            exportDropdown.style.top = `${rect.bottom + window.scrollY}px`;
-            exportDropdown.style.left = `${rect.left + window.scrollX}px`;
         });
         
-        // Close when clicking outside
         document.addEventListener('click', function(e) {
             if (!exportButton.contains(e.target) && !exportDropdown.contains(e.target)) {
                 exportDropdown.classList.add('hidden');
             }
         });
     }
-});
+
+    // 5. Action Dropdown Functionality
+    $(document).on('click', '[data-dropdown-toggle="dropdownDots"]', function() {
+        const dropdown = $(this).next('.z-10');
+        if (dropdown.hasClass('hidden')) {
+            $('.z-10').addClass('hidden');
+            dropdown.removeClass('hidden');
+            
+            const button = $(this);
+            const buttonRect = button[0].getBoundingClientRect();
+            dropdown.css({
+                'top': buttonRect.bottom + window.scrollY + 'px',
+                'left': buttonRect.left + window.scrollX - dropdown.width() + button.width() + 'px'
+            });
+        } else {
+            dropdown.addClass('hidden');
+        }
+    });
+
+    $(document).on('click', function(e) {
+        if (!$(e.target).is('[data-dropdown-toggle="dropdownDots"]') && 
+            !$(e.target).parents('[data-dropdown-toggle="dropdownDots"]').length) {
+            $('.z-10').addClass('hidden');
+        }
+    });
+
+    // 6. Etat List Functionality (Improved)
+    function showEtatList(cell) {
+        const list = cell.querySelector('.etat-list');
+        if (!list) return;
+        
+        // Close all other etat lists first
+        document.querySelectorAll('.etat-list').forEach(el => {
+            if (el !== list) el.classList.add('hidden');
+        });
+        
+        // Set the current value in the dropdown
+        const currentEtat = cell.querySelector('.etat-text').textContent.trim();
+        const select = list.querySelector('select');
+        select.value = currentEtat.toLowerCase();
+        
+        // Position and show the list
+        const cellRect = cell.getBoundingClientRect();
+        list.style.top = `${cellRect.bottom + window.scrollY}px`;
+        list.style.left = `${cellRect.left + window.scrollX}px`;
+        list.classList.remove('hidden');
+    }
+
+    function hideAllEtatLists() {
+        document.querySelectorAll('.etat-list').forEach(list => {
+            list.classList.add('hidden');
+        });
+    }
+
+    // Double click to show etat list
+    document.querySelectorAll('.etat-cell').forEach(cell => {
+        cell.addEventListener('dblclick', function(e) {
+            e.stopPropagation();
+            showEtatList(this);
+        });
+    });
+
+    // Save etat change
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('save-etat')) {
+            const list = e.target.closest('.etat-list');
+            if (!list) return;
+            
+            const select = list.querySelector('select');
+            const newEtat = select.value;
+            const cell = list.closest('.etat-cell');
+            const etatText = cell.querySelector('.etat-text');
+            
+            // Update UI
+            etatText.textContent = newEtat;
+            list.classList.add('hidden');
+            
+            // Here you would send an AJAX request to update the database
+            const panneNum = cell.closest('tr').dataset.panneNum;
+            console.log(`Updating panne ${panneNum} to state: ${newEtat}`);
+            
+            // Example AJAX call:
+            /*
+            fetch('update_panne_etat.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    panne_num: panneNum,
+                    new_etat: newEtat
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    // Revert UI if update failed
+                    etatText.textContent = data.previousEtat;
+                }
+            });
+            */
+        }
+        
+        // Cancel button
+        if (e.target.classList.contains('cancel-etat')) {
+            const list = e.target.closest('.etat-list');
+            if (list) list.classList.add('hidden');
+        }
+    });
+
+    // Close etat lists when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.etat-cell') && !e.target.closest('.etat-list')) {
+            hideAllEtatLists();
+        }
+    });
+
+    // 7. Confirmation for Delete Actions
+    window.confirmDelete = function() {
+        return confirm('Êtes-vous sûr de vouloir supprimer cette panne ?');
+    };
+
+    console.log("Panne management script initialized successfully");
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', executeGererPnJavaScript);
+
+// For AJAX loaded content
+function reinitializeGererPn() {
+    executeGererPnJavaScript();
+}
+
 executeGererPnJavaScript();
