@@ -102,7 +102,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="flex items-center justify-between">
 
 
-        <a id="new" href="gerer_les_panne/signaler_des_panne.php" class="load-page-link flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900">
+        <a id="new" href="gerer_les_rapport/create_rapport.php" class="load-page-link flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                 <path d="M12 5l0 14"></path>
                 <path d="M5 12l14 0"></path>
@@ -207,7 +207,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <a href="../appt/edit_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
                             </div>
                             <div class="py-2">
-                            <a href="../app/delete_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="return confirm('Are you sure you want to delete this rapport ?');">Supprimer</a>
+                            <a href="../app/delete_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rapport ? Cette action est irréversible');">Supprimer</a>
                             </div>
                             <div class="py-2">
                                     <a href="../app/rapport_export.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export rapport</a>
