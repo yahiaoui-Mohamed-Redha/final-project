@@ -370,7 +370,7 @@ if (isset($_SESSION['error_message'])) {
                                     <a href="gerer_les_panne/panne_edit.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">modifier</a>
                                 </div>
                                 <div class="py-2">
-                                <a href="../app/delete_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="return confirm('Are you sure you want to delete this item ?');">Supprimer</a>
+                                <a href="../app/delete_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce panne ? Cette action est irréversible');">Supprimer</a>
                                 </div>
                                 <div class="py-2">
                                     <a href="../app/panne_export.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Exporter la panne</a>

@@ -154,7 +154,7 @@ if ($format === 'excel') {
 
         <div class="button-container">
             <a href="javascript:history.back()" class="back-button">Retour</a>
-            <button onclick="window.print()" class="print-button">Imprimer en PDF</button>
+            <button onclick="window.print()" class="print-button">télécharger en PDF</button>
         </div>
 
         <table>

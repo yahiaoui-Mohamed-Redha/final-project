@@ -79,6 +79,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>View Panne Details</title>
     <style>
         /* Tailwind-like styles */
@@ -521,17 +522,20 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
             
             <!-- Action Buttons -->
             <div class="mt-8 pt-4 border-t flex justify-end space-x-4">
-            <a href="gerer_les_panne/panne_edit.php?panne_num=<?php echo $panne['panne_num']; ?>" class="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 no-underline">
-                Edit Panne
-            </a>
-            <?php if (empty($panne['rap_num']) && ($_SESSION['user_role'] == 'Admin' || $_SESSION['user_role'] == 'Technicien')): ?>
-            <a href="create_rapport.php?panne_num=<?php echo $panne['panne_num']; ?>" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-blue-700 no-underline">
-                Create Rapport
-            </a>
-            <?php endif; ?>
-            <a href="../app/panne_export.php?panne_num=<?php echo $panne['panne_num']; ?>" class="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-indigo-700 no-underline">
-                Export Panne
-            </a>
+        
+            <button onclick="printToPDF()" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="w-5 h-5 mr-2 border-gray-300  text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    télécharger en PDF
+                </button>
+                
+                <a href="javascript:history.back()" class="back-button inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Retour à la liste
+                </a>
         </div>
         </div>
         
