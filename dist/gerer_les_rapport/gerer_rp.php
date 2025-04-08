@@ -172,11 +172,11 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th scope="col" class="pl-4 w-[3%]">
                     <input type="checkbox" name="select-rapport" id="select-all">
                 </th>
-                <th scope="col" class="th-class">rap_num</th>
-                <th scope="col" class="th-class">اسم التقرير</th>
-                <th scope="col" class="th-class">تاريخ التقرير</th>
-                <th scope="col" class="th-class">وصف التقرير</th>
-                <th scope="col" class="th-class">المستلم</th>
+                <th scope="col" class="th-class">rapport num </th>
+                <th scope="col" class="th-class"> Nom du rapport</th>
+                <th scope="col" class="th-class">date du rapport</th>
+                <th scope="col" class="th-class">Description  du rapport</th>
+                <th scope="col" class="th-class">Destinataire</th>
                 <th scope="col" class="th-class">Actions</th>
 
             </tr>
