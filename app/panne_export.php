@@ -165,15 +165,14 @@ try {
 <body>
     <div class="container">
         <div class="header">
-            <!-- Replace with your logo path -->
-            <img src="../../assets/image/oie_M5SLKyrEbkDJ.png" alt="Algérie Poste Logo" class="logo">
+
             <h1>Algérie Poste</h1>
             <p>Rapport de Panne</p>
         </div>
         
         <div class="button-container">
             <a href="javascript:history.back()" class="back-button">Retour</a>
-            <button onclick="window.print()" class="print-button">télécharger en PDF</button>
+            <button onclick="window.print()" class="print-button">Enregistrer en PDF</button>
         </div>
         
         <div class="section">
@@ -236,7 +235,14 @@ try {
         </div>
     </div>
 
-
+    <script>
+        // Auto print when the page loads
+        window.onload = function() {
+            window.print();
+            // Optional: You can add a timeout to close this window or redirect back
+            // setTimeout(function() { window.close(); }, 1000);
+        };
+    </script>
 </body>
 </html>
 <?php

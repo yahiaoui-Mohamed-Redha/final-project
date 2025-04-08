@@ -122,7 +122,7 @@ $contentPage = basename($_SERVER['PHP_SELF']);
             </button>
             <!-- Update with absolute URLs -->
             <div id="export-dropdown" class="hidden absolute z-10 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
-                <a href="../app/export_users.php?format=pdf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <a href="../app/export_users_table.php?format=pdf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
@@ -130,7 +130,7 @@ $contentPage = basename($_SERVER['PHP_SELF']);
                         Exporter en PDF
                     </div>
                 </a>
-                <a href="../app/export_users.php?format=excel" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <a href="../app/export_users_table.php?format=excel" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
