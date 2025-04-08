@@ -470,6 +470,12 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                                 console.log('gerer_typpn.js loaded and executed');
                             });
                         }
+
+                        if (window.location.href.includes('P-GFI.php')) {
+                            $.getScript('js/P-GFI.js', function() {
+                                console.log('P-GFI.js loaded and executed');
+                            });
+                        }
                     },
                     error: function(xhr, status, error) {
                         alert("An error occurred while loading the page: " + error);
