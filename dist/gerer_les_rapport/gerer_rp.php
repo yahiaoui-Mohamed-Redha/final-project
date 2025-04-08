@@ -18,13 +18,14 @@ if (file_exists($cache_file) && (time() - filemtime($cache_file) < $cache_time))
     // Load data from cache
     $rapports = json_decode(file_get_contents($cache_file), true);
 } else {
-    // Fetch all reports from the database
+    // Fetch all non-archived reports from the database
     $stmt = $conn->prepare("SELECT r.rap_num, r.rap_name, r.rap_date, r.description, u.nom, u.prenom 
-                            FROM Rapport r 
-                            INNER JOIN Users u ON r.user_id = u.user_id");
+                          FROM Rapport r 
+                          INNER JOIN Users u ON r.user_id = u.user_id
+                          WHERE r.archived = 0 OR r.archived IS NULL");
     $stmt->execute();
     $rapports = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    
     // Store the data in cache
     file_put_contents($cache_file, json_encode($rapports));
 }
