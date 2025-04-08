@@ -186,20 +186,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signaler_panne'])) {
 
         // Commit the transaction
         $conn->commit();
-        $_SESSION['success_message'] = "تم الإبلاغ عن الأعطال وإنشاء التقرير بنجاح!";
-        header('Location: ../dist/admin_page.php?contentpage=gerer_les_panne/gerer_pn.php');
+        $_SESSION['success'] = "signalés avec succès et le rapport a été créé avec succès!";
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     } catch (PDOException $e) {
         // Rollback the transaction on error
         $conn->rollBack();
-        $_SESSION['error_message'] = "خطأ أثناء الإبلاغ عن الأعطال: " . $e->getMessage();
-        header('Location: ../dist/admin_page.php?contentpage=signaler_des_panne/signaler_des_panne.php');
+        $_SESSION['error'] = "Erreur lors du signalement des pannes :" . $e->getMessage();
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     } catch (Exception $e) {
         // Rollback the transaction on error
         $conn->rollBack();
-        $_SESSION['error_message'] = "خطأ أثناء الإبلاغ عن الأعطال: " . $e->getMessage();
-        header('Location: ../dist/admin_page.php?contentpage=signaler_des_panne/signaler_des_panne.php');
+        $_SESSION['error'] = "Erreur lors du signalement des pannes:" . $e->getMessage();
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 }
