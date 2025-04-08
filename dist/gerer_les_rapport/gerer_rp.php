@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
 
 // Cache settings
 $cache_file = '../../cache/rapports_cache.json'; // Cache file location
-$cache_time = 432000; // 5 days in seconds
+$cache_time = 1; // 5 days in seconds
 
 // Check if a valid cache file exists
 if (file_exists($cache_file) && (time() - filemtime($cache_file) < $cache_time)) {
