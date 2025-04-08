@@ -186,6 +186,102 @@ function executeGererODJavaScript() {
         });
     });
 }
+// Export dropdown functionality
+const exportButton = document.getElementById('export-button');
+const exportDropdown = document.getElementById('export-dropdown');
 
+exportButton.addEventListener('click', function() {
+    exportDropdown.classList.toggle('hidden');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    if (!exportButton.contains(event.target) && !exportDropdown.contains(event.target)) {
+        exportDropdown.classList.add('hidden');
+    }
+});
+
+// Existing JavaScript for user management
+// ... (keep any existing JavaScript here)
+
+// Handle action dropdown buttons
+document.addEventListener('DOMContentLoaded', function() {
+// Initialize action dropdowns
+const actionButtons = document.querySelectorAll('[data-dropdown-toggle="dropdownDots"]');
+
+actionButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const dropdown = this.nextElementSibling;
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.absolute.z-10').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.classList.add('hidden');
+            }
+        });
+        
+        // Toggle current dropdown
+        dropdown.classList.toggle('hidden');
+        
+        // Position the dropdown
+        const rect = button.getBoundingClientRect();
+        dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+        dropdown.style.left = `${rect.left + window.scrollX}px`;
+    });
+});
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function() {
+    document.querySelectorAll('.absolute.z-10').forEach(menu => {
+        menu.classList.add('hidden');
+    });
+});
+});
+
+// Handle main export button
+document.addEventListener('DOMContentLoaded', function() {
+const exportButton = document.getElementById('export-button');
+const exportDropdown = document.getElementById('export-dropdown');
+
+if (exportButton && exportDropdown) {
+    exportButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        exportDropdown.classList.toggle('hidden');
+        
+        // Position the dropdown
+        const rect = exportButton.getBoundingClientRect();
+        exportDropdown.style.top = `${rect.bottom + window.scrollY}px`;
+        exportDropdown.style.left = `${rect.left + window.scrollX}px`;
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!exportButton.contains(e.target) && !exportDropdown.contains(e.target)) {
+            exportDropdown.classList.add('hidden');
+        }
+    });
+}
+});
+// Script to handle export button click
+document.addEventListener('DOMContentLoaded', function () {
+    const exportButton = document.getElementById('export-button');
+    const exportDropdown = document.getElementById('export-dropdown');
+
+    if (exportButton && exportDropdown) {
+        // Toggle dropdown visibility when export button is clicked
+        exportButton.addEventListener('click', function (e) {
+            e.stopPropagation();
+            exportDropdown.classList.toggle('hidden');
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!exportButton.contains(e.target) && !exportDropdown.contains(e.target)) {
+                exportDropdown.classList.add('hidden');
+            }
+        });
+    }
+});
 // Execute the function when the script is loaded
 executeGererODJavaScript();
