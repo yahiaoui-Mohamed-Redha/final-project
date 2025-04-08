@@ -208,7 +208,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                             <a href="../appt/edit_ord.php?order_num=<?php echo $order_mission['order_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
                             </div>
                             <div class="py-2">
-                            <a href="../app/delete_ord.php?order_num=<?php echo $order_mission['order_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="return confirm('Are you sure you want to delete this rapport ?');">Supprimer</a>
+                            <a href="../app/delete_ord.php?order_num=<?php echo $order_mission['order_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce order mission ? Cette action est irréversible');">Supprimer</a>
                             </div>
                             <div class="py-2">
                                     <a href="../app/order_export.php?order_num=<?php echo $order_mission['order_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export rapport</a>
