@@ -85,7 +85,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
             <!-- Logo -->
             <img src="../assets/image/logo-head.png" alt="Logo" class="h-12 w-12 mr-3 mt-3">
             <div>
-                <h1 class="text-xl font-bold text-gray-700">System Name</h1>
+                <h1 class="text-xl font-bold text-gray-700">Panne et Rapport</h1>
                 <p class="text-xs font-semibold text-gray-400">By Algérie Poste <?php echo date("Y"); ?></p>
             </div>
         </div>
@@ -162,7 +162,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                                 <path d="M16.5 8.5l2.5 2.5l2.5 -2.5"></path>
                             </svg>
 
-                            <span class="mx-2 text-sm font-medium">Gérer les orders de mission</span>
+                            <span class="mx-2 text-sm font-medium">Gérer orders de mission</span>
                         </a>
 
                         <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_fiche_dintervention/P-GFI.php?admin_id=<?php echo $user_id; ?>">

@@ -86,7 +86,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
             <!-- Logo -->
             <img src="../assets/image/logo-head.png" alt="Logo" class="h-12 w-12 mr-3 mt-3">
             <div>
-                <h1 class="text-xl font-bold text-gray-700">System Name</h1>
+                <h1 class="text-xl font-bold text-gray-700">Panne et Rapport</h1>
                 <p class="text-xs font-semibold text-gray-400">By Algérie Poste <?php echo date("Y"); ?></p>
             </div>
         </div>
