@@ -202,7 +202,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                         <!-- Dropdown menu -->
                         <div id="dropdownDots" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                             <div class="py-2">
-                            <a href="../app/view_ord.php?order_num=<?php echo $order_mission['order_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Vue</a>
+                            <a href="../app/view_ord.php?order_num=<?php echo $order_mission['order_num']; ?>" class="load-page-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Vue</a>
                             </div>
                             <div class="py-2">
                             <a href="../appt/edit_ord.php?order_num=<?php echo $order_mission['order_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>

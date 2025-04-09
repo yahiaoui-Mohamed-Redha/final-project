@@ -364,7 +364,7 @@ if (isset($_SESSION['error_message'])) {
                             <!-- Dropdown menu for action -->
                             <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                                 <div class="py-2">
-                                    <a href="../app/view_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View</a>
+                                    <a href="../app/view_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="load-page-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View</a>
                                 </div>
                                 <div class="py-2">
                                     <a href="gerer_les_panne/panne_edit.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">modifier</a>

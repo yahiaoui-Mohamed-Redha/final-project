@@ -53,15 +53,6 @@ $rapport = $stmt_rapport->fetch(PDO::FETCH_ASSOC);
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Rapport - <?php echo htmlspecialchars($rapport['rap_num']); ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
     <div class="container mx-auto px-4 py-6">
         <!-- Back button -->
         <a href="javascript:history.back()" class="back-button flex items-center text-blue-600 hover:text-blue-800 mb-4">
@@ -337,5 +328,3 @@ $rapport = $stmt_rapport->fetch(PDO::FETCH_ASSOC);
             }, 500);
         }
     </script>
-</body>
-</html>

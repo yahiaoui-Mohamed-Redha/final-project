@@ -49,13 +49,6 @@ $selectUser->execute([$user_id]);
 $admin = $selectUser->fetch(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Mission Details - <?php echo htmlspecialchars($order_mission['order_num']); ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style type="text/css" media="print">
@@ -75,8 +68,6 @@ $admin = $selectUser->fetch(PDO::FETCH_ASSOC);
             page-break-before: always;
         }
     </style>
-</head>
-<body class="bg-gray-100">
     <div class="container mx-auto px-4 py-6">
         <!-- Back button -->
         <a href="javascript:history.back()" class="back-button flex items-center text-blue-600 hover:text-blue-800 mb-4 no-print">
@@ -288,5 +279,3 @@ $admin = $selectUser->fetch(PDO::FETCH_ASSOC);
             document.getElementById('deleteModal').classList.add('hidden');
         });
     </script>
-</body>
-</html>
