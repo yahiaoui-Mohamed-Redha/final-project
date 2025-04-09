@@ -1,4 +1,5 @@
 <?php 
+// order_mission
 // Start session at the beginning of the file
 session_start();
 
@@ -34,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Send notification via email coming soon ?
         
         // Set success message
-        $_SESSION['success'] = "Order mission créée avec succès!";
+        $_SESSION['success'] = "Ordre de mission créée avec succès!";
     } catch (PDOException $e) {
         // Set error message
         $_SESSION['error'] = "Échec de la création de la mission d'ordre: " . $e->getMessage();

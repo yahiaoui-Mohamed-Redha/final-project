@@ -11,13 +11,14 @@ if (!isset($_SESSION['user_id'])) {
 // Fetch order missions based on user role
 if ($_SESSION['user_role'] == 'Admin') {
     // Admin can see all order missions
-    $stmt = $conn->prepare("SELECT * FROM OrderMission");
+    $stmt = $conn->prepare("SELECT * FROM OrderMission WHERE OrderMission.archived = 0 OR OrderMission.archived IS NULL");
     $stmt->execute();
     $order_missions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } elseif ($_SESSION['user_role'] == 'Technicien') {
     // Technicien can only see their assigned order missions
     $user_id = $_SESSION['user_id'];
-    $stmt = $conn->prepare("SELECT * FROM OrderMission WHERE technicien_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM OrderMission WHERE technicien_id = ? 
+            AND OrderMission.archived = 0 OR OrderMission.archived IS NULL");
     $stmt->execute([$user_id]);
     $order_missions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
