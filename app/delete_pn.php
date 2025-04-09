@@ -20,9 +20,9 @@ try {
         exit;
     }
 
-    // delete it ...
-    $deletePanne = $conn->prepare("DELETE FROM panne WHERE panne_num = :panne_num");
-    $deletePanne->execute(['panne_num' => $panne_num]);
+    // Instead of deleting, update the archived flag to true/1
+    $archivePanne = $conn->prepare("UPDATE panne SET archived = true WHERE panne_num = :panne_num");
+    $archivePanne->execute(['panne_num' => $panne_num]);
 
     $_SESSION['success'] = "La panne a été supprimée avec succès.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);

@@ -26,6 +26,7 @@ $query = "SELECT
           INNER JOIN Users u ON p.receveur_id = u.user_id 
           LEFT JOIN Epost e ON u.postal_code = e.postal_code
           LEFT JOIN Rapport r ON p.rap_num = r.rap_num
+          WHERE p.archived = 0 OR p.archived IS NULL
           ORDER BY p.date_signalement DESC";
 
 // Filter pannes for receveur
@@ -47,7 +48,7 @@ if ($_SESSION['user_role'] == 'Receveur') {
                 INNER JOIN Users u ON p.receveur_id = u.user_id 
                 LEFT JOIN Epost e ON u.postal_code = e.postal_code
                 LEFT JOIN Rapport r ON p.rap_num = r.rap_num
-              WHERE p.receveur_id = :receveur_id
+              WHERE p.receveur_id = :receveur_id AND p.archived = 0 OR p.archived IS NULL
               ORDER BY p.date_signalement DESC"; // Order by date
 }
 
@@ -72,7 +73,7 @@ if (isset($_GET['rap_num'])) {
               INNER JOIN Users u ON p.receveur_id = u.user_id 
               LEFT JOIN Epost e ON u.postal_code = e.postal_code
               LEFT JOIN Rapport r ON p.rap_num = r.rap_num
-              WHERE r.rap_num = :rap_num";
+              WHERE r.rap_num = :rap_num AND p.archived = 0 OR p.archived IS NULL";
 
     try {
         $stmt = $conn->prepare($query);

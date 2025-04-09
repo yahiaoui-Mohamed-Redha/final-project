@@ -29,7 +29,7 @@ try {
     exit;
     
 } catch (PDOException $e) {
-    $_SESSION['error'] = "Erreur lors de l'archivage : " . $e->getMessage();
+    $_SESSION['error'] = "Erreur lors de la suppression : " . $e->getMessage();
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }

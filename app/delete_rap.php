@@ -21,13 +21,13 @@ try {
     }
     
     // Check if this report is connected to any panne records
-    $checkConnectedPannes = $conn->prepare("SELECT COUNT(*) as count FROM panne WHERE rap_num = :rap_num");
+    $checkConnectedPannes = $conn->prepare("SELECT COUNT(*) as count FROM panne WHERE rap_num = :rap_num AND panne.archived = 0 OR panne.archived IS NULL");
     $checkConnectedPannes->execute(['rap_num' => $rap_num]);
     $panneCount = $checkConnectedPannes->fetch(PDO::FETCH_ASSOC)['count'];
     
     if ($panneCount > 0) {
         // This report is connected to panne records and should not be archived
-        $_SESSION['error'] = "Ce rapport ne peut pas être archivé car il est lié à {$panneCount} enregistrement(s) de panne.";
+        $_SESSION['error'] = "Ce rapport ne peut pas être supprimée car il est lié à {$panneCount} enregistrement(s) de panne.";
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
@@ -36,12 +36,12 @@ try {
     $archiveRapport = $conn->prepare("UPDATE rapport SET archived = true WHERE rap_num = :rap_num");
     $archiveRapport->execute(['rap_num' => $rap_num]);
     
-    $_SESSION['success'] = "Le rapport a été supprimer avec succès.";
+    $_SESSION['success'] = "Le rapport a été supprimée avec succès.";
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
     
 } catch (PDOException $e) {
-    $_SESSION['error'] = "Erreur lors de l'archivage : " . $e->getMessage();
+    $_SESSION['error'] = "Erreur lors de la suppression : " . $e->getMessage();
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
