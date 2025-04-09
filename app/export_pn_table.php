@@ -3,13 +3,11 @@
 include 'config.php';
 session_start();
 
-// Check if the user is logged in and has the appropriate role
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
-    // Redirect to the login page or show an error message
-    header('location: ../dist/index.php');
-    exit();
+// Verify user authorization
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+    header('Location:../../index.php');
+    exit;
 }
-
 // Get the export format from the URL
 $format = isset($_GET['format']) ? $_GET['format'] : 'pdf';
 

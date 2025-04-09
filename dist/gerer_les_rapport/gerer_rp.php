@@ -8,6 +8,9 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur
     exit;
 }
 
+// Store the current user's role for later use
+$current_user_role = $_SESSION['user_role'];
+
 // Cache settings
 $cache_file = '../../cache/rapports_cache.json'; // Cache file location
 $cache_time = 1; // 5 days in seconds
@@ -99,9 +102,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
          
         </ul>
     </div>
+    <?php if (!in_array($current_user_role, ['Receveur'])): ?>
     <div class="flex items-center justify-between">
-
-
         <a id="new" href="gerer_les_rapport/create_rapport.php" class="load-page-link flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                 <path d="M12 5l0 14"></path>
@@ -110,6 +112,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <span class="mx-2 text-sm font-medium">créer rapports</span>
         </a>
     </div>
+    <?php endif; ?>
 </div>
 
 <div class="w-full bg-white flex flex-col items-center py-2 px-4 rounded-md">
@@ -201,16 +204,20 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Dropdown menu -->
                         <div id="dropdownDots" class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                             <div class="py-2">
-                            <a href="../app/view_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="load-page-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Vue</a>
+                                <a href="../app/view_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="load-page-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Vue</a>
+                            </div>
+                            
+                            <?php if (!in_array($current_user_role, ['Receveur', 'Technicien'])): ?>
+                            <div class="py-2">
+                                <a href="../appt/edit_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
                             </div>
                             <div class="py-2">
-                            <a href="../appt/edit_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
+                                <a href="../app/delete_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rapport ? Cette action est irréversible');">Supprimer</a>
                             </div>
+                            <?php endif; ?>
+                            
                             <div class="py-2">
-                            <a href="../app/delete_rap.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rapport ? Cette action est irréversible');">Supprimer</a>
-                            </div>
-                            <div class="py-2">
-                                    <a href="../app/rapport_export.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export rapport</a>
+                                <a href="../app/rapport_export.php?rap_num=<?php echo $rapport['rap_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export rapport</a>
                             </div>
                         </div>
                         <!-- /Dropdown menu -->

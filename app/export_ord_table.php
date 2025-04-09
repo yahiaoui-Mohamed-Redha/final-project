@@ -3,9 +3,9 @@
 include 'config.php';
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
+// Verify user authorization
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+    header('Location:../../index.php');
     exit;
 }
 

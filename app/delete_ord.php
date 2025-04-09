@@ -2,7 +2,7 @@
 include 'config.php'; 
 session_start(); 
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Admin'])) {
     header('Location: ../../index.php');
     exit;
 }

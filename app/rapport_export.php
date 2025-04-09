@@ -6,10 +6,9 @@ include 'config.php';
 // Start session
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    // Redirect to login page if not logged in
-    header('Location: ../login.php');
+// Verify user authorization
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+    header('Location:../../index.php');
     exit;
 }
 

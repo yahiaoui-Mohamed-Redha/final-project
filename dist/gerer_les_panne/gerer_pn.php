@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur
     header('Location:../../index.php');
     exit;
 }
+// Store the current user's role for later use
+$current_user_role = $_SESSION['user_role'];
 
 // Fetch all pannes with rapport data
 $query = "SELECT 
@@ -202,6 +204,7 @@ if (isset($_SESSION['error_message'])) {
             </li>
         </ul>
     </div>
+    <?php if (!in_array($current_user_role, ['Technicien'])): ?>
     <div class="flex items-center justify-between">
 
         <a id="new" href="gerer_les_types_des_panne/manage_type_panne.php" class="load-page-link flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform mr-2 hover:bg-blue-900">
@@ -224,6 +227,7 @@ if (isset($_SESSION['error_message'])) {
             <span class="mx-2 text-sm font-medium">Signaler des panne</span>
         </a>
     </div>
+    <?php endif; ?>
 </div>
 
 <div class="w-full bg-white flex flex-col items-center py-2 px-4 rounded-md">
@@ -365,14 +369,18 @@ if (isset($_SESSION['error_message'])) {
                             <!-- Dropdown menu for action -->
                             <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                                 <div class="py-2">
-                                    <a href="../app/view_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="load-page-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View</a>
+                                    <a href="../app/view_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="load-page-link block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">vue</a>
                                 </div>
+                                <?php if (!in_array($current_user_role, ['Receveur'])): ?>
                                 <div class="py-2">
                                     <a href="gerer_les_panne/panne_edit.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">modifier</a>
                                 </div>
+                                <?php endif; ?>
+                                <?php if (!in_array($current_user_role, ['Receveur', 'Technicien'])): ?>
                                 <div class="py-2">
                                 <a href="../app/delete_pn.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce panne ? Cette action est irréversible');">Supprimer</a>
                                 </div>
+                                <?php endif; ?>
                                 <div class="py-2">
                                     <a href="../app/panne_export.php?panne_num=<?php echo $panne['panne_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Exporter la panne</a>
                                 </div>
