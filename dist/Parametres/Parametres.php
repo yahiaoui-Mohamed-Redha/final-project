@@ -9,11 +9,10 @@ error_reporting(E_ALL);
 include '../../app/config.php';
 
 // Verify user authorization
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
-    header('location: index.php');
-    exit();
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+    header('Location:../../index.php');
+    exit;
 }
-
 // Fetch admin details
 $user_id = $_SESSION['user_id'];
 $select = $conn->prepare("SELECT u.*, r.role_nom AS role_name FROM Users u INNER JOIN Roles r ON u.role_id = r.role_id WHERE u.user_id = ?");
@@ -161,13 +160,13 @@ $user = $select->fetch(PDO::FETCH_ASSOC);
                         </svg>
                         Create monthly backup
                     </button>
-                    <button type="button" onclick="downloadLatestBackup()" class="w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
+                    <a href="Parametres/download_backup.php" class="load-page-link w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
                         <!-- Download SVG Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
-                        Download latest backup
-                    </button>
+                        latest backups
+                    </a>
                     <div id="backupMessage" class="mt-2 text-sm text-green-600 hidden"></div>
                 </form>
             </div>

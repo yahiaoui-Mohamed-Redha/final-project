@@ -87,7 +87,7 @@ try {
             <?php unset($_SESSION['error_message']); ?>
         <?php endif; ?>
         
-        <form method="POST" action="../app/process_creer_fiche.php" class="space-y-6">
+        <form method="POST" action="../app/creer_fiche.php" class="space-y-6">
             <input type="hidden" name="receveur_id" value="<?= $_SESSION['user_id'] ?>">
             
             <!-- Panne associée -->

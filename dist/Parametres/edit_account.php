@@ -2,10 +2,10 @@
 session_start();
 include '../../app/config.php';
 
-// تأكد من أن المستخدم مسجل الدخول وله الصلاحيات
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
-    header('location: ../../../index.php');
-    exit();
+// Verify user authorization
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+    header('Location:../../index.php');
+    exit;
 }
 
 $user_id = $_SESSION['user_id'];

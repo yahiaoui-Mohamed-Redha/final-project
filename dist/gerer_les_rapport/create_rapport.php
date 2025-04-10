@@ -2,6 +2,12 @@
 // Include database configuration
 include '../../app/config.php';
 
+// Verify user authorization
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur', 'Admin', 'Technicien'])) {
+    header('Location:../../index.php');
+    exit;
+}
+
 // Start session
 session_start();
 // Get the logged-in user's ID

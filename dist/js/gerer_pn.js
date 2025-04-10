@@ -209,11 +209,11 @@ function executeGererPnJavaScript() {
             etatText.textContent = newEtat;
             list.classList.add('hidden');
             
-            // Here you would send an AJAX request to update the database
+            // send an AJAX request to update the database
             const panneNum = cell.closest('tr').dataset.panneNum;
             console.log(`Updating panne ${panneNum} to state: ${newEtat}`);
             
-            // Example AJAX call:
+            // AJAX call:
             /*
             fetch('update_panne_etat.php', {
                 method: 'POST',
