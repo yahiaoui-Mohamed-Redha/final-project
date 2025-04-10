@@ -32,6 +32,9 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get the contentpage parameter from the URL
 $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistiques/statistiques.php';
+
+// Get the selected language from the cookie
+$language = $_COOKIE['language'] ?? 'fr';
 ?>
 
 <!DOCTYPE html>
@@ -48,6 +51,10 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
             color: #0455b7;
         }
         
+        /* RTL support for Arabic */
+        [dir="rtl"] .text-right {
+            text-align: left;
+        }
         
         /* Loading Animation */
         .loader {
@@ -86,7 +93,10 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
             <img src="../assets/image/logo-head.png" alt="Logo" class="h-12 w-12 mr-3 mt-3">
             <div>
                 <h1 class="text-xl font-bold text-gray-700">Panne et Rapport</h1>
-                <p class="text-xs font-semibold text-gray-400">By Algérie Poste <?php echo date("Y"); ?></p>
+                <div class="flex text-xs font-semibold text-gray-400">
+                    <p id="appSubtitle" class="mr-1">By Algérie Poste </p>
+                    <span>&copy; <?php echo date("Y"); ?></span>
+                </div>
             </div>
         </div>
         <div class="mt-6 pl-5 pb-4 overflow-y-auto
@@ -97,22 +107,22 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
 
                 <div class="space-y-4">
                     <div class="space-y-2.5 ">
-                        <label class="px-3 text-xs font-semibold text-gray-500 uppercase">Statistiques</label>
+                        <label id="statsLabel" class="px-3 text-xs font-semibold text-gray-500 uppercase">Statistiques</label>
 
                         <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="statistiques/statistiques.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
                             </svg>
-                            <span class="mx-2 text-sm font-medium">Tableau de bord</span>
+                            <span id="dashboardLink" class="mx-2 text-sm font-medium">Tableau de bord</span>
                         </a>
 
-                        <button class="flex w-full items-center justify-between px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" onclick="toggleNotificationModal()">
+                        <button  class="flex w-full items-center justify-between px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" onclick="toggleNotificationModal()">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                                     <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path>
                                     <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
                                 </svg>
-                                <span class="mx-2 text-sm font-medium">Notification</span>
+                                <span  id="notificationBtn" class="mx-2 text-sm font-medium">Notification</span>
                             </div>
                             <?php if ($unread_count > 0): ?>
                                 <span class="notification-badge text-xs font-bold font  bg-red-600 text-white rounded-full px-1"><?php echo $unread_count; ?></span>
@@ -121,9 +131,9 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                     </div>
 
                     <div class="space-y-2.5 ">
-                        <label class="px-3 text-xs font-semibold text-gray-500 uppercase">Contrôle</label>
+                        <label id="controlLabel" class="px-3 text-xs font-semibold text-gray-500 uppercase">Contrôle</label>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_comptes/manage_users.php?admin_id=<?php echo $user_id; ?>">
+                        <a  class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_comptes/manage_users.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                                 <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
                                 <path d="M6 21v-2a4 4 0 0 1 4 -4h2.5"></path>
@@ -135,25 +145,25 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                                 <path d="M15.97 17.25l1.3 .75"></path>
                                 <path d="M20.733 20l1.3 .75"></path>
                             </svg>
-                            <span class="mx-2 text-sm font-medium">Gérer les comptes</span>
+                            <span id="manageAccountsLink" class="mx-2 text-sm font-medium">Gérer les comptes</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_panne/gerer_pn.php?admin_id=<?php echo $user_id; ?>">
+                        <a  class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_panne/gerer_pn.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                             </svg>
-                            <span class="mx-2 text-sm font-medium">Gérer les pannes</span>
+                            <span id="manageIssuesLink" class="mx-2 text-sm font-medium">Gérer les pannes</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_rapport/gerer_rp.php?admin_id=<?php echo $user_id; ?>">
+                        <a  class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_rapport/gerer_rp.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
 
-                            <span class="mx-2 text-sm font-medium">Gérer les Rapports</span>
+                            <span id="manageReportsLink" class="mx-2 text-sm font-medium">Gérer les Rapports</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_ordres_des_missions/gerer_ord.php?admin_id=<?php echo $user_id; ?>">
+                        <a  class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_ordres_des_missions/gerer_ord.php?admin_id=<?php echo $user_id; ?>">
                             <svg class="flex-shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                                 <path d="M3 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
                                 <path d="M10 15m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
@@ -162,37 +172,37 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                                 <path d="M16.5 8.5l2.5 2.5l2.5 -2.5"></path>
                             </svg>
 
-                            <span class="mx-2 text-sm font-medium">Gérer orders de mission</span>
+                            <span id="manageOrdersLink" class="mx-2 text-sm font-medium">Gérer orders de mission</span>
                         </a>
 
-                        <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_fiche_dintervention/P-GFI.php?admin_id=<?php echo $user_id; ?>">
+                        <a  class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="gerer_les_fiche_dintervention/P-GFI.php?admin_id=<?php echo $user_id; ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
                             </svg>
 
-                            <span class="mx-2 text-sm font-medium">Gérer fiche d'intervention</span>
+                            <span id="manageInterventionLink" class="mx-2 text-sm font-medium">Gérer fiche d'intervention</span>
                         </a>
                     </div>
                 </div>
 
                 <div class="space-y-2.5">
-                    <label class="px-3 text-xs font-semibold text-gray-500 uppercase">Pour toi</label>
+                    <label id="forYouLabel" class="px-3 text-xs font-semibold text-gray-500 uppercase">Pour toi</label>
 
-                    <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="Parametres/Parametres.php?admin_id=<?php echo $user_id; ?>">
+                    <a  class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#c8d3f659] hover:text-[#0455b7]" href="Parametres/Parametres.php?admin_id=<?php echo $user_id; ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <span class="mx-2 text-sm font-medium">Paramètres</span>
+                        <span id="settingsLink" class="mx-2 text-sm font-medium">Paramètres</span>
                     </a>
 
-                    <a class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#f4acbf47] hover:text-[#f60347]" href="#" onclick="logout()">
+                    <a  class="flex items-center px-3 py-2 mt-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-[#f4acbf47] hover:text-[#f60347]" href="#" onclick="logout()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5">
                             <path d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2"></path>
                             <path d="M15 12h-12l3 -3"></path>
                             <path d="M6 15l-3 -3"></path>
                         </svg>
-                        <span class="mx-2 text-sm font-medium">Déconnecter</span>
+                        <span id="logoutLink" class="mx-2 text-sm font-medium">Déconnecter</span>
                     </a>
                 </div>
             </nav>
@@ -213,10 +223,11 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 </div>
 
                 <!-- Language Selector -->
-                <select class="p-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="languageSelector" class="p-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="en">English</option>
-                    <option value="fr" selected>French</option>
+                    <option value="fr">French</option>
                     <option value="ar">Arabic</option>
+                    <option value="ru">Russian</option>
                 </select>
             </div>
         </header>
@@ -609,6 +620,222 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
                 loadPage(page);
             }
         });
+
+        // Language Translations for Admin Page
+        const adminTranslations = {
+            en: {
+                appTitle: "Breakdown and Report",
+                appSubtitle: "By Algérie Poste",
+                statsLabel: "Statistics",
+                controlLabel: "Control",
+                forYouLabel: "For You",
+                dashboardTitle: "Dashboard",
+                dashboardLink: "Dashboard",
+                notificationBtn: "Notification",
+                manageAccountsLink: "Manage Accounts",
+                manageIssuesLink: "Manage Issues",
+                manageReportsLink: "Manage Reports",
+                manageOrdersLink: "Manage Mission Orders",
+                manageInterventionLink: "Manage Intervention Sheets",
+                settingsLink: "Settings",
+                logoutLink: "Logout",
+                notificationsTitle: "Notifications",
+                noNotificationsText: "No notifications found",
+                markAsReadBtn: "Mark as Read",
+                deleteNotificationBtn: "Delete",
+                viewAllNotifications: "View all notifications"
+            },
+            fr: {
+                appTitle: "Panne et Rapport",
+                appSubtitle: "Par Algérie Poste",
+                statsLabel: "Statistiques",
+                controlLabel: "Contrôle",
+                forYouLabel: "Pour toi",
+                dashboardTitle: "Tableau de bord",
+                dashboardLink: "Tableau de bord",
+                notificationBtn: "Notification",
+                manageAccountsLink: "Gérer les comptes",
+                manageIssuesLink: "Gérer les pannes",
+                manageReportsLink: "Gérer les Rapports",
+                manageOrdersLink: "Gérer orders de mission",
+                manageInterventionLink: "Gérer fiche d'intervention",
+                settingsLink: "Paramètres",
+                logoutLink: "Déconnecter",
+                notificationsTitle: "Notifications",
+                noNotificationsText: "Aucune notification trouvée",
+                markAsReadBtn: "Marquer comme lu",
+                deleteNotificationBtn: "Supprimer",
+                viewAllNotifications: "Voir toutes les notifications"
+            },
+            ar: {
+                appTitle: "الأعطال والتقارير",
+                appSubtitle: "بواسطة الجزائرية للبريد",
+                statsLabel: "الإحصائيات",
+                controlLabel: "التحكم",
+                forYouLabel: "لك",
+                dashboardTitle: "لوحة التحكم",
+                dashboardLink: "لوحة التحكم",
+                notificationBtn: "الإشعارات",
+                manageAccountsLink: "إدارة الحسابات",
+                manageIssuesLink: "إدارة الأعطال",
+                manageReportsLink: "إدارة التقارير",
+                manageOrdersLink: "إدارة أوامر المهمة",
+                manageInterventionLink: "إدارة استمارات التدخل",
+                settingsLink: "الإعدادات",
+                logoutLink: "تسجيل الخروج",
+                notificationsTitle: "الإشعارات",
+                noNotificationsText: "لا توجد إشعارات",
+                markAsReadBtn: "وضع علامة مقروء",
+                deleteNotificationBtn: "حذف",
+                viewAllNotifications: "عرض جميع الإشعارات"
+            },
+            ru: {
+                appTitle: "Неисправности и отчеты",
+                appSubtitle: "Algérie Poste",
+                statsLabel: "Статистика",
+                controlLabel: "Контроль",
+                forYouLabel: "Для вас",
+                dashboardTitle: "Панель управления",
+                dashboardLink: "Панель управления",
+                notificationBtn: "Уведомления",
+                manageAccountsLink: "Управление учетными записями",
+                manageIssuesLink: "Управление неисправностями",
+                manageReportsLink: "Управление отчетами",
+                manageOrdersLink: "Управление заказами на миссию",
+                manageInterventionLink: "Управление листами вмешательства",
+                settingsLink: "Настройки",
+                logoutLink: "Выйти",
+                notificationsTitle: "Уведомления",
+                noNotificationsText: "Уведомлений не найдено",
+                markAsReadBtn: "Пометить как прочитанное",
+                deleteNotificationBtn: "Удалить",
+                viewAllNotifications : "Просмотреть все уведомления"
+            }
+        };
+
+        // Function to update the language in admin page
+        function updateAdminLanguage(lang) {
+            console.log("Updating language to " + lang);
+            const isArabic = lang === "ar";
+            document.documentElement.dir = isArabic ? "rtl" : "ltr";
+            
+            // Update text content
+            const translations = adminTranslations[lang];
+            
+            // Check if the elements exist before trying to access them
+            if (document.getElementById("appSubtitle")) {
+                document.getElementById("appSubtitle").textContent = translations.appSubtitle;
+            }
+            
+            if (document.getElementById("statsLabel")) {
+                document.getElementById("statsLabel").textContent = translations.statsLabel;
+            }
+            
+            if (document.getElementById("controlLabel")) {
+                document.getElementById("controlLabel").textContent = translations.controlLabel;
+            }
+            
+            if (document.getElementById("forYouLabel")) {
+                document.getElementById("forYouLabel").textContent = translations.forYouLabel;
+            }
+            
+            if (document.getElementById("dashboardTitle")) {
+                document.getElementById("dashboardTitle").textContent = translations.dashboardTitle;
+            }
+            
+            if (document.getElementById("dashboardLink")) {
+                document.getElementById("dashboardLink").textContent = translations.dashboardLink;
+            }
+            
+            if (document.getElementById("notificationBtn")) {
+                document.getElementById("notificationBtn").textContent = translations.notificationBtn;
+            }
+            
+            if (document.getElementById("manageAccountsLink")) {
+                document.getElementById("manageAccountsLink").textContent = translations.manageAccountsLink;
+            }
+            
+            if (document.getElementById("manageIssuesLink")) {
+                document.getElementById("manageIssuesLink").textContent = translations.manageIssuesLink;
+            }
+            
+            if (document.getElementById("manageReportsLink")) {
+                document.getElementById("manageReportsLink").textContent = translations.manageReportsLink;
+            }
+            
+            if (document.getElementById("manageOrdersLink")) {
+                document.getElementById("manageOrdersLink").textContent = translations.manageOrdersLink;
+            }
+            
+            if (document.getElementById("manageInterventionLink")) {
+                document.getElementById("manageInterventionLink").textContent = translations.manageInterventionLink;
+            }
+            
+            if (document.getElementById("settingsLink")) {
+                document.getElementById("settingsLink").textContent = translations.settingsLink;
+            }
+            
+            if (document.getElementById("logoutLink")) {
+                document.getElementById("logoutLink").textContent = translations.logoutLink;
+            }
+            
+            if (document.getElementById("notificationsTitle")) {
+                document.getElementById("notificationsTitle").textContent = translations.notificationsTitle;
+            }
+            
+            if (document.getElementById("noNotificationsText")) {
+                document.getElementById("noNotificationsText").textContent = translations.noNotificationsText;
+            }
+            
+            // Update buttons in notifications
+            if (document.querySelectorAll(".mark-as-read-btn")) {
+                document.querySelectorAll(".mark-as-read-btn").forEach(btn => {
+                    btn.textContent = translations.markAsReadBtn;
+                });
+            }
+            
+            if (document.querySelectorAll(".delete-notification-btn")) {
+                document.querySelectorAll(".delete-notification-btn").forEach(btn => {
+                    btn.textContent = translations.deleteNotificationBtn;
+                });
+            }
+            
+            if (document.getElementById("viewAllNotifications")) {
+                document.getElementById("viewAllNotifications").textContent = translations.viewAllNotifications;
+            }
+        }
+
+        // Function to set the language cookie
+        function setLanguageCookie(lang) {
+            const date = new Date();
+            date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days
+            document.cookie = `language=${lang}; expires=${date.toUTCString()}; path=/`;
+        }
+
+        // Function to get the language cookie
+        function getLanguageCookie() {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith("language=")) {
+                    return cookie.substring(9);
+                }
+            }
+            return "fr"; // Default language
+        }
+
+        // Language Selector Event Listener
+        document.getElementById("languageSelector").addEventListener("change", function (e) {
+            console.log("Language changed");
+            const selectedLanguage = e.target.value;
+            updateAdminLanguage(selectedLanguage);
+            setLanguageCookie(selectedLanguage);
+        });
+
+        // Initialize with the stored language
+        const storedLanguage = getLanguageCookie();
+        updateAdminLanguage(storedLanguage);
+        document.getElementById("languageSelector").value = storedLanguage;
     </script>
 </body>
 </html>

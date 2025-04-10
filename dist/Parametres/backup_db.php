@@ -1,6 +1,11 @@
 <?php
-session_start();
+// Headers must be at the very top
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
+
+session_start();
 
 // Enable error reporting
 ini_set('display_errors', 1);
@@ -31,7 +36,7 @@ try {
     }
 
     $backupFile = $backupDir . '/backup_' . date('Y-m-d_H-i-s') . '.sql';
-    $tables = ['RapFichiers', 'Rapport', 'Users', 'Roles']; // Add your tables
+    $tables = ['RapFichiers', 'Rapport', 'Users', 'Roles']; // Your tables
     
     $output = "";
     
@@ -63,12 +68,6 @@ try {
         'file' => basename($backupFile)
     ]);
 
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Database error: ' . $e->getMessage()
-    ]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
@@ -76,10 +75,3 @@ try {
         'message' => $e->getMessage()
     ]);
 }
-
-// Add to backup_db.php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
-
-?>

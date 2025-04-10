@@ -348,7 +348,7 @@ $pannes_etab_data = json_encode(array_column($pannes_by_etab, 'panne_count'));
 </div>
 
 <!-- Additional Statistics Section -->
-<div class="mt-5 grid lg:grid-cols-3 md:grid-cols-1 grid-cols-1 gap-5">
+<div class="mt-5 grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 gap-5">
     <!-- Pannes Status Chart -->
     <div class="h-[28rem] bg-white rounded-lg shadow-sm p-4 md:p-6">
         <div class="flex justify-between mb-3">
@@ -379,7 +379,10 @@ $pannes_etab_data = json_encode(array_column($pannes_by_etab, 'panne_count'));
         <div class="py-6" id="tech-chart"></div>
     </div>
 
-    <!-- Pannes by Establishment Chart -->
+</div>
+
+<div class="mt-5 grid lg:grid-cols-1 md:grid-cols-1 grid-cols-1 gap-5">
+        <!-- Pannes by Establishment Chart -->
     <div class="h-[28rem] bg-white rounded-lg shadow-sm p-4 md:p-6">
         <div class="flex justify-between mb-3">
             <div class="flex justify-center items-center">
@@ -399,6 +402,7 @@ $pannes_etab_data = json_encode(array_column($pannes_by_etab, 'panne_count'));
         <div class="py-6" id="etab-chart"></div>
     </div>
 </div>
+
 
 <script>
     // Pass PHP data to JavaScript

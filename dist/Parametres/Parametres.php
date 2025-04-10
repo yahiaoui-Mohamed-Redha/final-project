@@ -153,23 +153,23 @@ $user = $select->fetch(PDO::FETCH_ASSOC);
                     <!-- Database SVG Icon -->
                     Back up your database
                 </h3>
-                <form id="backupForm" action="<?php echo $_SERVER['DOCUMENT_ROOT']; ?>/app/backup_db.php" method="post">
-                    <button type="submit" name="backup_type" value="monthly" class="w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
-                        <!-- Save SVG Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
-                        </svg>
-                        Create a backup
-                    </button>
-                    <a href="Parametres/download_backup.php" class="load-page-link w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
+                
+                <button id="createBackupBtn" class="w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
+                    <!-- Save SVG Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
+                    </svg>
+                    Create a backup
+                </button>
+                
+                <a href="Parametres/download_backup.php" class="load-page-link w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
                         <!-- Download SVG Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                         latest backups
-                    </a>
-                    <div id="backupMessage" class="mt-2 text-sm text-green-600 hidden"></div>
-                </form>
+                </a>
+                <div id="backupMessage" class="mt-2 text-sm text-green-600 hidden"></div>
             </div>
             
             <!-- Third Rectangle - Install options -->
@@ -197,60 +197,58 @@ $user = $select->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <script>
-// Handle backup form submission
-document.getElementById('backupForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const form = this;
-    const messageDiv = document.getElementById('backupMessage');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    
-    // Show loading state
-    messageDiv.textContent = 'Creating backup...';
-    messageDiv.classList.remove('hidden', 'text-red-600', 'text-green-600');
-    messageDiv.classList.add('text-blue-600');
-    submitBtn.disabled = true;
-    
-    try {
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form)
-        });
+        // Handle backup form submission
+        document.getElementById('createBackupBtn').addEventListener('click', async function() {
+        const messageDiv = document.getElementById('backupMessage');
+        const backupBtn = this;
         
-        if (!response.ok) {
-            // Try to get error details from response
-            let errorMsg = 'Server error';
-            try {
-                const errorData = await response.json();
-                errorMsg = errorData.message || errorMsg;
-            } catch (e) {
-                errorMsg = `HTTP ${response.status}: ${response.statusText}`;
+        // Show loading state
+        messageDiv.textContent = 'Creating backup...';
+        messageDiv.classList.remove('hidden', 'text-red-600', 'text-green-600');
+        messageDiv.classList.add('text-blue-600');
+        backupBtn.disabled = true;
+        
+        try {
+            // Use relative path since files are in same directory
+            const response = await fetch('backup_db.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            console.log('Request to:', 'backup_db.php');  // Debug log
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            throw new Error(errorMsg);
-        }
-        
-        const data = await response.json();
-        
-        messageDiv.textContent = data.message;
-        if (data.success) {
-            messageDiv.classList.remove('text-blue-600', 'text-red-600');
-            messageDiv.classList.add('text-green-600');
-        } else {
+            
+            const data = await response.json();
+            console.log('Success response:', data);  // Debug log
+            
+            if (data.success) {
+                messageDiv.textContent = 'Backup created successfully!';
+                messageDiv.classList.remove('text-blue-600', 'text-red-600');
+                messageDiv.classList.add('text-green-600');
+            } else {
+                throw new Error(data.message || 'Backup failed');
+            }
+        } catch (error) {
+            console.error('Full error:', error);
+            messageDiv.textContent = `Backup failed: ${error.message}`;
             messageDiv.classList.remove('text-blue-600', 'text-green-600');
             messageDiv.classList.add('text-red-600');
+        } finally {
+            backupBtn.disabled = false;
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 5000);
         }
+    });
         
-    } catch (error) {
-        console.error('Backup error:', error);
-        messageDiv.textContent = `Backup failed: ${error.message}`;
-        messageDiv.classList.remove('text-blue-600', 'text-green-600');
-        messageDiv.classList.add('text-red-600');
-    } finally {
-        submitBtn.disabled = false;
-        setTimeout(() => {
-            messageDiv.classList.add('hidden');
-        }, 5000);
-    }
-});
         function createShortcut() {
             alert('Shortcut creation would be initiated here');
         }
