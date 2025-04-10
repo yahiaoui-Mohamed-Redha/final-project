@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur
     header('Location:../../index.php');
     exit;
 }
-
+$current_user_role = $_SESSION['user_role'];
 if (!isset($_GET['panne_num'])) {
     $_SESSION['error'] = "Panne number is required";
     header('Location: gerer_les_panne.php');
@@ -22,6 +22,7 @@ $query = "SELECT
             p.panne_name, 
             p.date_signalement, 
             p.description,
+            roles.role_nom,
             COALESCE(e.etablissement_name, 'UNITE-POSTAL-WILAYA-DE-BOUMERDES') AS etablissement_name, 
             t.type_name, 
             p.panne_etat, 
@@ -36,6 +37,7 @@ $query = "SELECT
           INNER JOIN Users u ON p.receveur_id = u.user_id 
           LEFT JOIN Epost e ON u.postal_code = e.postal_code
           LEFT JOIN Rapport r ON p.rap_num = r.rap_num
+          LEFT JOIN roles ON roles.role_id = u.role_id
           WHERE p.panne_num = :panne_num";
 
 try {
@@ -193,7 +195,7 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                     </div>
                     <div>
                         <p class="font-medium"><?php echo htmlspecialchars($panne['user_prenom'] . ' ' . $panne['user_nom']); ?></p>
-                        <p class="text-sm text-gray-500">Receveur</p>
+                        <p class="text-sm text-gray-500"><?php echo $panne['role_nom']; ?></p>
                     </div>
                 </div>
             </div>
@@ -215,12 +217,12 @@ $admin = $select->fetch(PDO::FETCH_ASSOC);
                     Retour à la liste
                 </a>
 
-                <button onclick="confirmDelete('<?php echo htmlspecialchars($order_mission['order_num']); ?>')" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                <!-- <button onclick="confirmDelete('<?php echo htmlspecialchars($order_mission['order_num']); ?>')" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                     Supprimer
-                </button>
+                </button> -->
         </div>
         </div>
         
