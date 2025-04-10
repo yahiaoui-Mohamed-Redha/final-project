@@ -245,19 +245,22 @@ $contentPage = basename($_SERVER['PHP_SELF']);
                         <?php echo ($user['role_id'] == 1 ? 'Admin' : ($user['role_id'] == 2 ? 'Technicien' : 'Receveur')); ?>
                     </td>
                     <td class="td-class text-center">
-                        <div class="flex p-2 rounded-sm hover:bg-gray-100">
-                            <label class="inline-flex items-center w-full cursor-pointer">
-                                <input type="checkbox" id="account-status-<?php echo $user['user_id']; ?>" class="sr-only peer"
-                                    data-user-id="<?php echo htmlspecialchars($user['user_id']); ?>"
-                                    <?php echo ($user['etat_compte'] == 1 ? 'checked' : ''); ?>>
-                                <div class="relative w-9 h-5 bg-<?php echo ($user['etat_compte'] == 1 ? 'green' : 'red'); ?>-500 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:translate-x-[-100%] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500 peer-default:bg-red-500">
-                                </div>
-                                <span id="status-text-<?php echo $user['user_id']; ?>" class="ms-3 text-sm font-medium text-gray-900">
-                                    <?php echo ($user['etat_compte'] == 1 ? 'Activé' : 'Désactivé'); ?>
-                                </span>
-                            </label>
-                        </div>
-                    </td>
+    <div class="flex p-2 rounded-sm hover:bg-gray-100">
+        <label class="inline-flex items-center w-full cursor-pointer">
+            <input type="checkbox" id="account-status-<?php echo $user['user_id']; ?>" class="sr-only peer"
+                data-user-id="<?php echo htmlspecialchars($user['user_id']); ?>"
+                <?php echo ($user['etat_compte'] == 1 ? 'checked' : ''); ?>
+                onclick="return <?php echo ($user['etat_compte'] == 1 ? 
+                    'confirm(\'Êtes-vous sûr de vouloir désactiver ce compte?\')' : 
+                    'confirm(\'Êtes-vous sûr de vouloir activer ce compte?\')'); ?>">
+            <div class="relative w-9 h-5 bg-<?php echo ($user['etat_compte'] == 1 ? 'green' : 'red'); ?>-500 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:translate-x-[-100%] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500 peer-default:bg-red-500">
+            </div>
+            <span id="status-text-<?php echo $user['user_id']; ?>" class="ms-3 text-sm font-medium text-gray-900">
+                <?php echo ($user['etat_compte'] == 1 ? 'Activé' : 'Désactivé'); ?>
+            </span>
+        </label>
+    </div>
+</td>
                     <td class="td-class text-center">
                         <button
                             class="modify-user-btn cursor-pointer flex items-center p-2 rounded-lg text-white bg-[#0455b7] transition-colors duration-300 transform hover:bg-blue-900"
