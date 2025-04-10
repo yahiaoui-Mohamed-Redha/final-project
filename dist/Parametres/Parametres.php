@@ -13,6 +13,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur
     header('Location:../../index.php');
     exit;
 }
+
 // Fetch admin details
 $user_id = $_SESSION['user_id'];
 $select = $conn->prepare("SELECT u.*, r.role_nom AS role_name FROM Users u INNER JOIN Roles r ON u.role_id = r.role_id WHERE u.user_id = ?");
@@ -152,13 +153,13 @@ $user = $select->fetch(PDO::FETCH_ASSOC);
                     <!-- Database SVG Icon -->
                     Back up your database
                 </h3>
-                <form id="backupForm" action="backup_db.php" method="post">
+                <form id="backupForm" action="<?php echo $_SERVER['DOCUMENT_ROOT']; ?>/app/backup_db.php" method="post">
                     <button type="submit" name="backup_type" value="monthly" class="w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
                         <!-- Save SVG Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
                         </svg>
-                        Create monthly backup
+                        Create a backup
                     </button>
                     <a href="Parametres/download_backup.php" class="load-page-link w-full py-2 px-4 rounded-md hover:bg-[#c8d3f659] hover:text-[#0455b7] text-left transition-colors flex items-center gap-2">
                         <!-- Download SVG Icon -->
@@ -196,50 +197,60 @@ $user = $select->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <script>
-        // Handle backup form submission
-        document.getElementById('backupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                const messageDiv = document.getElementById('backupMessage');
-                messageDiv.textContent = data.message;
-                messageDiv.classList.remove('hidden');
-                
-                if (data.success) {
-                    messageDiv.classList.add('text-green-600');
-                    messageDiv.classList.remove('text-red-600');
-                } else {
-                    messageDiv.classList.add('text-red-600');
-                    messageDiv.classList.remove('text-green-600');
-                }
-                
-                setTimeout(() => {
-                    messageDiv.classList.add('hidden');
-                }, 5000);
-            });
+// Handle backup form submission
+document.getElementById('backupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = this;
+    const messageDiv = document.getElementById('backupMessage');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    // Show loading state
+    messageDiv.textContent = 'Creating backup...';
+    messageDiv.classList.remove('hidden', 'text-red-600', 'text-green-600');
+    messageDiv.classList.add('text-blue-600');
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form)
         });
-
-        function downloadLatestBackup() {
-            fetch('backup_db.php?action=download_latest')
-                .then(response => response.blob())
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `backup_${new Date().toISOString().slice(0,10)}.sql`;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                });
+        
+        if (!response.ok) {
+            // Try to get error details from response
+            let errorMsg = 'Server error';
+            try {
+                const errorData = await response.json();
+                errorMsg = errorData.message || errorMsg;
+            } catch (e) {
+                errorMsg = `HTTP ${response.status}: ${response.statusText}`;
+            }
+            throw new Error(errorMsg);
         }
-
+        
+        const data = await response.json();
+        
+        messageDiv.textContent = data.message;
+        if (data.success) {
+            messageDiv.classList.remove('text-blue-600', 'text-red-600');
+            messageDiv.classList.add('text-green-600');
+        } else {
+            messageDiv.classList.remove('text-blue-600', 'text-green-600');
+            messageDiv.classList.add('text-red-600');
+        }
+        
+    } catch (error) {
+        console.error('Backup error:', error);
+        messageDiv.textContent = `Backup failed: ${error.message}`;
+        messageDiv.classList.remove('text-blue-600', 'text-green-600');
+        messageDiv.classList.add('text-red-600');
+    } finally {
+        submitBtn.disabled = false;
+        setTimeout(() => {
+            messageDiv.classList.add('hidden');
+        }, 5000);
+    }
+});
         function createShortcut() {
             alert('Shortcut creation would be initiated here');
         }
