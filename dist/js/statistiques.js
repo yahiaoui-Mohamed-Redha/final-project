@@ -60,7 +60,7 @@ function executeStatistJavaScript() {
     // Donut Chart Configuration
     const donutChartConfig = {
         series: data,
-        colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", "#7E3AF2", "#FF5A1F"],
+        colors: ["#1C64F2", "#16BDCA", "#F4C616", "#E74694", "#7E3AF2", "#FF5A1F", "#F4C616"],
         chart: {
             height: 320,
             width: "100%",
@@ -266,7 +266,7 @@ function executeStatistJavaScript() {
             enabled: false
         },
         xaxis: {
-            categories: ['New', 'In Progress', 'Resolved', 'Closed'],
+            categories: ['Nouveau', 'En cours', 'Résolu', 'Fermé'],
             labels: {
                 style: {
                     colors: "#616161",

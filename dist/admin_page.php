@@ -292,6 +292,7 @@ $language = $_COOKIE['language'] ?? 'fr';
 
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../apexcharts/dist/apexcharts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <script>
         // Function to toggle the notification modal
@@ -643,7 +644,8 @@ $language = $_COOKIE['language'] ?? 'fr';
                 noNotificationsText: "No notifications found",
                 markAsReadBtn: "Mark as Read",
                 deleteNotificationBtn: "Delete",
-                viewAllNotifications: "View all notifications"
+                viewAllNotifications: "View all notifications",
+                MaintenanceStatisticsDashboard: "Maintenance Statistics Dashboard",
             },
             fr: {
                 appTitle: "Panne et Rapport",
@@ -665,7 +667,8 @@ $language = $_COOKIE['language'] ?? 'fr';
                 noNotificationsText: "Aucune notification trouvée",
                 markAsReadBtn: "Marquer comme lu",
                 deleteNotificationBtn: "Supprimer",
-                viewAllNotifications: "Voir toutes les notifications"
+                viewAllNotifications: "Voir toutes les notifications",
+                MaintenanceStatisticsDashboard: "Tableau de bord des statistiques de maintenance",
             },
             ar: {
                 appTitle: "الأعطال والتقارير",
@@ -802,6 +805,10 @@ $language = $_COOKIE['language'] ?? 'fr';
             
             if (document.getElementById("viewAllNotifications")) {
                 document.getElementById("viewAllNotifications").textContent = translations.viewAllNotifications;
+            }
+
+            if (document.getElementById("MaintenanceStatisticsDashboard")) {
+                document.getElementById("MaintenanceStatisticsDashboard").textContent = translations.MaintenanceStatisticsDashboard;
             }
         }
 

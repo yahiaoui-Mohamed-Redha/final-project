@@ -1,5 +1,5 @@
 <?php
-include 'config.php';
+include '../../app/config.php';
 session_start();
 
 // Verify user authorization
