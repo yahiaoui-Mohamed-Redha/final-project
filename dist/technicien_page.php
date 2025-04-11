@@ -266,6 +266,7 @@ $contentpage = isset($_GET['contentpage']) ? $_GET['contentpage'] : 'statistique
 
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../apexcharts/dist/apexcharts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <script>
         // Function to toggle the notification modal

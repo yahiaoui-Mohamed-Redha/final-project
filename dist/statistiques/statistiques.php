@@ -76,7 +76,7 @@ $pannes_over_time = $stmt_pannes_over_time->fetchAll(PDO::FETCH_ASSOC);
 // Fetch pannes by status
 $query_pannes_status = "SELECT 
                         SUM(CASE WHEN panne_etat = 'nouveau' THEN 1 ELSE 0 END) as nouveau,
-                        SUM(CASE WHEN panne_etat = 'en_cours' THEN 1 ELSE 0 END) as en_cours,
+                        SUM(CASE WHEN panne_etat = 'en cours' THEN 1 ELSE 0 END) as en_cours,
                         SUM(CASE WHEN panne_etat = 'résolu' THEN 1 ELSE 0 END) as resolu,
                         SUM(CASE WHEN panne_etat = 'fermé' THEN 1 ELSE 0 END) as ferme,
                         COUNT(*) as total
