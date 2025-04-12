@@ -99,7 +99,7 @@ if ($_SESSION['user_role'] == 'Receveur') {
 
 $fiches = $stmt_fiche->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch admin details
+// Fetch details
 $user_id = $_SESSION['user_id'];
 $select = $conn->prepare("SELECT u.*, r.role_nom AS role_name FROM Users u INNER JOIN Roles r ON u.role_id = r.role_id WHERE u.user_id = ?");
 $select->execute([$user_id]);

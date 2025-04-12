@@ -77,24 +77,7 @@ function sendNotificationToTechnician($technicien_id, $fiche_num) {
     ];
 }
 
-function createNotificationOrderMission($technicien_id, $fiche_num) {
-    global $conn;
-    
-    try {
-        $stmt = $conn->prepare("INSERT INTO OrderMission 
-                              (direction, destination, motif, moyen_tr, date_depart, date_retour, technicien_id) 
-                              VALUES (?, ?, ?, ?, NOW(), NOW(), ?)");
-        $stmt->execute([
-            'Notification',
-            $fiche_num,
-            'Nouvelle fiche d\'intervention assignée',
-            'Système',
-            $technicien_id
-        ]);
-    } catch (PDOException $e) {
-        error_log("Error creating order mission: " . $e->getMessage());
-    }
-}
+
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -127,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sendNotificationToTechnician($technicien_id, $fiche_num);
             
             // Create order mission
-            createNotificationOrderMission($technicien_id, $fiche_num);
         }
         
         $conn->commit();
