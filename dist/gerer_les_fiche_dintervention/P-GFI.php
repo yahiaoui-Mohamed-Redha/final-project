@@ -167,7 +167,7 @@ if (isset($_SESSION['error_message'])) {
                     Toutes les fiches
                 </button>
             </li>
-            <?php if (!in_array($current_user_role, ['Admin'])): ?>
+            <?php if (!in_array($current_user_role, ['Receveur', 'Admin', 'Technicien'])): ?>
             <li>
                 <button id="archivedTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
                     Archivées
