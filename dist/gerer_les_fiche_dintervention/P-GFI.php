@@ -326,7 +326,7 @@ if (isset($_SESSION['error_message'])) {
                                 <a href="../app/view_fiche.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Voir</a>
                             </div>
                             <div class="py-2">
-                                <a href="gerer_les_fiches/fiche_edit.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
+                                <a href="gerer_les_fiche_dintervention/fiche_edit.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
                             </div>
                             <div class="py-2">
                                 <a href="../app/delete_fiche.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette fiche ? Cette action est irréversible');">Supprimer</a>
