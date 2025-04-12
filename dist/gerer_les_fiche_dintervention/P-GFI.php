@@ -7,7 +7,8 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['Receveur
     header('Location:../../index.php');
     exit;
 }
-
+// Store the current user's role for later use
+$current_user_role = $_SESSION['user_role'];
 // Fetch all fiches with related data
 $query = "SELECT 
             fi.fiche_num, 
@@ -55,7 +56,7 @@ if ($_SESSION['user_role'] == 'Receveur') {
               INNER JOIN Users tech ON fi.technicien_id = tech.user_id
               INNER JOIN Users rec ON fi.receveur_id = rec.user_id
               LEFT JOIN Epost e ON rec.postal_code = e.postal_code
-              WHERE fi.receveur_id = :receveur_id
+              WHERE fi.receveur_id = :receveur_id AND fi.archived = 0 OR fi.archived IS NULL
               ORDER BY fi.fiche_date DESC";
 }
 
@@ -166,6 +167,7 @@ if (isset($_SESSION['error_message'])) {
                     Toutes les fiches
                 </button>
             </li>
+            <?php if (!in_array($current_user_role, ['Admin'])): ?>
             <li>
                 <button id="archivedTab" class="tab text-gray-600 rounded-xl font-semibold text-center text-sm py-2 px-4 tracking-wide cursor-pointer">
                     Archivées
@@ -176,6 +178,7 @@ if (isset($_SESSION['error_message'])) {
                     Actives
                 </button>
             </li>
+            <?php endif; ?>
         </ul>
     </div>
     <div class="flex items-center justify-between">
@@ -325,12 +328,16 @@ if (isset($_SESSION['error_message'])) {
                             <div class="py-2">
                                 <a href="../app/view_fiche.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Voir</a>
                             </div>
+                            <?php if (!in_array($current_user_role, ['Technicien'])): ?>
                             <div class="py-2">
                                 <a href="gerer_les_fiche_dintervention/fiche_edit.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier</a>
                             </div>
+                            <?php endif; ?>
+                            <?php if (!in_array($current_user_role, ['Receveur', 'Technicien'])): ?>
                             <div class="py-2">
                                 <a href="../app/delete_fiche.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette fiche ? Cette action est irréversible');">Supprimer</a>
                             </div>
+                            <?php endif; ?>
                             <div class="py-2">
                                 <a href="../app/fiche_export.php?fiche_num=<?php echo $fiche['fiche_num']; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Exporter la fiche</a>
                             </div>
